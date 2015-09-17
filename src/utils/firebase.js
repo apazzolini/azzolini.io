@@ -14,3 +14,13 @@ export function firebaseInit() {
     Firebase.root = ref;
   });
 }
+
+export function once(type, child) {
+  return new Promise((resolve, reject) => {
+    Firebase.root.child(child).once(type, (snapshot) => {
+      resolve(snapshot.val());
+    }, (err) => {
+      reject(err);
+    });
+  });
+}
