@@ -1,12 +1,12 @@
-const LOAD = 'redux-example/LOAD';
-const LOAD_SUCCESS = 'redux-example/LOAD_SUCCESS';
-const LOAD_FAIL = 'redux-example/LOAD_FAIL';
+const LOAD = 'blogs/LOAD';
+const LOAD_SUCCESS = 'blogs/LOAD_SUCCESS';
+const LOAD_FAIL = 'blogs/LOAD_FAIL';
 
 const initialState = {
   loaded: false
 };
 
-export default function info(state = initialState, action = {}) {
+export default function blogs(state = initialState, action = {}) {
   switch (action.type) {
     case LOAD:
       return {
@@ -36,12 +36,12 @@ export default function info(state = initialState, action = {}) {
 }
 
 export function isLoaded(globalState) {
-  return globalState.info && globalState.info.loaded;
+  return globalState.blogs && globalState.blogs.loaded;
 }
 
 export function load() {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.get('/info')
+    promise: (client) => client.get('/blogs')
   };
 }

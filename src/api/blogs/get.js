@@ -1,30 +1,33 @@
 import Joi from 'joi';
-// import Boom from 'boom';
-import fb from 'firebase';
+import Boom from 'boom';
+import * as fb from '../../utils/firebase';
 
 export async function getBlogs() {
-  return new Promise((resolve, reject) => {
-    fb.root.child('blogs').once('value', (snapshot) => {
-      resolve(snapshot.val());
-    });
-  });
+  return fb.once('value', 'blogs');
 }
 
 export async function getBlog(id) {
-  const blogs = await getBlogs();
-  return blogs[id];
+  return fb.once('value', `blogs/${id}`);
 }
 
 export const routes = [
   {
     path: '/blogs', method: 'GET', handler: async (request, reply) => {
-      reply(await getBlogs());
+      try {
+        reply(await getBlogs());
+      } catch (e) {
+        reply(Boom.wrap(e), 500);
+      }
     }
   },
 
   {
     path: '/blogs/{id}', method: 'GET', handler: async (request, reply) => {
-      reply(await getBlog(request.params.id));
+      try {
+        reply(await getBlog(request.params.id));
+      } catch (e) {
+        reply(Boom.wrap(e), 500);
+      }
     },
     config: {
       validate: {

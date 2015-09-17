@@ -20,13 +20,19 @@ export default class Html extends Component {
 
   render() {
     const {assets, component, store} = this.props;
+
     return (
       <html lang="en-us">
         <head>
           <meta charSet="utf-8"/>
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <link rel="shortcut icon" href="/favicon.ico" />
+
           {DocumentMeta.renderAsReact()}
 
-          <link rel="shortcut icon" href="/favicon.ico" />
+          <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css" />
+          <link href="//cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css" rel="stylesheet" type="text/css" />
+          <link href="//cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" rel="stylesheet" type="text/css" />
 
           {/* styles (will be present only in production with webpack extract text plugin) */}
           {Object.keys(assets.styles).map((style, i) =>

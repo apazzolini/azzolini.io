@@ -13,10 +13,10 @@ import fetchAwareRouter from './utils/fetchAwareRouter';
 import Html from './utils/Html';
 import config from 'config';
 import { firebaseInit } from './utils/firebase';
-import Firebase from 'firebase';
 
 const pretty = new PrettyError();
 const server = new Server();
+
 server.connection({port: process.env.PORT});
 server.start(() => {
   console.info('==> Server is listening at ' + server.info.uri.toLowerCase());
