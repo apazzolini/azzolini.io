@@ -1,11 +1,8 @@
-#app {
+:global {
   .container {
     max-width: 800px;
   }
 
-  .mainContainer {
-    margin-top: 66px;
-  }
 
   h2.header {
     margin-top: 6em;
@@ -19,4 +16,8 @@
     letter-spacing: .2rem;
     font-weight: 600;
   }
+}
+
+#mainContainer {
+  margin-top: 66px;
 }

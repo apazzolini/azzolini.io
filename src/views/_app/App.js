@@ -30,7 +30,7 @@ export default class App extends Component {
   }
 
   render() {
-    require('./App.scss');
+    const styles = require('./App.scss');
 
     return (
       <div id="app">
@@ -38,7 +38,7 @@ export default class App extends Component {
 
         <NavBar />
 
-        <div className="mainContainer">
+        <div id={styles.mainContainer}>
           {this.props.children}
         </div>
 

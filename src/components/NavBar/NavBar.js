@@ -3,14 +3,12 @@ import {Link} from 'react-router';
 
 export default class NavBar extends Component {
   render() {
-    require('./NavBar.scss');
+    const styles = require('./NavBar.scss');
 
     return (
-      <nav id="mainNav">
+      <nav id={styles.mainNav}>
         <div className="container">
-          <span className="name">
-            Andre Azzolini
-          </span>
+          <Link to="/">Andre Azzolini</Link>
 
           <ul className="u-pull-right">
             <li><Link to="/about">About</Link></li>

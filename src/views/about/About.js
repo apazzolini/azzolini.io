@@ -9,11 +9,12 @@ export default class About extends Component {
         <h2 className="header">Writing code is a craft.</h2>
 
         <section>
-          <p>I'm a full-stack web developer currently living in Dallas, TX.</p>
+          <h6>Who is this guy?</h6>
+          <p>Andre (hey, that's me!) is a full-stack web developer currently living in Dallas, TX.</p>
 
           <p>I view programming as a craft to be appreciated not only for the end product, but for the code itself. There's a strong tie between the elegance and simplicity of a codebase and its correctness, performance, and ability to handle change.</p>
 
-          <p>I love JavaScript and can't get enough of Node.JS and React.</p>
+          <p>I love JavaScript and can't get enough of Node.JS and React. Time traveling with Redux and React Hot Loader blew my mind and I'm excited to see what the future of JS dev holds.</p>
         </section>
 
         <section>

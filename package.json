@@ -70,7 +70,6 @@
     "query-string": "^2.4.1",
     "react": "0.13.3",
     "react-document-meta": "^1.0.1",
-    "react-inline-css": "^2.0.0",
     "react-redux": "^2.1.2",
     "react-router": "1.0.0-beta3",
     "redux": "^2.0.0",

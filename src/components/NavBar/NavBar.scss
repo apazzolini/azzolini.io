@@ -6,14 +6,19 @@
   background-color: white;
   z-index: 1;
 
-  .name {
+  a {
     text-transform: uppercase;
     font-size: 11px;
     font-weight: 600;
     letter-spacing: .2rem;
+    margin-left: 35px;
     text-decoration: none;
     line-height: 6.5rem;
     color: #222;
+
+    &:hover {
+      color: #666;
+    }
   }
 
   ul {
@@ -23,17 +28,6 @@
     li {
       float: left;
       margin-bottom: 0;
-
-      a {
-        text-transform: uppercase;
-        font-size: 11px;
-        font-weight: 600;
-        letter-spacing: .2rem;
-        margin-left: 35px;
-        text-decoration: none;
-        line-height: 6.5rem;
-        color: #222;
-      }
     }
   }
 
