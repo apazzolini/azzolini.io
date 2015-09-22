@@ -12,15 +12,19 @@ import ApiClient from './utils/ApiClient';
 import fetchAwareRouter from './utils/fetchAwareRouter';
 import Html from './utils/Html';
 import config from 'config';
-import { firebaseInit } from './utils/firebase';
 
 const pretty = new PrettyError();
-const server = new Server();
+const server = new Server({
+  connections: {
+    router: {
+      stripTrailingSlash: true
+    }
+  }
+});
 
 server.connection({port: process.env.PORT});
 server.start(() => {
   console.info('==> Server is listening at ' + server.info.uri.toLowerCase());
-  firebaseInit();
 });
 
 /**
@@ -37,6 +41,13 @@ server.register(hapiAuthCookie, (err) => {
     redirectTo: '/login',
     isSecure: false
   });
+});
+
+/**
+ * Pretty print any request errors with their stack traces.
+ */
+server.on('request-error', (request, err) => {
+  console.error('SERVER ERROR:', pretty.render(err));
 });
 
 /**

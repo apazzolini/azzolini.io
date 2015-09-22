@@ -9,8 +9,7 @@ const meta = {
 
 export default class App extends Component {
   static propTypes = {
-    children: PropTypes.object.isRequired,
-    blogs: PropTypes.array.isRequired
+    children: PropTypes.object.isRequired
   }
 
   static contextTypes = {
@@ -33,12 +32,12 @@ export default class App extends Component {
     const styles = require('./App.scss');
 
     return (
-      <div id="app">
+      <div>
         <DocumentMeta {...meta} />
 
         <NavBar />
 
-        <div id={styles.mainContainer}>
+        <div id={styles.MainContainer}>
           {this.props.children}
         </div>
 

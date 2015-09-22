@@ -1,7 +1,7 @@
 import path from 'path';
 
 const routes = [
-  'blogs/get.js'
+  'posts/get.js'
 ];
 
 /**
