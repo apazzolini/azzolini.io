@@ -9,9 +9,10 @@ import * as Posts from '../../redux/modules/posts';
 )
 export default class Post extends Component {
   static propTypes = {
-    'posts': PropTypes.object,
-    'params': PropTypes.object.isRequired,
-    'params.title': PropTypes.string.isRequired
+    posts: PropTypes.object,
+    params: PropTypes.shape({
+      title: PropTypes.string.isRequired
+    })
   }
 
   static fetchData(store, params, query) {
@@ -21,13 +22,12 @@ export default class Post extends Component {
   }
 
   render() {
-    require('./Post.scss');
-
+    const styles = require('./Post.scss');
     const { posts } = this.props;
     const post = posts[this.props.params.title];
 
     return (
-      <div className="container">
+      <div className={styles.Post + ' container'}>
         <div dangerouslySetInnerHTML={{__html: post.html}} />
         { post.html }
       </div>
