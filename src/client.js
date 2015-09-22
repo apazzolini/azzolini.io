@@ -10,7 +10,7 @@ const history = new BrowserHistory();
 const client = new ApiClient();
 
 const dest = document.getElementById('content');
-const store = createStore(client, window.__data);
+const store = createStore(client, window.__state);
 const search = document.location.search;
 const query = search && queryString.parse(search);
 const location = new Location(document.location.pathname, query);

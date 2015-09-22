@@ -6,9 +6,9 @@ import apiClientMiddleware from './middleware/apiClientMiddleware';
  * Responsible for providing a customzed store for the application.
  *
  * @param apiClient: ApiClient an instantiated ApiClient for use by actions
- * @param data: Object the initial data to seed the store with
+ * @param state: Object the initial state to seed the store with
  */
-export default function createCustomizedStore(apiClient, data) {
+export default function createCustomizedStore(apiClient, state) {
   let finalCreateStore;
 
   if (__DEVELOPMENT__ && __CLIENT__ && __DEVTOOLS__) {
@@ -30,7 +30,7 @@ export default function createCustomizedStore(apiClient, data) {
   }
 
   const reducer = require('./modules');
-  const store = finalCreateStore(reducer, data);
+  const store = finalCreateStore(reducer, state);
   store.apiClient = apiClient;
 
   if (__DEVELOPMENT__ && module.hot) {

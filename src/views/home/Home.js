@@ -5,12 +5,12 @@ import * as Posts from '../../redux/modules/posts';
 
 @connect(
   state => ({
-    posts: state.posts.data
+    postResults: state.posts.data,
   })
 )
 export default class Home extends Component {
   static propTypes = {
-    posts: PropTypes.array,
+    postResults: PropTypes.object,
   }
 
   static fetchData(store) {
@@ -22,7 +22,8 @@ export default class Home extends Component {
   render() {
     require('./Home.scss');
 
-    const {posts} = this.props;
+    const { postResults } = this.props;
+    const { postIds, posts } = postResults;
 
     return (
       <div className="container">
@@ -31,13 +32,17 @@ export default class Home extends Component {
         <h6>Posts</h6>
 
         <ul>
-          { posts && posts.map((post) =>
-              <li>
+          { postIds && postIds.map((postId) => {
+            const post = posts[postId];
+
+            return (
+              <li key={postId}>
                 <Link to={`/posts/${post.normalizedTitle}`}>
                   {post.title} - {post.date}
                 </Link>
               </li>
-            )
+            );
+          })
           }
         </ul>
       </div>

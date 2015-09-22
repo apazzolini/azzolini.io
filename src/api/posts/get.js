@@ -75,7 +75,6 @@ export const routes = [
     path: '/posts/{id}', method: 'GET', handler: async (request, reply) => {
       try {
         const post = await getPostById(request.params.id);
-        console.log('**', post);
         reply(post === null ? Boom.notFound() : post);
       } catch (e) {
         reply(Boom.wrap(e));
