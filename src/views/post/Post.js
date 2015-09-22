@@ -4,15 +4,17 @@ import * as Posts from '../../redux/modules/posts';
 
 @connect(
   state => ({
-    postResults: state.posts.data,
+    posts: state.posts.get('data').toJS(),
   })
 )
 export default class Post extends Component {
   static propTypes = {
-    postResults: PropTypes.object,
+    'posts': PropTypes.object,
+    'params': PropTypes.object.isRequired,
+    'params.title': PropTypes.string.isRequired
   }
 
-  static fetchData(store, params) {
+  static fetchData(store, params, query) {
     if (!Posts.isFullyLoaded(store.getState(), params.title)) {
       return store.dispatch(Posts.loadSingle(params.title));
     }
@@ -21,12 +23,11 @@ export default class Post extends Component {
   render() {
     require('./Post.scss');
 
-    const { postResults } = this.props;
-    const post = postResults.posts[this.props.params.title];
+    const { posts } = this.props;
+    const post = posts[this.props.params.title];
 
     return (
       <div className="container">
-        hi
         <div dangerouslySetInnerHTML={{__html: post.html}} />
         { post.html }
       </div>

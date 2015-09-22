@@ -1,126 +1,108 @@
+import { createReducer } from 'redux-immutablejs';
+import Immutable from 'immutable';
+
 const LOAD = 'posts/LOAD';
 const LOAD_SUCCESS = 'posts/LOAD_SUCCESS';
 const LOAD_FAIL = 'posts/LOAD_FAIL';
-
 const LOAD_SINGLE = 'posts/LOAD_SINGLE';
 const LOAD_SINGLE_SUCCESS = 'posts/LOAD_SINGLE_SUCCESS';
 const LOAD_SINGLE_FAIL = 'posts/LOAD_SINGLE_FAIL';
 
-const initialState = {
-  loaded: false
-};
+const initialState = Immutable.fromJS({
+  loaded: false,
+  data: {}
+});
 
 /*
- * The posts state tree segemnt holds the following structure:
+ * The posts state tree segemnt adheres to the following structure:
  * {
  *   loading: {boolean},
  *   loaded: {boolean},
  *   error: {Error},
  *   data: {
- *     postIds: [<normalized titles>],
- *     posts: {
- *       normalizedTitle: {
- *         ...<the structure from the api server>,
- *         fullyLoaded: {boolean},
- *         loading: {boolean},
- *         error: {Error}
- *       }
+ *     normalizedTitle: {
+ *       ...<the structure from the api server>,
+ *       loading: {boolean},
+ *       loaded: {boolean},
+ *       error: {Error}
  *     }
  *   }
  * }
  */
-export default function posts(state = initialState, action = {}) {
-  let newState;
-  let newPost;
+export default createReducer(initialState, {
 
-  switch (action.type) {
-    case LOAD:
-      return {
-        ...state,
+  // ---------------------------------------------------------------------------
+  // Actions on lists of posts -------------------------------------------------
+  // ---------------------------------------------------------------------------
+
+  [LOAD]: (state, action) => state.merge({
+    loading: true
+  }),
+
+  [LOAD_SUCCESS]: (state, action) => {
+    const unloadedPosts = {};
+
+    // We only want to merge in posts that haven't already been loaded. Also,
+    // although the API server returns an array of posts, we want them keyed
+    // by normalized title for use in the app.
+    action.result.forEach((p) => {
+      if (!state.hasIn('data', p.normalizedTitle, 'loaded')) {
+        unloadedPosts[p.normalizedTitle] = p;
+      }
+    });
+
+    return state.mergeDeep({
+      loading: false,
+      loaded: true,
+      data: unloadedPosts
+    });
+  },
+
+  [LOAD_FAIL]: (state, action) => state.merge({
+    loading: false,
+    loaded: false,
+    error: action.error
+  }),
+
+  // ---------------------------------------------------------------------------
+  // Actions on single posts ---------------------------------------------------
+  // ---------------------------------------------------------------------------
+
+  [LOAD_SINGLE]: (state, action) => state.mergeDeep({
+    data: {
+      [action.postId]: {
         loading: true
-      };
+      }
+    }
+  }),
 
-    case LOAD_SUCCESS:
-      newState = {
-        ...state,
-        loading: false,
-        loaded: true,
-        data: {
-          postIds: [],
-          posts: {}
-        }
-      };
-
-      action.result.forEach((p) => {
-        p.fullyLoaded = false;
-        newState.data.postIds.push(p.normalizedTitle);
-        newState.data.posts[p.normalizedTitle] = p;
-      });
-
-      return newState;
-
-    case LOAD_FAIL:
-      return {
-        ...state,
-        loading: false,
-        loaded: false,
-        error: action.error
-      };
-
-    case LOAD_SINGLE:
-      newState = {
-        data: {
-          postIds: [],
-          posts: {}
-        },
-        ...state
-      };
-
-      newPost = newState.data.posts && {
-        ...newState.data.posts[action.postId],
-        loading: true
-      } || {};
-
-      newState.data.posts[action.postId] = newPost;
-      return newState;
-
-    case LOAD_SINGLE_SUCCESS:
-      newState = {
-        ...state
-      };
-
-      newPost = {
-        ...newState.data.posts[action.postId],
+  [LOAD_SINGLE_SUCCESS]: (state, action) => state.mergeDeep({
+    data: {
+      [action.postId]: {
         loading: false,
         loaded: true,
         html: action.result.html
-      };
+      }
+    }
+  }),
 
-      newState.data.posts[action.postId] = newPost;
-      return newState;
-
-    case LOAD_SINGLE_FAIL:
-      newState = {
-        ...state
-      };
-
-      newPost = {
-        ...newState.data.posts[action.postId],
+  [LOAD_SINGLE_FAIL]: (state, action) => state.mergeDeep({
+    data: {
+      [action.postId]: {
         loading: false,
         loaded: false,
         error: action.error
-      };
+      }
+    }
+  })
+});
 
-      newState.data.posts[action.postId] = newPost;
-      return newState;
-
-    default:
-      return state;
-  }
-}
+// -----------------------------------------------------------------------------
+// Operations on lists of posts ------------------------------------------------
+// -----------------------------------------------------------------------------
 
 export function isLoaded(globalState) {
-  return globalState.posts && globalState.posts.loaded;
+  return globalState.posts.get('loaded');
 }
 
 export function load() {
@@ -130,14 +112,12 @@ export function load() {
   };
 }
 
-export function isFullyLoaded(globalState, normalizedTitle) {
-  if (!isLoaded(globalState)) {
-    return false;
-  }
+// -----------------------------------------------------------------------------
+// Operations on single posts --------------------------------------------------
+// -----------------------------------------------------------------------------
 
-  const postIds = globalState.posts.data.postIds;
-  const post = postIds.find(id => id === normalizedTitle);
-  return !!post.html;
+export function isFullyLoaded(globalState, normalizedTitle) {
+  return globalState.posts.getIn(['data', normalizedTitle, 'loaded']);
 }
 
 export function loadSingle(title) {
