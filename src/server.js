@@ -65,6 +65,9 @@ server.register(api, {
 
 /**
  * Attempt to serve static requests from the public folder.
+ *
+ * If the file doesn't exist, don't raise an error - instead, continue
+ * normally because the path could match a React route.
  */
 server.register(inert, (err) => {
   if (err) {
@@ -100,8 +103,7 @@ server.ext('onPreResponse', (request, reply) => {
   }
 
   if (__DEVELOPMENT__) {
-    // Do not cache webpack stats: the script file would change since
-    // hot module replacement is enabled in the development env
+    // Webpack stats change in development due to hot module replacement
     webpackIsomorphicTools.refresh();
   }
 

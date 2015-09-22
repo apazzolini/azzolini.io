@@ -16,6 +16,7 @@ export default class ApiClient {
     if (__SERVER__) {
       // console.log(serverReq);
       // this.cookies = ...
+      // TODO: Make cookies go through when rendering server side
     }
   }
 
