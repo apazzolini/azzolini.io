@@ -10,7 +10,7 @@ const pages = db.collection('pages');
 // -----------------------------------------------------------------------------
 
 /**
- * Returns the request page, including an additional field, `html`, which
+ * Returns the requested page, including an additional field, `html`, which
  * represents the rendered Markdown for the page.
  *
  * @param {String} name - the name of the page to retrieve
@@ -43,9 +43,7 @@ export const routes = [
     config: {
       validate: {
         params: {
-          name: [
-            Joi.string().required()
-          ]
+          name: Joi.string().required()
         }
       }
     }

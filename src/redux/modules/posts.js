@@ -13,24 +13,7 @@ const initialState = Immutable.fromJS({
   data: {}
 });
 
-/*
- * The posts state tree segemnt adheres to the following structure:
- * {
- *   loading: {boolean},
- *   loaded: {boolean},
- *   error: {Error},
- *   data: {
- *     normalizedTitle: {
- *       ...<the structure from the api server>,
- *       loading: {boolean},
- *       loaded: {boolean},
- *       error: {Error}
- *     }
- *   }
- * }
- */
 export default createReducer(initialState, {
-
   // ---------------------------------------------------------------------------
   // Actions on lists of posts -------------------------------------------------
   // ---------------------------------------------------------------------------

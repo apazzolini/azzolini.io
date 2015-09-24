@@ -28,7 +28,7 @@
     "start-dev": "node ./node_modules/better-npm-run start-dev",
     "watch-client": "node ./node_modules/better-npm-run watch-client",
     "dev": "concurrent --kill-others \"npm run watch-client\" \"npm run start-dev\"",
-    "test": "karma start"
+    "test": "node ./node_modules/better-npm-run test"
   },
   "betterScripts": {
     "start": {
@@ -45,6 +45,14 @@
         "NODE_PATH": "./src",
         "NODE_ENV": "development",
         "PORT": 3000
+      }
+    },
+    "test": {
+      "command": "mocha --colors --compilers js:babel/register --require ./test/helper.js --recursive ./src/**/*.test.js",
+      "env": {
+        "MONGO_DB": "andreazzolini_test",
+        "NODE_ENV": "development",
+        "PORT": 4000
       }
     },
     "watch-client": {
@@ -90,7 +98,8 @@
     "babel-loader": "5.3.2",
     "babel-runtime": "^5.8.24",
     "better-npm-run": "0.0.2",
-    "chai": "^3.2.0",
+    "chai": "^3.3.0",
+    "chai-immutable": "^1.3.0",
     "clean-webpack-plugin": "^0.1.3",
     "concurrently": "0.1.1",
     "css-loader": "^0.18.0",
@@ -100,15 +109,7 @@
     "extract-text-webpack-plugin": "^0.8.2",
     "file-loader": "^0.8.4",
     "json-loader": "0.5.2",
-    "karma": "^0.13.9",
-    "karma-chrome-launcher": "^0.2.0",
-    "karma-cli": "0.1.0",
-    "karma-firefox-launcher": "^0.1.6",
-    "karma-mocha": "^0.2.0",
-    "karma-mocha-reporter": "^1.1.1",
-    "karma-sourcemap-loader": "^0.3.5",
-    "karma-webpack": "^1.7.0",
-    "mocha": "^2.3.2",
+    "mocha": "^2.3.3",
     "node-sass": "^3.3.2",
     "react-hot-loader": "1.3.0",
     "redux-devtools": "^2.1.2",
