@@ -35,7 +35,8 @@ module.exports = {
       'src',
       'node_modules'
     ],
-    extensions: ['', '.json', '.js']
+    extensions: ['', '.json', '.js'],
+    fallback: path.join(__dirname, '../', 'node_modules')
   },
   plugins: [
     new CleanPlugin([relativeAssetsPath]),
