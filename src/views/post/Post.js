@@ -22,12 +22,12 @@ export default class Post extends Component {
   }
 
   render() {
-    const styles = require('./Post.scss');
+    require('./Post.scss');
     const { posts } = this.props;
     const post = posts[this.props.params.title];
 
     return (
-      <div className={styles.Post + ' container'}>
+      <div className="Post container">
         <div dangerouslySetInnerHTML={{__html: post.html}} />
         { post.html }
       </div>

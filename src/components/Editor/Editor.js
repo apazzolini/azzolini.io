@@ -14,7 +14,7 @@ export default class Editor extends Component {
   }
 
   render() {
-    const styles = require('./Editor.scss');
+    require('./Editor.scss');
 
     if (__CLIENT__) {
       const AceEditor = require('react-ace');

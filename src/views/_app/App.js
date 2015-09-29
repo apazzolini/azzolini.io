@@ -29,15 +29,15 @@ export default class App extends Component {
   }
 
   render() {
-    const styles = require('./App.scss');
+    require('./App.scss');
 
     return (
-      <div className='editing'>
+      <div className="editing">
         <DocumentMeta {...meta} />
 
         <NavBar />
 
-        <div id={styles.MainContainer}>
+        <div id="MainContainer">
           {this.props.children}
         </div>
 

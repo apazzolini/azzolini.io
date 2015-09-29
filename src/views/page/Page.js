@@ -23,12 +23,12 @@ export default class Page extends Component {
   }
 
   render() {
-    const styles = require('./Page.scss');
+    require('./Page.scss');
     const { pages } = this.props;
     const page = pages[this.props.params.page];
 
     return (
-      <div className={styles.SimplePage + ' container'}>
+      <div className="SimplePage container">
         <div dangerouslySetInnerHTML={{__html: page.html}} />
         <Editor name="pageEditor" />
       </div>

@@ -3,7 +3,7 @@ import {Link} from 'react-router';
 
 export default class NavBar extends Component {
   render() {
-    const styles = require('./NavBar.scss');
+    require('./NavBar.scss');
 
     return (
       <nav className="MainNav">
