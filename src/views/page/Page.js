@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import * as Pages from '../../redux/modules/pages';
+import {Editor} from '../../components';
 
 @connect(
   state => ({
@@ -29,6 +30,7 @@ export default class Page extends Component {
     return (
       <div className={styles.SimplePage + ' container'}>
         <div dangerouslySetInnerHTML={{__html: page.html}} />
+        <Editor name="pageEditor" />
       </div>
     );
   }

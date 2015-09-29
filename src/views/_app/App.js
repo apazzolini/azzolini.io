@@ -32,7 +32,7 @@ export default class App extends Component {
     const styles = require('./App.scss');
 
     return (
-      <div>
+      <div className='editing'>
         <DocumentMeta {...meta} />
 
         <NavBar />

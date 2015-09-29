@@ -6,7 +6,7 @@ export default class NavBar extends Component {
     const styles = require('./NavBar.scss');
 
     return (
-      <nav id={styles.MainNav}>
+      <nav className="MainNav">
         <div className="container">
           <Link to="/">Andre Azzolini</Link>
 

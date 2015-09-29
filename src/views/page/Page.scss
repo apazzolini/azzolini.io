@@ -1,4 +1,8 @@
 .SimplePage {
+  &:global.container {
+    max-width: inherit;
+    width: 100%;
+  }
   section {
     margin-bottom: 50px;
   }
