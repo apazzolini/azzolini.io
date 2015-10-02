@@ -1,0 +1,18 @@
+$TopBarHeight: 0px;
+
+#Editor {
+  position: fixed;
+  width: 40%;
+  height: 100% !important;
+
+  #Editor-TopBar {
+    height: $TopBarHeight;
+  }
+
+  #Editor-AceContainer {
+    width: 100%;
+    top: $TopBarHeight;
+    bottom: 0;
+    position: absolute;
+  }
+}

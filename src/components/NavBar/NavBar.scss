@@ -1,5 +1,6 @@
 .MainNav {
   position: fixed;
+  width: 100%;
   top: 0;
   border-bottom: 1px solid #eee;
   background-color: white;
@@ -41,6 +42,7 @@
   }
 
   .editing & {
-    width: 100%;
+    left: 40%;
+    width: 60%;
   }
 }

@@ -1,7 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import DocumentMeta from 'react-document-meta';
 import {createTransitionHook} from '../../utils/fetchAwareRouter';
-import { NavBar } from '../../components';
+import {NavBar} from '../../components';
+import {Editor} from '../../components';
 
 const meta = {
   title: 'Andre Azzolini'
@@ -31,11 +32,14 @@ export default class App extends Component {
   render() {
     require('./App.scss');
 
+    const editing = true;
+
     return (
-      <div className="editing">
+      <div className={editing && 'editing'}>
         <DocumentMeta {...meta} />
 
         <NavBar />
+        {editing && <Editor name="ace" />}
 
         <div id="MainContainer">
           {this.props.children}

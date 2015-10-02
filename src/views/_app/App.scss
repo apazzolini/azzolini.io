@@ -17,4 +17,10 @@ h6 {
 
 #MainContainer {
   margin-top: 66px;
+
+  .editing & {
+    right: 0;
+    position: absolute;
+    width: 60%;
+  }
 }

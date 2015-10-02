@@ -5,12 +5,12 @@ import React, {Component, PropTypes} from 'react';
 // import 'brace/theme/github';
 
 export default class Editor extends Component {
-  onChange(newValue) {
-    console.log('change', newValue);
-  }
-
   static propTypes = {
     name: PropTypes.string.isRequired
+  }
+
+  onChange(newValue) {
+    console.log('change', newValue);
   }
 
   render() {
@@ -19,21 +19,30 @@ export default class Editor extends Component {
     if (__CLIENT__) {
       const AceEditor = require('react-ace');
       require('brace/mode/markdown');
-      require('brace/theme/solarized_dark')
-      require('brace/keybinding/vim')
+      require('brace/theme/solarized_light');
+      require('brace/keybinding/vim');
 
       return (
-        <AceEditor
-          mode="markdown"
-          keyboardHandler="vim"
-          theme="solarized_dark"
-          onChange={this.onChange}
-          name={this.props.name}
-          editorProps={{$blockScrolling: true}}
-        />
+        <div id="Editor">
+          <div id="Editor-TopBar">
+          </div>
+
+          <div id="Editor-AceContainer">
+            <AceEditor
+              width="100%"
+              height="100%"
+              mode="markdown"
+              keyboardHandler="vim"
+              theme="solarized_light"
+              onChange={this.onChange}
+              name={this.props.name}
+              editorProps={{$blockScrolling: true}}
+            />
+          </div>
+        </div>
       );
-    } else {
-      return null;
     }
+
+    return null;
   }
 }
