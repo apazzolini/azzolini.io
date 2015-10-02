@@ -16,10 +16,16 @@ export default combineReducers({
  *     loaded: {boolean},
  *     error: {Error},
  *     data: {
- *       normalizedTitle: {
+ *       [mongoId]: {
  *         ...<the structure from the api server>,
  *         loading: {boolean},
  *         loaded: {boolean},
+ *         error: {Error}
+ *       }
+ *     },
+ *     singleLoading: {
+ *       [normalizedTitle]: {
+ *         loading: {boolean},
  *         error: {Error}
  *       }
  *     }
@@ -27,7 +33,7 @@ export default combineReducers({
  *
  *   pages: {
  *     data: {
- *       name: {
+ *       [name]: {
  *         ...<the structure from the api server>,
  *         loading: {boolean},
  *         loaded: {boolean},
@@ -36,5 +42,4 @@ export default combineReducers({
  *     }
  *   }
  * }
- *
  */

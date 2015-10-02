@@ -6,7 +6,8 @@ describe('redux', () => {
   describe('reducers', () => {
     describe('posts', () => {
       const testPost = {
-        testPost: {
+        0: {
+          _id: 0,
           normalizedTitle: 'testPost',
           html: '<h1>Test</h1>',
           loaded: true
@@ -46,10 +47,13 @@ describe('redux', () => {
           type: 'posts/LOAD_SUCCESS',
           result: [
             {
+              _id: 0,
               normalizedTitle: 'testPost'
             }, {
+              _id: 1,
               normalizedTitle: 'newPost'
             }, {
+              _id: 2,
               normalizedTitle: 'newPost2'
             }
           ]
@@ -60,10 +64,12 @@ describe('redux', () => {
           loading: false,
           data: {
             ...testPost,
-            newPost: {
+            1: {
+              _id: 1,
               normalizedTitle: 'newPost'
             },
-            newPost2: {
+            2: {
+              _id: 2,
               normalizedTitle: 'newPost2'
             }
           }
@@ -96,14 +102,16 @@ describe('redux', () => {
       it('handles LOAD from scratch', () => {
         const newState = reducer(initialState, {
           type: 'posts/LOAD_SINGLE',
-          postId: 'newPost'
+          postTitle: 'newPost'
         });
 
         expect(newState).to.equal(fromJS({
           loaded: false,
           data: {
-            ...testPost,
-            newPost: {
+            ...testPost
+          },
+          singleLoading: {
+            'newPost': {
               loading: true
             }
           }
@@ -113,7 +121,7 @@ describe('redux', () => {
       it('handles LOAD of a partially loaded post', () => {
         partiallyLoadingState = reducer(loadedState, {
           type: 'posts/LOAD_SINGLE',
-          postId: 'newPost'
+          postTitle: 'newPost'
         });
 
         expect(partiallyLoadingState).to.equal(fromJS({
@@ -121,13 +129,19 @@ describe('redux', () => {
           loading: false,
           data: {
             ...testPost,
-            newPost: {
+            1: {
+              _id: 1,
               normalizedTitle: 'newPost',
-              loading: true
             },
-            newPost2: {
+            2: {
+              _id: 2,
               normalizedTitle: 'newPost2'
             },
+          },
+          singleLoading: {
+            newPost: {
+              loading: true
+            }
           }
         }));
       });
@@ -135,8 +149,9 @@ describe('redux', () => {
       it('handles LOAD_SINGLE_SUCCESS', () => {
         const newState = reducer(partiallyLoadingState, {
           type: 'posts/LOAD_SINGLE_SUCCESS',
-          postId: 'newPost',
+          postTitle: 'newPost',
           result: {
+            _id: '1',
             html: '<h1>New</h1>'
           }
         });
@@ -146,15 +161,20 @@ describe('redux', () => {
           loading: false,
           data: {
             ...testPost,
-            newPost: {
+            1: {
+              _id: 1,
               normalizedTitle: 'newPost',
               loading: false,
               loaded: true,
               html: '<h1>New</h1>'
             },
-            newPost2: {
+            2: {
+              _id: 2,
               normalizedTitle: 'newPost2'
             }
+          },
+          singleLoading: {
+            newPost: null
           }
         }));
       });
@@ -163,7 +183,7 @@ describe('redux', () => {
         const error = new Error('Load Fail');
         const newState = reducer(partiallyLoadingState, {
           type: 'posts/LOAD_SINGLE_FAIL',
-          postId: 'newPost',
+          postTitle: 'newPost',
           error
         });
 
@@ -172,14 +192,20 @@ describe('redux', () => {
           loading: false,
           data: {
             ...testPost,
-            newPost: {
+            1: {
+              _id: 1,
               normalizedTitle: 'newPost',
+            },
+            2: {
+              _id: 2,
+              normalizedTitle: 'newPost2'
+            }
+          },
+          singleLoading: {
+            newPost: {
               loading: false,
               loaded: false,
               error
-            },
-            newPost2: {
-              normalizedTitle: 'newPost2'
             }
           }
         }));

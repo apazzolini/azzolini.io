@@ -14,6 +14,7 @@ const initialState = Immutable.fromJS({
 });
 
 export default createReducer(initialState, {
+
   // ---------------------------------------------------------------------------
   // Actions on lists of posts -------------------------------------------------
   // ---------------------------------------------------------------------------
@@ -27,10 +28,10 @@ export default createReducer(initialState, {
 
     // We only want to merge in posts that haven't already been loaded. Also,
     // although the API server returns an array of posts, we want them keyed
-    // by normalized title for use in the app.
+    // by _id (the Mongo ID) for use in the app.
     action.result.forEach((p) => {
-      if (!state.hasIn('data', p.normalizedTitle, 'loaded')) {
-        unloadedPosts[p.normalizedTitle] = p;
+      if (!state.hasIn('data', p._id, 'loaded')) {
+        unloadedPosts[p._id] = p;
       }
     });
 
@@ -52,8 +53,8 @@ export default createReducer(initialState, {
   // ---------------------------------------------------------------------------
 
   [LOAD_SINGLE]: (state, action) => state.mergeDeep({
-    data: {
-      [action.postId]: {
+    singleLoading: {
+      [action.postTitle]: {
         loading: true
       }
     }
@@ -61,17 +62,20 @@ export default createReducer(initialState, {
 
   [LOAD_SINGLE_SUCCESS]: (state, action) => state.mergeDeep({
     data: {
-      [action.postId]: {
+      [action.result._id]: {
         loading: false,
         loaded: true,
-        html: action.result.html
+        ...action.result
       }
+    },
+    singleLoading: {
+      [action.postTitle]: null
     }
   }),
 
   [LOAD_SINGLE_FAIL]: (state, action) => state.mergeDeep({
-    data: {
-      [action.postId]: {
+    singleLoading: {
+      [action.postTitle]: {
         loading: false,
         loaded: false,
         error: action.error
@@ -99,14 +103,21 @@ export function load() {
 // Operations on single posts --------------------------------------------------
 // -----------------------------------------------------------------------------
 
-export function isFullyLoaded(globalState, normalizedTitle) {
-  return globalState.posts.getIn(['data', normalizedTitle, 'loaded']);
+export function getByTitle(globalState, normalizedTitle) {
+  return globalState.posts.get('data').find((post, id) => (
+    post.get('normalizedTitle') === normalizedTitle
+  ));
 }
 
-export function loadSingle(title) {
+export function isFullyLoaded(globalState, normalizedTitle) {
+  const post = getByTitle(globalState, normalizedTitle);
+  return post && post.get('loaded');
+}
+
+export function loadSingle(globalState, normalizedTitle) {
   return {
     types: [LOAD_SINGLE, LOAD_SINGLE_SUCCESS, LOAD_SINGLE_FAIL],
-    promise: (client) => client.get(`/posts/t/${title}`),
-    postId: title
+    promise: (client) => client.get(`/posts/t/${normalizedTitle}`),
+    postTitle: normalizedTitle
   };
 }

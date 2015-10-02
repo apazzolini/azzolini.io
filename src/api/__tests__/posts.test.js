@@ -13,6 +13,8 @@ describe('api', () => {
     // -------------------------------------------------------------------------
 
     before((done) => {
+      postsDb.drop();
+
       postsDb.save({
         title: 'Test Title',
         normalizedTitle: 'test-title',

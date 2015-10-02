@@ -10,7 +10,6 @@ const initialState = Immutable.fromJS({
 });
 
 export default createReducer(initialState, {
-
   [LOAD]: (state, action) => state.mergeDeep({
     data: {
       [action.pageName]: {

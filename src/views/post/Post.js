@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
+import _ from 'lodash';
 import * as Posts from '../../redux/modules/posts';
 
 @connect(
@@ -17,14 +18,14 @@ export default class Post extends Component {
 
   static fetchData(store, params, query) {
     if (!Posts.isFullyLoaded(store.getState(), params.title)) {
-      return store.dispatch(Posts.loadSingle(params.title));
+      return store.dispatch(Posts.loadSingle(store.getState(), params.title));
     }
   }
 
   render() {
     require('./Post.scss');
     const { posts } = this.props;
-    const post = posts[this.props.params.title];
+    const post = _.find(posts, 'normalizedTitle', this.props.params.title);
 
     return (
       <div className="Post container">

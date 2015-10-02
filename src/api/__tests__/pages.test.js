@@ -12,6 +12,7 @@ describe('api', () => {
     // -------------------------------------------------------------------------
 
     before(() => {
+      pagesDb.drop();
       pagesDb.save({
         name: 'testPage',
         content: '# Test Page Headline'

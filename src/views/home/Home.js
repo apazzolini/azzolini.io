@@ -24,7 +24,7 @@ export default class Home extends Component {
     require('./Home.scss');
 
     const { posts } = this.props;
-    const postIds = _.pluck(_.sortBy(posts, 'date'), 'normalizedTitle');
+    const postIds = _.pluck(_.sortBy(posts, 'date'), '_id');
 
     return (
       <div className="container">
