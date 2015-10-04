@@ -151,7 +151,7 @@ describe('redux', () => {
           type: 'posts/LOAD_SINGLE_SUCCESS',
           postTitle: 'newPost',
           result: {
-            _id: '1',
+            _id: 1,
             html: '<h1>New</h1>'
           }
         });

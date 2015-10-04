@@ -17,6 +17,7 @@ const pages = db.collection('pages');
  * @return {Object}
  */
 export async function getPage(name) {
+  // TODO: This should exclude the content field unless it's an admin session
   const promise = pages.findOne({ name });
 
   promise.then((page) => {
@@ -24,6 +25,17 @@ export async function getPage(name) {
   });
 
   return promise;
+}
+
+export async function savePage(name, newContent) {
+  return pages.update(
+    { name },
+    {
+      $set: {
+        content: newContent
+      }
+    }
+  );
 }
 
 // -----------------------------------------------------------------------------
@@ -36,6 +48,24 @@ export const routes = [
       try {
         const page = await getPage(request.params.name);
         reply(page === null ? Boom.notFound() : page);
+      } catch (e) {
+        reply(Boom.wrap(e));
+      }
+    },
+    config: {
+      validate: {
+        params: {
+          name: Joi.string().required()
+        }
+      }
+    }
+  },
+
+  {
+    path: '/pages/{name}', method: 'POST', handler: async (request, reply) => {
+      try {
+        const result = await savePage(request.params.name, request.payload);
+        reply(result.ok);
       } catch (e) {
         reply(Boom.wrap(e));
       }

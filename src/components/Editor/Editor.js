@@ -1,16 +1,10 @@
 import React, {Component, PropTypes} from 'react';
-// import AceEditor from 'react-ace';
-// import brace from 'brace';
-// import 'brace/mode/markdown';
-// import 'brace/theme/github';
 
 export default class Editor extends Component {
   static propTypes = {
-    name: PropTypes.string.isRequired
-  }
-
-  onChange(newValue) {
-    console.log('change', newValue);
+    name: PropTypes.string.isRequired,
+    content: PropTypes.string,
+    onChange: PropTypes.func.isRequired
   }
 
   render() {
@@ -34,7 +28,8 @@ export default class Editor extends Component {
               mode="markdown"
               keyboardHandler="vim"
               theme="solarized_light"
-              onChange={this.onChange}
+              value={this.props.content}
+              onChange={this.props.onChange}
               name={this.props.name}
               editorProps={{$blockScrolling: true}}
             />

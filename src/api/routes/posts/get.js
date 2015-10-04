@@ -27,6 +27,7 @@ export async function getPosts() {
  * @return {Object}
  */
 async function getPost(params) {
+  // TODO: This should exclude the content field unless it's an admin session
   const promise = posts.findOne(params);
 
   promise.then((post) => {

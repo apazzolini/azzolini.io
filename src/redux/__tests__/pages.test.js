@@ -71,6 +71,77 @@ describe('redux', () => {
           }
         }));
       });
+
+      it('handles UPDATE_CONTENT', () => {
+        const newState = reducer(initialState, {
+          type: 'pages/UPDATE_CONTENT',
+          pageName: 'testPage',
+          newContent: '## Test Content'
+        });
+
+        expect(newState).to.equal(fromJS({
+          data: {
+            testPage: {
+              content: '## Test Content',
+              html: '<h2 id="test-content">Test Content</h2>\n'
+            },
+            secondaryPage: {}
+          }
+        }));
+      });
+
+      it('handles SAVE', () => {
+        const newState = reducer(initialState, {
+          type: 'pages/SAVE',
+          pageName: 'testPage'
+        });
+
+        expect(newState).to.equal(fromJS({
+          data: {
+            testPage: {
+              saving: true
+            },
+            secondaryPage: {}
+          }
+        }));
+      });
+
+      it('handles SAVE_SUCCESS', () => {
+        const newState = reducer(initialState, {
+          type: 'pages/SAVE_SUCCESS',
+          pageName: 'testPage'
+        });
+
+        expect(newState).to.equal(fromJS({
+          data: {
+            testPage: {
+              saving: false,
+              saved: true
+            },
+            secondaryPage: {}
+          }
+        }));
+      });
+
+      it('handles SAVE_FAIL', () => {
+        const error = new Error('Save Fail');
+        const newState = reducer(initialState, {
+          type: 'pages/SAVE_FAIL',
+          pageName: 'testPage',
+          error
+        });
+
+        expect(newState).to.equal(fromJS({
+          data: {
+            testPage: {
+              saving: false,
+              saved: false,
+              error
+            },
+            secondaryPage: {}
+          }
+        }));
+      });
     });
   });
 });
