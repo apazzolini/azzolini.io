@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import Boom from 'boom';
 import db from '../../lib/db';
-import { parseMarkdown } from '../../lib/parser';
+import parseMarkdown from '../../../utils/markdownParser.js'
 
 const posts = db.collection('posts');
 
@@ -31,7 +31,7 @@ async function getPost(params) {
   const promise = posts.findOne(params);
 
   promise.then((post) => {
-    post.html = parseMarkdown(post);
+    post.html = parseMarkdown(post.content);
   });
 
   return promise;

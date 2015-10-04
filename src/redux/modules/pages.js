@@ -1,6 +1,6 @@
 import { createReducer } from 'redux-immutablejs';
 import Immutable from 'immutable';
-import marked from 'marked';
+import parseMarkdown from '../../utils/markdownParser.js'
 
 const LOAD = 'pages/LOAD';
 const LOAD_SUCCESS = 'pages/LOAD_SUCCESS';
@@ -47,7 +47,7 @@ export default createReducer(initialState, {
     data: {
       [action.pageName]: {
         content: action.newContent,
-        html: marked(action.newContent)
+        html: parseMarkdown(action.newContent)
       }
     }
   }),

@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import Boom from 'boom';
 import db from '../../lib/db';
-import { parseMarkdown } from '../../lib/parser';
+import parseMarkdown from '../../../utils/markdownParser.js'
 
 const pages = db.collection('pages');
 
@@ -21,7 +21,7 @@ export async function getPage(name) {
   const promise = pages.findOne({ name });
 
   promise.then((page) => {
-    page.html = parseMarkdown(page);
+    page.html = parseMarkdown(page.content);
   });
 
   return promise;
