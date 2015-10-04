@@ -1,6 +1,6 @@
 import { createReducer } from 'redux-immutablejs';
 import Immutable from 'immutable';
-import parseMarkdown from '../../utils/markdownParser.js';
+import {parseMarkdown} from '../../utils/markdownParser.js';
 
 const LOAD = 'pages/LOAD';
 const LOAD_SUCCESS = 'pages/LOAD_SUCCESS';

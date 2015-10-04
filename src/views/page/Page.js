@@ -5,10 +5,6 @@ import _ from 'lodash';
 import * as Pages from '../../redux/modules/pages';
 import {Editor} from '../../components';
 
-export function parseMarkdown(post) {
-  return marked(post.content);
-}
-
 @connect(
   state => ({
     editing: state.admin.get('editing'),

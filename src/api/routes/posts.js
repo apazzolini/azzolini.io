@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import Boom from 'boom';
 import db from '../lib/db';
-import parseMarkdown from '../../utils/markdownParser.js';
+import {parseHeader, parseMarkdown} from '../../utils/markdownParser.js';
 
 const posts = db.collection('posts');
 
@@ -64,10 +64,13 @@ export async function getPostByTitle(title) {
  * @param {String} newContent - the new markdown content of the post
  */
 export async function savePost(postId, newContent) {
+  const header = parseHeader(newContent);
+
   return posts.update(
     { _id: db.ObjectId(postId) },
     {
       $set: {
+        normalizedTitle: header.title,
         content: newContent
       }
     }

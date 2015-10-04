@@ -185,25 +185,35 @@ describe('redux', () => {
         }));
       });
 
-
       it('handles UPDATE_CONTENT', () => {
+        const newContent = [
+          '---',
+          'title: Test Post Updated',
+          'normalizedTitle: test-post-updated',
+          '---',
+          '',
+          '## Test Update'
+        ].join('\n');
+
         const newState = reducer(initialState, {
           type: 'posts/UPDATE_CONTENT',
-          postTitle: 'testPost',
-          newContent: '## Test Update'
+          post: {
+            normalizedTitle: 'testPost'
+          },
+          newContent
         });
 
-        expect(newState).to.equal(fromJS({
+        expect(newState.toJS()).to.equal({
           loaded: false,
           data: {
             testPost: {
               normalizedTitle: 'testPost',
               loaded: true,
-              content: '## Test Update',
+              content: newContent,
               html: '<h2 id="test-update">Test Update</h2>\n'
             }
           }
-        }));
+        });
       });
 
       it('handles SAVE', () => {

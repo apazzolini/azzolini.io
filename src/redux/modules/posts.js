@@ -1,6 +1,6 @@
 import { createReducer } from 'redux-immutablejs';
 import Immutable from 'immutable';
-import parseMarkdown from '../../utils/markdownParser.js';
+import {parseMarkdown, parseHeader} from '../../utils/markdownParser.js';
 
 const LOAD = 'posts/LOAD';
 const LOAD_SUCCESS = 'posts/LOAD_SUCCESS';
@@ -84,14 +84,26 @@ export default createReducer(initialState, {
     }
   }),
 
-  [UPDATE_CONTENT]: (state, action) => state.mergeDeep({
-    data: {
-      [action.postTitle]: {
-        content: action.newContent,
-        html: parseMarkdown(action.newContent)
+  [UPDATE_CONTENT]: (state, action) => {
+    const header = parseHeader(action.newContent);
+
+    let newPartial = state.mergeDeep({
+      data: {
+        [header.title]: {
+          ...state.getIn(['data', action.post.normalizedTitle]).toJS(),
+          normalizedTitle: header.title,
+          content: action.newContent,
+          html: parseMarkdown(action.newContent)
+        }
       }
+    });
+
+    if (action.post.normalizedTitle !== header.title) {
+      newPartial = newPartial.deleteIn(['data', action.post.normalizedTitle]);
     }
-  }),
+
+    return newPartial;
+  },
 
   [SAVE]: (state, action) => state.mergeDeep({
     data: {
@@ -152,18 +164,18 @@ export function loadSingle(normalizedTitle) {
   };
 }
 
-export function updateContent(normalizedTitle, newContent) {
+export function updateContent(post, newContent) {
   return {
     type: UPDATE_CONTENT,
-    postTitle: normalizedTitle,
+    post,
     newContent
   };
 }
 
-export function save(post, newContent) {
+export function save(title, id, newContent) {
   return {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
-    promise: (client) => client.post(`/posts/${post._id}`, newContent),
-    postTitle: post.normalizedTitle
+    promise: (client) => client.post(`/posts/${id}`, newContent),
+    postTitle: title
   };
 }

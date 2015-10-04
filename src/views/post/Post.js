@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import _ from 'lodash';
 import * as Posts from '../../redux/modules/posts';
 import {Editor} from '../../components';
+import {parseHeader} from '../../utils/markdownParser.js';
 
 @connect(
   state => ({
@@ -27,17 +28,36 @@ export default class Post extends Component {
     })
   }
 
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  }
+
+  componentWillMount() {
+    const {router} = this.context;
+    this.router = router;
+  }
+
+  shouldComponentUpdate() {
+    return !this.isUpdating;
+  }
+
   onChangeCreator(post, actions) {
     if (!this.onChange) {
       const debouncedSave = _.debounce(actions.save, 1000);
 
-      this.onChange = newContent => {
-        actions.updateContent(post.normalizedTitle, newContent);
-        debouncedSave(post, newContent);
+      this.onChange = (post, newContent) => { // eslint-disable-line no-shadow
+        this.isUpdating = true;
+        const header = parseHeader(newContent);
+
+        actions.updateContent(post, newContent);
+        this.router.replaceWith('/posts/' + header.title);
+        debouncedSave(header.title, post._id, newContent);
+
+        this.isUpdating = false;
       };
     }
 
-    return this.onChange;
+    return this.onChange.bind(this, post);
   }
 
   static fetchData(store, params, query) {
@@ -60,7 +80,6 @@ export default class Post extends Component {
 
         <div className="Post container">
           <div className="content" dangerouslySetInnerHTML={{__html: post.html}} />
-          { post.html }
         </div>
       </div>
     );
