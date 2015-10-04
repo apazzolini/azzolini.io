@@ -1,5 +1,6 @@
 import { createReducer } from 'redux-immutablejs';
 import Immutable from 'immutable';
+import parseMarkdown from '../../utils/markdownParser.js';
 
 const LOAD = 'posts/LOAD';
 const LOAD_SUCCESS = 'posts/LOAD_SUCCESS';
@@ -7,6 +8,10 @@ const LOAD_FAIL = 'posts/LOAD_FAIL';
 const LOAD_SINGLE = 'posts/LOAD_SINGLE';
 const LOAD_SINGLE_SUCCESS = 'posts/LOAD_SINGLE_SUCCESS';
 const LOAD_SINGLE_FAIL = 'posts/LOAD_SINGLE_FAIL';
+const UPDATE_CONTENT = 'posts/UPDATE_CONTENT';
+const SAVE = 'posts/SAVE';
+const SAVE_SUCCESS = 'posts/SAVE_SUCCESS';
+const SAVE_FAIL = 'posts/SAVE_FAIL';
 
 const initialState = Immutable.fromJS({
   loaded: false,
@@ -77,6 +82,42 @@ export default createReducer(initialState, {
         error: action.error
       }
     }
+  }),
+
+  [UPDATE_CONTENT]: (state, action) => state.mergeDeep({
+    data: {
+      [action.postTitle]: {
+        content: action.newContent,
+        html: parseMarkdown(action.newContent)
+      }
+    }
+  }),
+
+  [SAVE]: (state, action) => state.mergeDeep({
+    data: {
+      [action.postTitle]: {
+        saving: true
+      }
+    }
+  }),
+
+  [SAVE_SUCCESS]: (state, action) => state.mergeDeep({
+    data: {
+      [action.postTitle]: {
+        saving: false,
+        saved: true
+      }
+    }
+  }),
+
+  [SAVE_FAIL]: (state, action) => state.mergeDeep({
+    data: {
+      [action.postTitle]: {
+        saving: false,
+        saved: false,
+        error: action.error
+      }
+    }
   })
 });
 
@@ -108,5 +149,21 @@ export function loadSingle(normalizedTitle) {
     types: [LOAD_SINGLE, LOAD_SINGLE_SUCCESS, LOAD_SINGLE_FAIL],
     promise: (client) => client.get(`/posts/t/${normalizedTitle}`),
     postTitle: normalizedTitle
+  };
+}
+
+export function updateContent(normalizedTitle, newContent) {
+  return {
+    type: UPDATE_CONTENT,
+    postTitle: normalizedTitle,
+    newContent
+  };
+}
+
+export function save(post, newContent) {
+  return {
+    types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
+    promise: (client) => client.post(`/posts/${post._id}`, newContent),
+    postTitle: post.normalizedTitle
   };
 }

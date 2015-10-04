@@ -184,6 +184,89 @@ describe('redux', () => {
           }
         }));
       });
+
+
+      it('handles UPDATE_CONTENT', () => {
+        const newState = reducer(initialState, {
+          type: 'posts/UPDATE_CONTENT',
+          postTitle: 'testPost',
+          newContent: '## Test Update'
+        });
+
+        expect(newState).to.equal(fromJS({
+          loaded: false,
+          data: {
+            testPost: {
+              normalizedTitle: 'testPost',
+              loaded: true,
+              content: '## Test Update',
+              html: '<h2 id="test-update">Test Update</h2>\n'
+            }
+          }
+        }));
+      });
+
+      it('handles SAVE', () => {
+        const newState = reducer(initialState, {
+          type: 'posts/SAVE',
+          postTitle: 'testPost'
+        });
+
+        expect(newState).to.equal(fromJS({
+          loaded: false,
+          data: {
+            testPost: {
+              normalizedTitle: 'testPost',
+              html: '<h1>Test</h1>',
+              loaded: true,
+              saving: true
+            }
+          }
+        }));
+      });
+
+      it('handles SAVE_SUCCESS', () => {
+        const newState = reducer(initialState, {
+          type: 'posts/SAVE_SUCCESS',
+          postTitle: 'testPost'
+        });
+
+        expect(newState).to.equal(fromJS({
+          loaded: false,
+          data: {
+            testPost: {
+              normalizedTitle: 'testPost',
+              html: '<h1>Test</h1>',
+              loaded: true,
+              saving: false,
+              saved: true
+            }
+          }
+        }));
+      });
+
+      it('handles SAVE_FAIL', () => {
+        const error = new Error('Save Fail');
+        const newState = reducer(initialState, {
+          type: 'posts/SAVE_FAIL',
+          postTitle: 'testPost',
+          error
+        });
+
+        expect(newState).to.equal(fromJS({
+          loaded: false,
+          data: {
+            testPost: {
+              normalizedTitle: 'testPost',
+              html: '<h1>Test</h1>',
+              loaded: true,
+              saving: false,
+              saved: false,
+              error
+            }
+          }
+        }));
+      });
     });
   });
 });

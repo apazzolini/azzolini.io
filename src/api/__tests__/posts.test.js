@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import * as Posts from '../routes/posts/get';
+import * as Posts from '../routes/posts';
 import db from '../lib/db';
 import {server} from '../../../test/helper';
 
@@ -50,6 +50,11 @@ describe('api', () => {
         expect(post.title).to.equal('Test Title');
         expect(post.html).to.equal('<h1 id="test-title-headline">Test Title Headline</h1>\n');
       });
+
+      it('updates content on that post', async() => {
+        const result = await Posts.savePost(testPostId, '# Test Title Headline Updated');
+        expect(result.ok).to.equal(1);
+      });
     });
 
     // -------------------------------------------------------------------------
@@ -74,6 +79,7 @@ describe('api', () => {
       it('responds with the requested post by id', (done) => {
         server.inject({method: 'GET', url: `/posts/${testPostId}`}, (res) => {
           expect(res.result.title).to.equal('Test Title');
+          expect(res.result.html).to.equal('<h1 id="test-title-headline-updated">Test Title Headline Updated</h1>\n');
           done();
         });
       });

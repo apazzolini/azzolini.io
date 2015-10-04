@@ -1,12 +1,12 @@
 import Joi from 'joi';
 import Boom from 'boom';
-import db from '../../lib/db';
-import parseMarkdown from '../../../utils/markdownParser.js';
+import db from '../lib/db';
+import parseMarkdown from '../../utils/markdownParser.js';
 
 const pages = db.collection('pages');
 
 // -----------------------------------------------------------------------------
-// Database lookup functions ---------------------------------------------------
+// Database interaction functions ----------------------------------------------
 // -----------------------------------------------------------------------------
 
 /**
@@ -27,6 +27,12 @@ export async function getPage(name) {
   return promise;
 }
 
+/**
+ * Updates the given page keyed by name to have the new markdown content.
+ *
+ * @param {String} name - the name of the page to update
+ * @param {String} newContent - the new markdown content of the page
+ */
 export async function savePage(name, newContent) {
   return pages.update(
     { name },
@@ -65,7 +71,7 @@ export const routes = [
     path: '/pages/{name}', method: 'POST', handler: async (request, reply) => {
       try {
         const result = await savePage(request.params.name, request.payload);
-        reply(result.ok);
+        reply(result.nModified);
       } catch (e) {
         reply(Boom.wrap(e));
       }

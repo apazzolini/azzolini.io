@@ -1,5 +1,7 @@
 import React, {Component, PropTypes} from 'react';
+import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import _ from 'lodash';
 import * as Posts from '../../redux/modules/posts';
 import {Editor} from '../../components';
 
@@ -7,10 +9,17 @@ import {Editor} from '../../components';
   state => ({
     editing: state.admin.get('editing'),
     posts: state.posts.get('data').toJS(),
+  }),
+  dispatch => ({
+    actions: bindActionCreators({
+      updateContent: Posts.updateContent,
+      save: Posts.save
+    }, dispatch)
   })
 )
 export default class Post extends Component {
   static propTypes = {
+    actions: PropTypes.object,
     editing: PropTypes.bool,
     posts: PropTypes.object,
     params: PropTypes.shape({
@@ -18,12 +27,17 @@ export default class Post extends Component {
     })
   }
 
-  componentDidMount() {
-    console.log('mounted');
-  }
+  onChangeCreator(post, actions) {
+    if (!this.onChange) {
+      const debouncedSave = _.debounce(actions.save, 1000);
 
-  onChange(newValue) {
-    console.log('changed ', newValue);
+      this.onChange = newContent => {
+        actions.updateContent(post.normalizedTitle, newContent);
+        debouncedSave(post, newContent);
+      };
+    }
+
+    return this.onChange;
   }
 
   static fetchData(store, params, query) {
@@ -41,11 +55,11 @@ export default class Post extends Component {
         {this.props.editing &&
           <Editor name="ace"
             content={post.content}
-            onChange={this.onChange} />
+            onChange={this.onChangeCreator(post, this.props.actions)} />
         }
 
         <div className="Post container">
-          <div dangerouslySetInnerHTML={{__html: post.html}} />
+          <div className="content" dangerouslySetInnerHTML={{__html: post.html}} />
           { post.html }
         </div>
       </div>

@@ -1,12 +1,12 @@
 import Joi from 'joi';
 import Boom from 'boom';
-import db from '../../lib/db';
-import parseMarkdown from '../../../utils/markdownParser.js';
+import db from '../lib/db';
+import parseMarkdown from '../../utils/markdownParser.js';
 
 const posts = db.collection('posts');
 
 // -----------------------------------------------------------------------------
-// Database lookup functions ---------------------------------------------------
+// Database interaction functions ----------------------------------------------
 // -----------------------------------------------------------------------------
 
 /**
@@ -55,6 +55,23 @@ export async function getPostById(id) {
  */
 export async function getPostByTitle(title) {
   return getPost({normalizedTitle: title});
+}
+
+/**
+ * Updates the given post keyed by MongoID to have the new markdown content.
+ *
+ * @param {String} name - the MongoID of the post to update
+ * @param {String} newContent - the new markdown content of the post
+ */
+export async function savePost(postId, newContent) {
+  return posts.update(
+    { _id: db.ObjectId(postId) },
+    {
+      $set: {
+        content: newContent
+      }
+    }
+  );
 }
 
 // -----------------------------------------------------------------------------
@@ -106,6 +123,27 @@ export const routes = [
       validate: {
         params: {
           title: Joi.string()
+        }
+      }
+    }
+  },
+
+  {
+    path: '/posts/{id}', method: 'POST', handler: async (request, reply) => {
+      try {
+        const result = await savePost(request.params.id, request.payload);
+        reply(result.nModified);
+      } catch (e) {
+        reply(Boom.wrap(e));
+      }
+    },
+    config: {
+      validate: {
+        params: {
+          id: [
+            Joi.string().length(12).required(),
+            Joi.string().length(24).hex().required()
+          ]
         }
       }
     }

@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import * as Pages from '../routes/pages/get';
+import * as Pages from '../routes/pages';
 import db from '../lib/db';
 import {server} from '../../../test/helper';
 

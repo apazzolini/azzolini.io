@@ -77,7 +77,7 @@ export default createReducer(initialState, {
         error: action.error
       }
     }
-  }),
+  })
 });
 
 export function isLoaded(globalState, name) {
