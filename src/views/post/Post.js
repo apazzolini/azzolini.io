@@ -12,7 +12,7 @@ import {Editor} from '../../components';
 )
 export default class Post extends Component {
   static propTypes = {
-    editing: PropTypes.boolean,
+    editing: PropTypes.bool,
     posts: PropTypes.object,
     params: PropTypes.shape({
       title: PropTypes.string.isRequired

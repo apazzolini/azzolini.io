@@ -24,7 +24,7 @@ export function parseMarkdown(post) {
 export default class Page extends Component {
   static propTypes = {
     actions: PropTypes.object,
-    editing: PropTypes.boolean,
+    editing: PropTypes.bool,
     pages: PropTypes.object,
     params: PropTypes.shape({
       page: PropTypes.string.isRequired
