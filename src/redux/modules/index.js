@@ -22,16 +22,10 @@ export default combineReducers({
  *     loaded: {boolean},
  *     error: {Error},
  *     data: {
- *       [mongoId]: {
+ *       [normalizedTitle]: {
  *         ...<the structure from the api server>,
  *         loading: {boolean},
  *         loaded: {boolean},
- *         error: {Error}
- *       }
- *     },
- *     singleLoading: {
- *       [normalizedTitle]: {
- *         loading: {boolean},
  *         error: {Error}
  *       }
  *     }

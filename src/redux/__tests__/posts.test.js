@@ -6,8 +6,7 @@ describe('redux', () => {
   describe('reducers', () => {
     describe('posts', () => {
       const testPost = {
-        0: {
-          _id: 0,
+        testPost: {
           normalizedTitle: 'testPost',
           html: '<h1>Test</h1>',
           loaded: true
@@ -47,13 +46,10 @@ describe('redux', () => {
           type: 'posts/LOAD_SUCCESS',
           result: [
             {
-              _id: 0,
               normalizedTitle: 'testPost'
             }, {
-              _id: 1,
               normalizedTitle: 'newPost'
             }, {
-              _id: 2,
               normalizedTitle: 'newPost2'
             }
           ]
@@ -64,12 +60,10 @@ describe('redux', () => {
           loading: false,
           data: {
             ...testPost,
-            1: {
-              _id: 1,
+            newPost: {
               normalizedTitle: 'newPost'
             },
-            2: {
-              _id: 2,
+            newPost2: {
               normalizedTitle: 'newPost2'
             }
           }
@@ -108,10 +102,8 @@ describe('redux', () => {
         expect(newState).to.equal(fromJS({
           loaded: false,
           data: {
-            ...testPost
-          },
-          singleLoading: {
-            'newPost': {
+            ...testPost,
+            newPost: {
               loading: true
             }
           }
@@ -129,19 +121,13 @@ describe('redux', () => {
           loading: false,
           data: {
             ...testPost,
-            1: {
-              _id: 1,
+            newPost: {
               normalizedTitle: 'newPost',
+              loading: true
             },
-            2: {
-              _id: 2,
+            newPost2: {
               normalizedTitle: 'newPost2'
             },
-          },
-          singleLoading: {
-            newPost: {
-              loading: true
-            }
           }
         }));
       });
@@ -151,7 +137,6 @@ describe('redux', () => {
           type: 'posts/LOAD_SINGLE_SUCCESS',
           postTitle: 'newPost',
           result: {
-            _id: 1,
             html: '<h1>New</h1>'
           }
         });
@@ -161,20 +146,15 @@ describe('redux', () => {
           loading: false,
           data: {
             ...testPost,
-            1: {
-              _id: 1,
+            newPost: {
               normalizedTitle: 'newPost',
               loading: false,
               loaded: true,
               html: '<h1>New</h1>'
             },
-            2: {
-              _id: 2,
+            newPost2: {
               normalizedTitle: 'newPost2'
             }
-          },
-          singleLoading: {
-            newPost: null
           }
         }));
       });
@@ -192,20 +172,14 @@ describe('redux', () => {
           loading: false,
           data: {
             ...testPost,
-            1: {
-              _id: 1,
-              normalizedTitle: 'newPost',
-            },
-            2: {
-              _id: 2,
-              normalizedTitle: 'newPost2'
-            }
-          },
-          singleLoading: {
             newPost: {
+              normalizedTitle: 'newPost',
               loading: false,
               loaded: false,
               error
+            },
+            newPost2: {
+              normalizedTitle: 'newPost2'
             }
           }
         }));

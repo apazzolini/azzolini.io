@@ -24,7 +24,7 @@ export default class Home extends Component {
     require('./Home.scss');
 
     const { posts } = this.props;
-    const postIds = _.pluck(_.sortBy(posts, 'date'), '_id');
+    const postTitles = _.pluck(_.sortBy(posts, 'date'), 'normalizedTitle');
 
     return (
       <div className="container">
@@ -33,7 +33,7 @@ export default class Home extends Component {
         <h6>Posts</h6>
 
         <ul>
-          { postIds.reverse().map((postId) => {
+          { postTitles.reverse().map((postId) => {
             const post = posts[postId];
 
             return (
