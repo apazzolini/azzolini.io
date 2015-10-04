@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import Boom from 'boom';
 import db from '../../lib/db';
-import parseMarkdown from '../../../utils/markdownParser.js'
+import parseMarkdown from '../../../utils/markdownParser.js';
 
 const posts = db.collection('posts');
 

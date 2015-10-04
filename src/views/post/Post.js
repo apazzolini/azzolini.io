@@ -6,11 +6,13 @@ import {Editor} from '../../components';
 
 @connect(
   state => ({
+    editing: state.admin.get('editing'),
     posts: state.posts.get('data').toJS(),
   })
 )
 export default class Post extends Component {
   static propTypes = {
+    editing: PropTypes.boolean,
     posts: PropTypes.object,
     params: PropTypes.shape({
       title: PropTypes.string.isRequired
@@ -33,14 +35,11 @@ export default class Post extends Component {
 
   render() {
     require('./Post.scss');
-    const { posts } = this.props;
-    const post = _.find(posts, 'normalizedTitle', this.props.params.title);
-
-    const editing = true;
+    const post = _.find(this.props.posts, 'normalizedTitle', this.props.params.title);
 
     return (
-      <div className={editing && 'editing'}>
-        {editing &&
+      <div className={this.props.editing && 'editing'}>
+        {this.props.editing &&
           <Editor name="ace"
             content={post.content}
             onChange={this.onChange} />

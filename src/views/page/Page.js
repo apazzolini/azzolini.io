@@ -11,6 +11,7 @@ export function parseMarkdown(post) {
 
 @connect(
   state => ({
+    editing: state.admin.get('editing'),
     pages: state.pages.get('data').toJS(),
   }),
   dispatch => ({
@@ -22,16 +23,12 @@ export function parseMarkdown(post) {
 )
 export default class Page extends Component {
   static propTypes = {
+    actions: PropTypes.object,
+    editing: PropTypes.boolean,
     pages: PropTypes.object,
     params: PropTypes.shape({
       page: PropTypes.string.isRequired
     })
-  }
-
-  static fetchData(store, params, query) {
-    if (!Pages.isLoaded(store.getState(), params.page)) {
-      return store.dispatch(Pages.load(params.page));
-    }
   }
 
   onChangeCreator(page, actions) {
@@ -47,21 +44,24 @@ export default class Page extends Component {
     return this.onChange;
   }
 
+  static fetchData(store, params, query) {
+    if (!Pages.isLoaded(store.getState(), params.page)) {
+      return store.dispatch(Pages.load(params.page));
+    }
+  }
+
   render() {
     require('./Page.scss');
-    const { pages } = this.props;
-    const page = pages[this.props.params.page];
-
-    const editing = true;
+    const page = this.props.pages[this.props.params.page];
 
     return (
-      <div className={editing && 'editing'}>
-        {editing &&
+      <div className={this.props.editing && 'editing'}>
+        {this.props.editing &&
           <Editor name="ace"
             content={page.content}
             onChange={this.onChangeCreator(page, this.props.actions)} />
         }
-      
+
         <div className="SimplePage container">
           <div className="content" dangerouslySetInnerHTML={{__html: page.html}} />
         </div>
