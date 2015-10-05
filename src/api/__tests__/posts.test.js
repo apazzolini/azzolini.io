@@ -17,7 +17,7 @@ describe('api', () => {
 
       postsDb.save({
         title: 'Test Title',
-        normalizedTitle: 'test-title',
+        slug: 'test-title',
         content: '# Test Title Headline',
         date: new Date(2015, 8, 24)
       });
@@ -39,8 +39,8 @@ describe('api', () => {
         expect(posts[0]).to.not.have.property('content');
       });
 
-      it('fetches a post by normalized title', async () => {
-        const post = await Posts.getPostByTitle('test-title');
+      it('fetches a post by URL slug', async () => {
+        const post = await Posts.getPostBySlug('test-title');
         expect(post.title).to.equal('Test Title');
         expect(post.html).to.equal('<h1 id="test-title-headline">Test Title Headline</h1>\n');
       });
@@ -52,8 +52,18 @@ describe('api', () => {
       });
 
       it('updates content on that post', async() => {
-        const result = await Posts.savePost(testPostId, '# Test Title Headline Updated');
-        expect(result.ok).to.equal(1);
+        const newContent = [
+          '---',
+          'title: Test Title Updated',
+          'slug: test-title-updated',
+          '---',
+          '',
+          '## Test Updated'
+        ].join('\n');
+
+
+        const result = await Posts.savePost(testPostId, newContent);
+        expect(result.nModified).to.equal(1);
       });
     });
 
@@ -69,17 +79,17 @@ describe('api', () => {
         });
       });
 
-      it('responds with the requested post by title', (done) => {
-        server.inject({method: 'GET', url: '/posts/t/test-title'}, (res) => {
-          expect(res.result.title).to.equal('Test Title');
+      it('responds with the requested post by slug', (done) => {
+        server.inject({method: 'GET', url: '/posts/s/test-title-updated'}, (res) => {
+          expect(res.result.title).to.equal('Test Title Updated');
           done();
         });
       });
 
       it('responds with the requested post by id', (done) => {
         server.inject({method: 'GET', url: `/posts/${testPostId}`}, (res) => {
-          expect(res.result.title).to.equal('Test Title');
-          expect(res.result.html).to.equal('<h1 id="test-title-headline-updated">Test Title Headline Updated</h1>\n');
+          expect(res.result.title).to.equal('Test Title Updated');
+          expect(res.result.html).to.equal('<h2 id="test-updated">Test Updated</h2>\n');
           done();
         });
       });

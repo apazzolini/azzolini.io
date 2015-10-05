@@ -12,7 +12,7 @@ export default function create(store) {
   return (
     <Route component={App}>
       <Route path="/" component={Home} />
-      <Route path="/posts/:title" component={Post} />
+      <Route path="/posts/:slug" component={Post} />
       <Route path="/:page" component={Page} />
       <Route path="*" component={NotFound} />
     </Route>

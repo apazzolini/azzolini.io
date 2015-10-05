@@ -8,7 +8,7 @@ describe('redux', () => {
       const testPost = {
         0: {
           _id: 0,
-          normalizedTitle: 'testPost',
+          slug: 'test-post',
           html: '<h1>Test</h1>',
           loaded: true
         }
@@ -48,13 +48,13 @@ describe('redux', () => {
           result: [
             {
               _id: 0,
-              normalizedTitle: 'testPost'
+              slug: 'test-post'
             }, {
               _id: 1,
-              normalizedTitle: 'newPost'
+              slug: 'new-post'
             }, {
               _id: 2,
-              normalizedTitle: 'newPost2'
+              slug: 'new-post-2'
             }
           ]
         });
@@ -66,11 +66,11 @@ describe('redux', () => {
             ...testPost,
             1: {
               _id: 1,
-              normalizedTitle: 'newPost'
+              slug: 'new-post'
             },
             2: {
               _id: 2,
-              normalizedTitle: 'newPost2'
+              slug: 'new-post-2'
             }
           }
         }));
@@ -102,18 +102,13 @@ describe('redux', () => {
       it('handles LOAD from scratch', () => {
         const newState = reducer(initialState, {
           type: 'posts/LOAD_SINGLE',
-          postTitle: 'newPost'
+          postSlug: 'new-post'
         });
 
         expect(newState).to.equal(fromJS({
           loaded: false,
           data: {
             ...testPost
-          },
-          singleLoading: {
-            'newPost': {
-              loading: true
-            }
           }
         }));
       });
@@ -121,7 +116,7 @@ describe('redux', () => {
       it('handles LOAD of a partially loaded post', () => {
         partiallyLoadingState = reducer(loadedState, {
           type: 'posts/LOAD_SINGLE',
-          postTitle: 'newPost'
+          postSlug: 'new-post'
         });
 
         expect(partiallyLoadingState).to.equal(fromJS({
@@ -131,17 +126,13 @@ describe('redux', () => {
             ...testPost,
             1: {
               _id: 1,
-              normalizedTitle: 'newPost',
+              slug: 'new-post',
+              loading: true
             },
             2: {
               _id: 2,
-              normalizedTitle: 'newPost2'
+              slug: 'new-post-2'
             },
-          },
-          singleLoading: {
-            newPost: {
-              loading: true
-            }
           }
         }));
       });
@@ -163,18 +154,15 @@ describe('redux', () => {
             ...testPost,
             1: {
               _id: 1,
-              normalizedTitle: 'newPost',
+              slug: 'new-post',
               loading: false,
               loaded: true,
               html: '<h1>New</h1>'
             },
             2: {
               _id: 2,
-              normalizedTitle: 'newPost2'
+              slug: 'new-post-2'
             }
-          },
-          singleLoading: {
-            newPost: null
           }
         }));
       });
@@ -183,7 +171,7 @@ describe('redux', () => {
         const error = new Error('Load Fail');
         const newState = reducer(partiallyLoadingState, {
           type: 'posts/LOAD_SINGLE_FAIL',
-          postTitle: 'newPost',
+          postSlug: 'new-post',
           error
         });
 
@@ -194,18 +182,14 @@ describe('redux', () => {
             ...testPost,
             1: {
               _id: 1,
-              normalizedTitle: 'newPost',
-            },
-            2: {
-              _id: 2,
-              normalizedTitle: 'newPost2'
-            }
-          },
-          singleLoading: {
-            newPost: {
+              slug: 'new-post',
               loading: false,
               loaded: false,
               error
+            },
+            2: {
+              _id: 2,
+              slug: 'new-post-2'
             }
           }
         }));
@@ -215,7 +199,7 @@ describe('redux', () => {
         const newContent = [
           '---',
           'title: Test Post Updated',
-          'normalizedTitle: test-post-updated',
+          'slug: test-post-updated',
           '---',
           '',
           '## Test Update'
@@ -224,35 +208,40 @@ describe('redux', () => {
         const newState = reducer(initialState, {
           type: 'posts/UPDATE_CONTENT',
           post: {
-            normalizedTitle: 'testPost'
+            _id: 0
           },
           newContent
-        });
-
-        expect(newState.toJS()).to.equal({
-          loaded: false,
-          data: {
-            testPost: {
-              normalizedTitle: 'testPost',
-              loaded: true,
-              content: newContent,
-              html: '<h2 id="test-update">Test Update</h2>\n'
-            }
-          }
-        });
-      });
-
-      it('handles SAVE', () => {
-        const newState = reducer(initialState, {
-          type: 'posts/SAVE',
-          postTitle: 'testPost'
         });
 
         expect(newState).to.equal(fromJS({
           loaded: false,
           data: {
-            testPost: {
-              normalizedTitle: 'testPost',
+            0: {
+              _id: 0,
+              title: 'Test Post Updated',
+              slug: 'test-post-updated',
+              loaded: true,
+              content: newContent,
+              html: '<h2 id="test-update">Test Update</h2>\n'
+            }
+          }
+        }));
+      });
+
+      it('handles SAVE', () => {
+        const newState = reducer(initialState, {
+          type: 'posts/SAVE',
+          post: {
+            _id: 0
+          }
+        });
+
+        expect(newState).to.equal(fromJS({
+          loaded: false,
+          data: {
+            0: {
+              _id: 0,
+              slug: 'test-post',
               html: '<h1>Test</h1>',
               loaded: true,
               saving: true
@@ -264,14 +253,17 @@ describe('redux', () => {
       it('handles SAVE_SUCCESS', () => {
         const newState = reducer(initialState, {
           type: 'posts/SAVE_SUCCESS',
-          postTitle: 'testPost'
+          post: {
+            _id: 0
+          }
         });
 
         expect(newState).to.equal(fromJS({
           loaded: false,
           data: {
-            testPost: {
-              normalizedTitle: 'testPost',
+            0: {
+              _id: 0,
+              slug: 'test-post',
               html: '<h1>Test</h1>',
               loaded: true,
               saving: false,
@@ -285,15 +277,18 @@ describe('redux', () => {
         const error = new Error('Save Fail');
         const newState = reducer(initialState, {
           type: 'posts/SAVE_FAIL',
-          postTitle: 'testPost',
+          post: {
+            _id: 0
+          },
           error
         });
 
         expect(newState).to.equal(fromJS({
           loaded: false,
           data: {
-            testPost: {
-              normalizedTitle: 'testPost',
+            0: {
+              _id: 0,
+              slug: 'test-post',
               html: '<h1>Test</h1>',
               loaded: true,
               saving: false,

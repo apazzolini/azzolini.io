@@ -24,7 +24,7 @@ export default class Post extends Component {
     editing: PropTypes.bool,
     posts: PropTypes.object,
     params: PropTypes.shape({
-      title: PropTypes.string.isRequired
+      slug: PropTypes.string.isRequired
     })
   }
 
@@ -38,7 +38,7 @@ export default class Post extends Component {
   }
 
   shouldComponentUpdate() {
-    return !this.isUpdating;
+    return !this.preventComponentUpdate;
   }
 
   onChangeCreator(post, actions) {
@@ -46,18 +46,24 @@ export default class Post extends Component {
       const debouncedSave = _.debounce(actions.save, 1000);
 
       this.onChange = newContent => {
-        this.isUpdating = true;
-
-        actions.updateContent(post, newContent);
-
         const header = parseHeader(newContent);
-        if (header.title !== post.normalizedTitle) {
-          this.router.replaceWith('/posts/' + header.title);
+
+        if (!header || !header.title || !header.slug) {
+          return null;
         }
 
-        debouncedSave(post, newContent);
+        if (header.slug !== post.slug) {
+          this.preventComponentUpdate = true;
 
-        this.isUpdating = false;
+          actions.updateContent(post, newContent);
+          this.router.replaceWith('/posts/' + header.slug);
+
+          this.preventComponentUpdate = false;
+        } else {
+          actions.updateContent(post, newContent);
+        }
+        
+        debouncedSave(post, newContent);
       };
     }
 
@@ -65,14 +71,14 @@ export default class Post extends Component {
   }
 
   static fetchData(store, params, query) {
-    if (!Posts.isFullyLoaded(store.getState(), params.title)) {
-      return store.dispatch(Posts.loadSingle(store.getState(), params.title));
+    if (!Posts.isFullyLoaded(store.getState(), params.slug)) {
+      return store.dispatch(Posts.loadSingle(store.getState(), params.slug));
     }
   }
 
   render() {
     require('./Post.scss');
-    const post = _.find(this.props.posts, 'normalizedTitle', this.props.params.title);
+    const post = _.find(this.props.posts, 'slug', this.props.params.slug);
 
     return (
       <div className={this.props.editing && 'editing'}>

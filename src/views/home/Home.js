@@ -38,7 +38,7 @@ export default class Home extends Component {
 
             return (
               <li key={postId}>
-                <Link to={`/posts/${post.normalizedTitle}`}>
+                <Link to={`/posts/${post.slug}`}>
                   {post.title} - {post.date}
                 </Link>
               </li>

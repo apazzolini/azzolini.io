@@ -48,13 +48,13 @@ export async function getPostById(id) {
 }
 
 /**
- * Retrieves the specified post by normalized title.
+ * Retrieves the specified post by slug.
  *
- * @param {String} title - The normalized title of the post to retrieve
+ * @param {String} slug - The URL slug of the post to retrieve
  * @return {Object}
  */
-export async function getPostByTitle(title) {
-  return getPost({normalizedTitle: title});
+export async function getPostBySlug(slug) {
+  return getPost({ slug });
 }
 
 /**
@@ -70,7 +70,8 @@ export async function savePost(postId, newContent) {
     { _id: db.ObjectId(postId) },
     {
       $set: {
-        normalizedTitle: header.title,
+        title: header.title,
+        slug: header.slug,
         content: newContent
       }
     }
@@ -114,9 +115,9 @@ export const routes = [
   },
 
   {
-    path: '/posts/t/{title}', method: 'GET', handler: async (request, reply) => {
+    path: '/posts/s/{slug}', method: 'GET', handler: async (request, reply) => {
       try {
-        const post = await getPostByTitle(request.params.title);
+        const post = await getPostBySlug(request.params.slug);
         reply(post === null ? Boom.notFound() : post);
       } catch (e) {
         reply(Boom.wrap(e));
@@ -125,7 +126,7 @@ export const routes = [
     config: {
       validate: {
         params: {
-          title: Joi.string()
+          slug: Joi.string()
         }
       }
     }

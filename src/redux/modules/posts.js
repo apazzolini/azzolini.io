@@ -22,9 +22,9 @@ const initialState = Immutable.fromJS({
 // Utility functions -----------------------------------------------------------
 // -----------------------------------------------------------------------------
 
-function getByTitle(postsState, normalizedTitle) {
+function getBySlug(postsState, slug) {
   return postsState.get('data').find((post, id) => (
-    post.get('normalizedTitle') === normalizedTitle
+    post.get('slug') === slug
   ));
 }
 
@@ -72,7 +72,7 @@ export default createReducer(initialState, {
   // ---------------------------------------------------------------------------
 
   [LOAD_SINGLE]: (state, action) => {
-    const post = getByTitle(state, action.postTitle);
+    const post = getBySlug(state, action.postSlug);
 
     if (post) {
       return state.mergeDeep({
@@ -84,7 +84,7 @@ export default createReducer(initialState, {
       });
     }
 
-    // If we couldn't find a post by the title, that must mean we're doing
+    // If we couldn't find a post by the slug, that must mean we're doing
     // server-side rendering directly to a post page. In this case, we can
     // ignore the loading state.
     return Immutable.Map(state);
@@ -101,7 +101,7 @@ export default createReducer(initialState, {
   }),
 
   [LOAD_SINGLE_FAIL]: (state, action) => {
-    const post = getByTitle(state, action.postTitle);
+    const post = getBySlug(state, action.postSlug);
 
     if (post) {
       return state.mergeDeep({
@@ -125,7 +125,8 @@ export default createReducer(initialState, {
     const newPartial = state.mergeDeep({
       data: {
         [action.post._id]: {
-          normalizedTitle: header.title,
+          slug: header.slug,
+          title: header.title,
           content: action.newContent,
           html: parseMarkdown(action.newContent)
         }
@@ -182,16 +183,16 @@ export function load() {
 // Actions on single posts -----------------------------------------------------
 // -----------------------------------------------------------------------------
 
-export function isFullyLoaded(globalState, normalizedTitle) {
-  const post = getByTitle(globalState.posts, normalizedTitle);
+export function isFullyLoaded(globalState, postSlug) {
+  const post = getBySlug(globalState.posts, postSlug);
   return post && post.get('loaded');
 }
 
-export function loadSingle(globalState, normalizedTitle) {
+export function loadSingle(globalState, postSlug) {
   return {
     types: [LOAD_SINGLE, LOAD_SINGLE_SUCCESS, LOAD_SINGLE_FAIL],
-    promise: (client) => client.get(`/posts/t/${normalizedTitle}`),
-    postTitle: normalizedTitle
+    promise: (client) => client.get(`/posts/s/${postSlug}`),
+    postSlug
   };
 }
 
