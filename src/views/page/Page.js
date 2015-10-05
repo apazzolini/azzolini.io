@@ -19,7 +19,10 @@ import {Editor} from '../../components';
 )
 export default class Page extends Component {
   static propTypes = {
-    actions: PropTypes.object,
+    actions: PropTypes.shape({
+      updateContent: PropTypes.func,
+      save: PropTypes.func
+    }),
     editing: PropTypes.bool,
     pages: PropTypes.object,
     params: PropTypes.shape({
@@ -27,17 +30,13 @@ export default class Page extends Component {
     })
   }
 
-  onChangeCreator(page, actions) {
-    if (!this.onChange) {
-      const debouncedSave = _.debounce(actions.save, 1000);
+  componentWillMount() {
+    this.debouncedSave = _.debounce(this.props.actions.save, 1000);
+  }
 
-      this.onChange = newContent => {
-        actions.updateContent(page.name, newContent);
-        debouncedSave(page, newContent);
-      };
-    }
-
-    return this.onChange;
+  onChange(page, newContent) {
+    this.props.actions.updateContent(page.name, newContent);
+    this.debouncedSave(page, newContent);
   }
 
   static fetchData(store, params, query) {
@@ -55,7 +54,7 @@ export default class Page extends Component {
         { this.props.editing &&
           <Editor name="ace"
             content={page.content}
-            onChange={this.onChangeCreator(page, this.props.actions)} />
+            onChange={this.onChange.bind(this, page)} />
         }
 
         <div className="SimplePage container">

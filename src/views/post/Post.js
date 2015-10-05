@@ -20,7 +20,10 @@ import {parseHeader} from '../../utils/markdownParser.js';
 )
 export default class Post extends Component {
   static propTypes = {
-    actions: PropTypes.object,
+    actions: PropTypes.shape({
+      updateContent: PropTypes.func,
+      save: PropTypes.func
+    }),
     editing: PropTypes.bool,
     posts: PropTypes.object,
     params: PropTypes.shape({

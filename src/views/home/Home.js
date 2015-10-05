@@ -17,9 +17,10 @@ import * as Posts from '../../redux/modules/posts';
   })
 )
 export default class Home extends Component {
-  // TODO: actions should be a shape
   static propTypes = {
-    actions: PropTypes.object,
+    actions: PropTypes.shape({
+      createNewPost: PropTypes.func
+    }),
     editing: PropTypes.bool,
     posts: PropTypes.object,
   }
