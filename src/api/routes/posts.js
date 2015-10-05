@@ -70,12 +70,31 @@ export async function savePost(postId, newContent) {
     { _id: db.ObjectId(postId) },
     {
       $set: {
-        title: header.title,
-        slug: header.slug,
+        ...header,
         content: newContent
       }
     }
   );
+}
+
+/**
+ * Creates a new post object in the database and returns the MongoID.
+ */
+export async function createPost() {
+  const newId = db.ObjectId().toString();
+  const content = [
+    '---',
+    'title: ' + newId,
+    'slug: ' + newId,
+    '---'
+  ].join('\n');
+
+  return posts.save({
+    _id: db.ObjectId(newId),
+    title: newId,
+    slug: newId,
+    content
+  });
 }
 
 // -----------------------------------------------------------------------------
@@ -128,6 +147,19 @@ export const routes = [
         params: {
           slug: Joi.string()
         }
+      }
+    }
+  },
+
+  {
+    path: '/posts/create', method: 'POST', handler: async (request, reply) => {
+      try {
+        const result = await createPost();
+        reply({
+          id: result._id.toString()
+        });
+      } catch (e) {
+        reply(Boom.wrap(e));
       }
     }
   },

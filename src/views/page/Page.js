@@ -52,7 +52,7 @@ export default class Page extends Component {
 
     return (
       <div className={this.props.editing && 'editing'}>
-        {this.props.editing &&
+        { this.props.editing &&
           <Editor name="ace"
             content={page.content}
             onChange={this.onChangeCreator(page, this.props.actions)} />

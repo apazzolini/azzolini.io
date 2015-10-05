@@ -35,39 +35,32 @@ export default class Post extends Component {
   componentWillMount() {
     const {router} = this.context;
     this.router = router;
+    this.debouncedSave = _.debounce(this.props.actions.save, 1000);
   }
 
   shouldComponentUpdate() {
     return !this.preventComponentUpdate;
   }
 
-  onChangeCreator(post, actions) {
-    if (!this.onChange) {
-      const debouncedSave = _.debounce(actions.save, 1000);
+  onChange(post, newContent) {
+    const header = parseHeader(newContent);
 
-      this.onChange = newContent => {
-        const header = parseHeader(newContent);
-
-        if (!header || !header.title || !header.slug) {
-          return null;
-        }
-
-        if (header.slug !== post.slug) {
-          this.preventComponentUpdate = true;
-
-          actions.updateContent(post, newContent);
-          this.router.replaceWith('/posts/' + header.slug);
-
-          this.preventComponentUpdate = false;
-        } else {
-          actions.updateContent(post, newContent);
-        }
-        
-        debouncedSave(post, newContent);
-      };
+    if (!header || !header.title || !header.slug) {
+      return null;
     }
 
-    return this.onChange;
+    if (header.slug !== post.slug) {
+      this.preventComponentUpdate = true;
+
+      this.props.actions.updateContent(post, newContent);
+      this.router.replaceWith('/posts/' + header.slug);
+
+      this.preventComponentUpdate = false;
+    } else {
+      this.props.actions.updateContent(post, newContent);
+    }
+
+    this.debouncedSave(post, newContent);
   }
 
   static fetchData(store, params, query) {
@@ -82,10 +75,10 @@ export default class Post extends Component {
 
     return (
       <div className={this.props.editing && 'editing'}>
-        {this.props.editing &&
+        { this.props.editing &&
           <Editor name="ace"
             content={post.content}
-            onChange={this.onChangeCreator(post, this.props.actions)} />
+            onChange={this.onChange.bind(this, post)} />
         }
 
         <div className="Post container">

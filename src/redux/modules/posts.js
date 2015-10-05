@@ -12,6 +12,9 @@ const UPDATE_CONTENT = 'posts/UPDATE_CONTENT';
 const SAVE = 'posts/SAVE';
 const SAVE_SUCCESS = 'posts/SAVE_SUCCESS';
 const SAVE_FAIL = 'posts/SAVE_FAIL';
+const CREATE = 'posts/CREATE';
+const CREATE_SUCCESS = 'posts/CREATE_SUCCESS';
+const CREATE_FAIL = 'posts/CREATE_FAIL';
 
 const initialState = Immutable.fromJS({
   loaded: false,
@@ -66,6 +69,28 @@ export default createReducer(initialState, {
     loaded: false,
     error: action.error
   }),
+
+  [CREATE]: (state, action) => state.mergeDeep({
+    creating: true
+  }),
+
+  [CREATE_SUCCESS]: (state, action) => state.mergeDeep({
+    creating: false,
+    data: {
+      [action.result.id]: {
+        _id: action.result.id,
+        title: action.result.id,
+        slug: action.result.id
+      }
+    }
+  }),
+
+  [CREATE_FAIL]: (state, action) => {
+    return state.mergeDeep({
+      creating: false,
+      createError: action.error.toString()
+    });
+  },
 
   // ---------------------------------------------------------------------------
   // Reducers on single posts --------------------------------------------------
@@ -125,8 +150,7 @@ export default createReducer(initialState, {
     const newPartial = state.mergeDeep({
       data: {
         [action.post._id]: {
-          slug: header.slug,
-          title: header.title,
+          ...header,
           content: action.newContent,
           html: parseMarkdown(action.newContent)
         }
@@ -209,5 +233,14 @@ export function save(post, newContent) {
     types: [SAVE, SAVE_SUCCESS, SAVE_FAIL],
     promise: (client) => client.post(`/posts/${post._id}`, newContent),
     post
+  };
+}
+
+export function create() {
+  return {
+    types: [CREATE, CREATE_SUCCESS, CREATE_FAIL],
+    promise: (client) => {
+      return client.post(`/posts/create`);
+    }
   };
 }

@@ -1,17 +1,42 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
+import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import _ from 'lodash';
 import * as Posts from '../../redux/modules/posts';
 
 @connect(
   state => ({
+    editing: state.admin.get('editing'),
     posts: state.posts.get('data').toJS(),
+  }),
+  dispatch => ({
+    actions: bindActionCreators({
+      createNewPost: Posts.create
+    }, dispatch)
   })
 )
 export default class Home extends Component {
+  // TODO: actions should be a shape
   static propTypes = {
+    actions: PropTypes.object,
+    editing: PropTypes.bool,
     posts: PropTypes.object,
+  }
+
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  }
+
+  componentWillMount() {
+    const {router} = this.context;
+    this.router = router;
+  }
+
+  createAndRedirect() {
+    this.props.actions.createNewPost().then((res) => {
+      this.router.transitionTo(`/posts/${res.result.id}`);
+    });
   }
 
   static fetchData(store, params, query) {
@@ -39,11 +64,17 @@ export default class Home extends Component {
             return (
               <li key={postId}>
                 <Link to={`/posts/${post.slug}`}>
-                  {post.title} - {post.date}
-                </Link>
+                  {post.title}
+                </Link> - {post.date}
               </li>
             );
           })
+          }
+
+          { this.props.editing &&
+            <li>
+              <div onClick={this.createAndRedirect.bind(this)}>New Post</div>
+            </li>
           }
         </ul>
       </div>

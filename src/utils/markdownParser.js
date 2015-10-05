@@ -12,7 +12,9 @@ function stripHeader(content) {
 export function parseHeader(content) {
   try {
     const frontMatter = content.substring(3, content.indexOf('---', 1));
-    return yaml.safeLoad(frontMatter);
+    return yaml.safeLoad(frontMatter, {
+      schema: yaml.JSON_SCHEMA
+    });
   } catch (e) {
     console.log(e);
     return null;

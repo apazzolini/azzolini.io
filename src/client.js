@@ -17,11 +17,9 @@ const location = new Location(document.location.pathname, query);
 
 fetchAwareRouter(location, history, store)
   .then(({component}) => {
+    React.render(component, dest);
     if (__DEVTOOLS__) {
       const { DevTools, DebugPanel, LogMonitor } = require('redux-devtools/lib/react');
-
-      console.info('You will see a "Warning: React attempted to reuse markup..." ' +
-        'message because the redux-devtools are enabled.');
 
       React.render(
         <div>
@@ -31,8 +29,6 @@ fetchAwareRouter(location, history, store)
           </DebugPanel>
         </div>
       , dest);
-    } else {
-      React.render(component, dest);
     }
   }, (error) => {
     console.error(error);

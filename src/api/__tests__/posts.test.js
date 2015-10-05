@@ -61,9 +61,14 @@ describe('api', () => {
           '## Test Updated'
         ].join('\n');
 
-
         const result = await Posts.savePost(testPostId, newContent);
         expect(result.nModified).to.equal(1);
+      });
+
+      it('creates a new post', async() => {
+        const result = await Posts.createPost();
+        expect(result._id.toString()).to.equal(result.title);
+        expect(result._id.toString()).to.equal(result.slug);
       });
     });
 
@@ -98,6 +103,36 @@ describe('api', () => {
         const badId = testPostId + 'xx';
         server.inject({method: 'GET', url: `/posts/${badId}`}, (res) => {
           expect(res.statusCode).to.equal(400);
+          done();
+        });
+      });
+
+      it('creates a new post', (done) => {
+        server.inject({method: 'POST', url: `/posts/create`}, (res) => {
+          expect(res.result.id).to.exist;
+          done();
+        });
+      });
+
+      it('updates a post', (done) => {
+        const payload = [
+          '---',
+          'title: Test Title Updated2',
+          'slug: test-title-updated-2',
+          '---',
+          '',
+          '## Test Updated 2'
+        ].join('\n');
+
+        server.inject({
+          method: 'POST',
+          url: `/posts/${testPostId}`,
+          payload,
+          headers: {
+            'Content-Type': 'text/*'
+          }
+        }, (res) => {
+          expect(res.result).to.equal(1);
           done();
         });
       });

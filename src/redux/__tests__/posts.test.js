@@ -93,6 +93,60 @@ describe('redux', () => {
         }));
       });
 
+
+      it('handles CREATE', () => {
+        const newState = reducer(initialState, {
+          type: 'posts/CREATE'
+        });
+
+        expect(newState).to.equal(fromJS({
+          loaded: false,
+          creating: true,
+          data: {
+            ...testPost
+          }
+        }));
+      });
+
+      it('handles CREATE_SUCCESS', () => {
+        const newState = reducer(initialState, {
+          type: 'posts/CREATE_SUCCESS',
+          result: {
+            id: 3
+          }
+        });
+
+        expect(newState).to.equal(fromJS({
+          loaded: false,
+          creating: false,
+          data: {
+            ...testPost,
+            3: {
+              _id: 3,
+              title: 3,
+              slug: 3
+            }
+          }
+        }));
+      });
+
+      it('handles CREATE_FAIL', () => {
+        const error = new Error('Create Fail');
+        const newState = reducer(initialState, {
+          type: 'posts/CREATE_FAIL',
+          error
+        });
+
+        expect(newState).to.equal(fromJS({
+          loaded: false,
+          creating: false,
+          createError: error.toString(),
+          data: {
+            ...testPost
+          }
+        }));
+      });
+
       // -----------------------------------------------------------------------
       // Single post reducers --------------------------------------------------
       // -----------------------------------------------------------------------
