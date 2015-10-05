@@ -22,11 +22,13 @@ export default combineReducers({
  *     loaded: {boolean},
  *     error: {Error},
  *     data: {
- *       [normalizedTitle]: {
+ *       [mongoId]: {
  *         ...<the structure from the api server>,
  *         loading: {boolean},
  *         loaded: {boolean},
  *         error: {Error}
+ *         saving: {boolean},
+ *         saved: {boolean}
  *       }
  *     }
  *   },
@@ -37,7 +39,9 @@ export default combineReducers({
  *         ...<the structure from the api server>,
  *         loading: {boolean},
  *         loaded: {boolean},
- *         error: {Error}
+ *         error: {Error},
+ *         saving: {boolean},
+ *         saved: {boolean}
  *       }
  *     }
  *   }

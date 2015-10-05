@@ -45,30 +45,34 @@ export default class Post extends Component {
     if (!this.onChange) {
       const debouncedSave = _.debounce(actions.save, 1000);
 
-      this.onChange = (post, newContent) => { // eslint-disable-line no-shadow
+      this.onChange = newContent => {
         this.isUpdating = true;
-        const header = parseHeader(newContent);
 
         actions.updateContent(post, newContent);
-        this.router.replaceWith('/posts/' + header.title);
-        debouncedSave(header.title, post._id, newContent);
+
+        const header = parseHeader(newContent);
+        if (header.title !== post.normalizedTitle) {
+          this.router.replaceWith('/posts/' + header.title);
+        }
+
+        debouncedSave(post, newContent);
 
         this.isUpdating = false;
       };
     }
 
-    return this.onChange.bind(this, post);
+    return this.onChange;
   }
 
   static fetchData(store, params, query) {
     if (!Posts.isFullyLoaded(store.getState(), params.title)) {
-      return store.dispatch(Posts.loadSingle(params.title));
+      return store.dispatch(Posts.loadSingle(store.getState(), params.title));
     }
   }
 
   render() {
     require('./Post.scss');
-    const post = this.props.posts[this.props.params.title];
+    const post = _.find(this.props.posts, 'normalizedTitle', this.props.params.title);
 
     return (
       <div className={this.props.editing && 'editing'}>
