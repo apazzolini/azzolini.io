@@ -8,4 +8,8 @@ if (config.has('mongo.user')) {
 con += config.get('mongo.host') + '/' + config.get('mongo.db');
 
 const db = pmongo(con);
-export default db;
+
+export default {
+  db,
+  docs: db.collection('docs')
+};

@@ -18,7 +18,6 @@ export default class NavBar extends Component {
 
           <div className="u-cf"></div>
         </div>
-
       </nav>
     );
   }

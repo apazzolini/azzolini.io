@@ -3,7 +3,7 @@ import config from '../client-config';
 
 export default class ApiClient {
   /**
-   * @param [Hapi Request] (optional) the request the server received for a full
+   * @param {Hapi Request} (optional) the request the server received for a full
    *        server-rendered page. The request may include cookies or other user
    *        identifying information to correctly make API calls on behalf of
    *        the requesting user
@@ -36,6 +36,14 @@ export default class ApiClient {
     options.headers['Accept'] = 'application/json'; // eslint-disable-line dot-notation
     options.headers['Content-Type'] = 'application/json';
 
+    return this.performFetch(path, options);
+  }
+
+  delete(path) {
+    const options = {
+      ...this.cookies,
+      method: 'delete'
+    };
     return this.performFetch(path, options);
   }
 

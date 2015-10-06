@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware, compose } from 'redux';
+import {createStore, applyMiddleware, compose} from 'redux';
 import thunk from 'redux-thunk';
 import apiClientMiddleware from './middleware/apiClientMiddleware';
 
@@ -12,7 +12,7 @@ export default function createCustomizedStore(apiClient, state) {
   let finalCreateStore;
 
   if (__DEVELOPMENT__ && __CLIENT__ && __DEVTOOLS__) {
-    const { devTools, persistState } = require('redux-devtools');
+    const {devTools, persistState} = require('redux-devtools');
 
     finalCreateStore = compose(
       applyMiddleware(

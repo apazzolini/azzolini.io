@@ -1,14 +1,14 @@
 import React from 'react';
 import Router from 'react-router';
 import createRoutes from '../views/routes';
-import { Provider } from 'react-redux';
+import {Provider} from 'react-redux';
 
 /**
- * Returns the component's fetchData property if it exists. If the
+ * Returns the route component's fetchData property if it exists. If the
  * given component is a WrappedComponent, this method will unwrap
  * to the base component to search for fetchData.
  *
- * @param component Object A React component
+ * @param {Object} component - A React component
  */
 const getFetchData = (component = {}) => {
   return component.WrappedComponent ?
@@ -17,21 +17,31 @@ const getFetchData = (component = {}) => {
 };
 
 /**
+ * When we're calling the fetchData methods, we want to set the `this`
+ * context to the route it's executing under so that the method has the
+ * ability to inspect other values that are set on the route
+ *
+ * @param {Object} route - a React Router Route
+ */
+const extractFetchData = route => {
+  return getFetchData(route.component).bind(route);
+};
+
+/**
  * Creates a React Router TransitionHook to gather all necessary API
  * data for each of the components in the requested route. Once all
  * data has been fetched, continues the state transition.
  *
- * @param store Object A Redux store
- * @return Function A React Router TransitionHook
+ * @param {Object} store - A Redux store
+ * @return {Function} A React Router TransitionHook
  */
 export function createTransitionHook(store) {
   return (nextState, transition, callback) => {
-    const { params, location: { query } } = nextState;
+    const {params, location: {query}} = nextState;
 
-    const promises = nextState.branch
-      .map(route => route.component)                            // pull out individual route components
-      .filter((component) => getFetchData(component))           // only look at ones with a static fetchData()
-      .map(getFetchData)                                        // pull out fetch data methods
+    const promises = nextState.branch                           // look at all branches of this route
+      .filter(route => getFetchData(route.component))           // filter for ones with a static fetchData()
+      .map(extractFetchData)                                    // pull out fetch data methods
       .map(fetchData => fetchData(store, params, query || {})); // call fetch data methods and save promises
 
     Promise.all(promises)

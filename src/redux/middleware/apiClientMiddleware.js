@@ -12,22 +12,22 @@
  * middleware, such as redux-thunk.
  */
 export default function apiClientMiddleware(apiClient) {
-  return store => next => action => { // eslint-disable-line
+  return store => next => action => {
     // We only handle actions that have a `promise` field.
-    const { promise, types, ...rest } = action;
+    const {promise, types, ...rest} = action;
     if (!promise) {
       return next(action);
     }
 
     // Immediately dispatch the REQUEST action.
-    const [REQUEST, SUCCESS, FAILURE] = types;
+    const [REQUEST, OK, FAIL] = types;
     next({...rest, type: REQUEST});
 
     // Execute the API promise call and then dispatch either the
-    // SUCCESS or FAILURE action types.
+    // OK or FAIL action types.
     return promise(apiClient).then(
-      (result) => next({...rest, result, type: SUCCESS}),
-      (error) => next({...rest, error, type: FAILURE})
+      (result) => next({...rest, result, type: OK}),
+      (error) => next({...rest, error, type: FAIL})
     );
   };
 }

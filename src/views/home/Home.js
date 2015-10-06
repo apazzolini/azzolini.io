@@ -3,26 +3,28 @@ import {Link} from 'react-router';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import _ from 'lodash';
-import * as Posts from '../../redux/modules/posts';
+import * as Docs from '../../redux/modules/docs';
 
 @connect(
   state => ({
     editing: state.admin.get('editing'),
-    posts: state.posts.get('data').toJS(),
+    docs: state.docs.get('entities').toJS(),
   }),
   dispatch => ({
     actions: bindActionCreators({
-      createNewPost: Posts.create
+      createNewPost: Docs.create.bind(null, 'post'),
+      deletePost: Docs.deleteDoc
     }, dispatch)
   })
 )
 export default class Home extends Component {
   static propTypes = {
     actions: PropTypes.shape({
-      createNewPost: PropTypes.func
+      createNewPost: PropTypes.func,
+      deletePost: PropTypes.func
     }),
     editing: PropTypes.bool,
-    posts: PropTypes.object,
+    docs: PropTypes.object,
   }
 
   static contextTypes = {
@@ -36,21 +38,25 @@ export default class Home extends Component {
 
   createAndRedirect() {
     this.props.actions.createNewPost().then((res) => {
-      this.router.transitionTo(`/posts/${res.result.id}`);
+      this.router.transitionTo(`/posts/${res.result.slug}`);
     });
   }
 
   static fetchData(store, params, query) {
-    if (!Posts.isLoaded(store.getState())) {
-      return store.dispatch(Posts.load());
+    if (!Docs.isLoaded(store.getState())) {
+      return store.dispatch(Docs.load());
     }
   }
 
   render() {
     require('./Home.scss');
 
-    const { posts } = this.props;
-    const postIds = _.pluck(_.sortBy(posts, 'date'), '_id');
+    const {docs} = this.props;
+    const dateSortedIds = _.chain(docs)
+      .filter('type', 'post')
+      .sortBy('date')
+      .pluck('_id')
+      .value();
 
     return (
       <div className="container">
@@ -59,14 +65,16 @@ export default class Home extends Component {
         <h6>Posts</h6>
 
         <ul>
-          { postIds.reverse().map((postId) => {
-            const post = posts[postId];
+          { dateSortedIds.reverse().map((postId) => {
+            const post = docs[postId];
 
             return (
               <li key={postId}>
                 <Link to={`/posts/${post.slug}`}>
                   {post.title}
-                </Link> - {post.date}
+                </Link> 
+                - {post.date}
+                <div onClick={this.props.actions.deletePost.bind(null, post._id)}>Delete</div>
               </li>
             );
           })

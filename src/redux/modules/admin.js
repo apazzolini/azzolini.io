@@ -1,4 +1,4 @@
-import { createReducer } from 'redux-immutablejs';
+import {createReducer} from 'redux-immutablejs';
 import Immutable from 'immutable';
 
 const initialState = Immutable.fromJS({

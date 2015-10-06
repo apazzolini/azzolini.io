@@ -16,9 +16,25 @@ export function parseHeader(content) {
   });
 }
 
+export function isHeaderValid(content) {
+  try {
+    const header = parseHeader(content);
+
+    if (!header || !header.slug) {
+      return false;
+    }
+
+    if (header.type === 'post' && !header.title) {
+      return false;
+    }
+  } catch (e) {
+    return false;
+  }
+
+  return true;
+}
+
 export function parseMarkdown(content) {
   const mdContent = headerExists(content) ? stripHeader(content) : content;
   return marked(mdContent);
 }
-
-

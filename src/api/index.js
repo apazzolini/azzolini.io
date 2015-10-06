@@ -1,8 +1,7 @@
 import path from 'path';
 
 const routes = [
-  'routes/pages.js',
-  'routes/posts.js'
+  'routes/docs.js'
 ];
 
 /**

@@ -1,12 +1,10 @@
 import { combineReducers } from 'redux';
 import admin from './admin';
-import pages from './pages';
-import posts from './posts';
+import docs from './docs';
 
 export default combineReducers({
   admin,
-  pages,
-  posts
+  docs
 });
 
 /*
@@ -17,31 +15,22 @@ export default combineReducers({
  *     editing: {boolean},
  *   },
  *
- *   posts: {
+ *   docs: {
  *     loading: {boolean},
  *     loaded: {boolean},
- *     error: {Error},
- *     data: {
+ *     loadError: {Object},
+ *     creating: {boolean},
+ *     createError: {Object},
+ *     entities: {
  *       [mongoId]: {
  *         ...<the structure from the api server>,
  *         loading: {boolean},
  *         loaded: {boolean},
- *         error: {Error}
+ *         loadError: {Object},
  *         saving: {boolean},
- *         saved: {boolean}
- *       }
- *     }
- *   },
- *
- *   pages: {
- *     data: {
- *       [name]: {
- *         ...<the structure from the api server>,
- *         loading: {boolean},
- *         loaded: {boolean},
- *         error: {Error},
- *         saving: {boolean},
- *         saved: {boolean}
+ *         saved: {boolean},
+ *         saveError: {Object},
+ *         updateError: {false or String} - False if no error, an error message otherwise
  *       }
  *     }
  *   }

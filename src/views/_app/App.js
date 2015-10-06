@@ -40,7 +40,6 @@ export default class App extends Component {
         <div id="MainContainer">
           {this.props.children}
         </div>
-
       </div>
     );
   }

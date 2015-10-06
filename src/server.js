@@ -1,7 +1,7 @@
 import React from 'react';
 import Location from 'react-router/lib/Location';
 import PrettyError from 'pretty-error';
-import { Server } from 'hapi';
+import {Server} from 'hapi';
 import inert from 'inert';
 import hapiAuthCookie from 'hapi-auth-cookie';
 import fs from 'fs';
