@@ -46,8 +46,15 @@ export default class Post extends Component {
   }
 
   onChange(post, newContent) {
-    const header = parseHeader(newContent);
+    let header;
+    try {
+      header = parseHeader(newContent);
+    } catch (e) {
+      return null;
+    }
 
+    // These properties are especially important because they would cause
+    // breakages in the site functionality
     if (!header || !header.title || !header.slug) {
       return null;
     }

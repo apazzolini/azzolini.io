@@ -66,6 +66,8 @@ export async function getPostBySlug(slug) {
 export async function savePost(postId, newContent) {
   const header = parseHeader(newContent);
 
+  // TODO: This needs to clear out fields that are no longer present in the header.
+
   return posts.update(
     { _id: db.ObjectId(postId) },
     {
