@@ -9,27 +9,29 @@ export default class ApiClient {
    *        the requesting user
    */
   constructor(serverReq) {
-    this.cookies = {
+    this.defaultOptions = {
+      credentials: 'same-origin',
       headers: {}
     };
 
     if (__SERVER__) {
-      // console.log(serverReq);
-      // this.cookies = ...
-      // TODO: Make cookies go through when rendering server side
+      // If we're executing a server-side fetch on behalf of the user for universal
+      // rendering, we need to forward along the cookies.
+      this.defaultOptions.headers.cookie = serverReq.headers.cookie;
     }
   }
 
   get(path) {
     const options = {
-      ...this.cookies
+      ...this.defaultOptions
     };
+
     return this.performFetch(path, options);
   }
 
   post(path, data) {
     const options = {
-      ...this.cookies,
+      ...this.defaultOptions,
       method: 'post',
       body: JSON.stringify(data)
     };
@@ -41,9 +43,10 @@ export default class ApiClient {
 
   delete(path) {
     const options = {
-      ...this.cookies,
+      ...this.defaultOptions,
       method: 'delete'
     };
+
     return this.performFetch(path, options);
   }
 
