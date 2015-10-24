@@ -96,7 +96,6 @@ describe('api', () => {
 
       it('deletes a doc by id', async() => {
         const result = await Docs.createDoc('post');
-        const id = result._id.toString();
         expect(result).to.have.property('title');
 
         const delResult = await Docs.deleteDoc(result._id.toString());

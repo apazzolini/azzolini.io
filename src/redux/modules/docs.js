@@ -1,5 +1,6 @@
 import {createReducer} from 'redux-immutablejs';
 import Immutable from 'immutable';
+import {fromError} from '../utils';
 import {parseMarkdown, parseHeader} from '../../utils/markdownParser.js';
 
 const LOAD_LIST = 'docs/LOAD_LIST';
@@ -38,10 +39,6 @@ const getBySlug = (state, type, slug) => (
     doc.get('slug') === slug && doc.get('type') === type)
   )
 );
-
-const fromError = (error) => ({
-  msg: error.toString()
-});
 
 // -----------------------------------------------------------------------------
 // Reducers --------------------------------------------------------------------
@@ -181,7 +178,7 @@ export default createReducer(initialState, {
     }
   }),
 
-  [DELETE_OK]: (state, action) => 
+  [DELETE_OK]: (state, action) =>
     state.deleteIn(['entities', action.docId]),
 
   [DELETE_FAIL]: (state, action) => state.mergeDeep({
@@ -223,7 +220,7 @@ export function isLoaded(globalState) {
 export function load() {
   return {
     types: [LOAD_LIST, LOAD_LIST_OK, LOAD_LIST_FAIL],
-    promise: (client) => client.get('/docs')
+    promise: (client) => client.get('/docs?type=post')
   };
 }
 

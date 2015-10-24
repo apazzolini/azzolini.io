@@ -1,11 +1,7 @@
 import {expect} from 'chai';
 import Immutable from 'immutable';
 import reducer from '../modules/docs';
-
-// Duplicated from modules/docs.js as it is not an exported function
-const fromError = (error) => ({
-  msg: error.toString()
-});
+import {fromError} from '../utils';
 
 describe('redux', () => {
   describe('reducers', () => {

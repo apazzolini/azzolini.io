@@ -3,6 +3,8 @@
 // Enables ES6 support
 require('babel/register')({
   stage: 0,
+  sourceMap: 'inline',
+  retainLines: true,
   plugins: ['typecheck']
 });
 
