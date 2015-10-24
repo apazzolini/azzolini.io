@@ -11,7 +11,7 @@
  * When installing this middleware, be sure it comes after a thunk handling
  * middleware, such as redux-thunk.
  */
-export default function apiClientMiddleware(apiClient) {
+export default function(apiClient) {
   return store => next => action => {
     // We only handle actions that have a `promise` field.
     const {promise, types, ...rest} = action;
@@ -26,7 +26,13 @@ export default function apiClientMiddleware(apiClient) {
     // Execute the API promise call and then dispatch either the
     // OK or FAIL action types.
     return promise(apiClient).then(
-      (result) => next({...rest, result, type: OK}),
+      (result) => {
+        if (result.error) {
+          return next({...rest, error: result.error, type: FAIL});
+        }
+
+        return next({...rest, result, type: OK});
+      },
       (error) => next({...rest, error, type: FAIL})
     );
   };
