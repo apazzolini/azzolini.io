@@ -12,7 +12,10 @@ export default combineReducers({
  *
  * {
  *   admin: {
- *     editing: {boolean},
+ *     loggingIn: {boolean},
+ *     loginError: {Object},
+ *     isAdmin: {boolean},
+ *     isEditing: {boolean},
  *   },
  *
  *   docs: {

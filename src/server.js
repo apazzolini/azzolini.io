@@ -2,6 +2,7 @@ import React from 'react';
 import Location from 'react-router/lib/Location';
 import PrettyError from 'pretty-error';
 import {Server} from 'hapi';
+import Boom from 'boom';
 import inert from 'inert';
 import hapiAuthCookie from 'hapi-auth-cookie';
 import fs from 'fs';
@@ -21,11 +22,7 @@ const server = new Server({
     }
   }
 });
-
 server.connection({port: process.env.PORT});
-server.start(() => {
-  console.info('==> Server is listening at ' + server.info.uri.toLowerCase());
-});
 
 /**
  * Register the authentication cookie mechanism.
@@ -35,10 +32,9 @@ server.register(hapiAuthCookie, (err) => {
     throw err;
   }
 
-  server.auth.strategy('session', 'cookie', {
+  server.auth.strategy('session', 'cookie', 'optional', {
     password: config.get('hapi.authCookie.password'),
     cookie: 'sid',
-    redirectTo: '/login',
     isSecure: false
   });
 });
@@ -107,8 +103,16 @@ server.ext('onPreResponse', (request, reply) => {
     webpackIsomorphicTools.refresh();
   }
 
+  const initialState = {};
+  if (request.auth.isAuthenticated) {
+    initialState.admin = {
+      isAdmin: true,
+      isEditing: true
+    };
+  }
+
   const client = new ApiClient(request);
-  const store = createStore(client);
+  const store = createStore(client, initialState);
   const location = new Location(request.path, request.query);
 
   if (__DISABLE_SSR__) {
@@ -133,12 +137,15 @@ server.ext('onPreResponse', (request, reply) => {
       })
       .catch((error) => {
         if (error.redirect) {
-          res.redirect(error.redirect);
+          reply.redirect(error.redirect);
           return;
         }
 
-        console.error('ROUTER ERROR:', pretty.render(error));
-        res.status(500).send({error: error.stack});
+        reply(Boom.wrap(error));
       });
   }
+});
+
+server.start(() => {
+  console.info('==> Server is listening at ' + server.info.uri.toLowerCase());
 });

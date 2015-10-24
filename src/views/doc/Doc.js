@@ -8,7 +8,7 @@ import {parseHeader, isHeaderValid} from '../../utils/markdownParser.js';
 
 @connect(
   state => ({
-    editing: state.admin.get('editing'),
+    editing: state.admin.get('isEditing'),
     docs: state.docs.get('entities').toJS(),
   }),
   dispatch => ({
@@ -40,32 +40,36 @@ export default class Doc extends Component {
     router: PropTypes.object.isRequired
   }
 
+  constructor(props) {
+    super(props);
+    this.onChange = this.onChange.bind(this);
+  }
+
   componentWillMount() {
-    const {router} = this.context;
-    this.router = router;
+    console.log('mount');
+    this.router = this.context.router;
     this.debouncedSave = _.debounce(this.props.actions.save, 1000);
   }
 
-  shouldComponentUpdate() {
-    // TODO: This probably updates too eagerly
-    return !this.preventComponentUpdate;
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.doc.content !== this.findCurrentDoc(nextProps).content;
   }
 
-  onChange(doc, newContent) {
+  onChange(newContent) {
     if (!isHeaderValid(newContent)) {
-      this.props.actions.updateContentFailed(doc, newContent, 'Header invalid');
+      this.props.actions.updateContentFailed(this.doc, newContent, 'Header invalid');
       return;
     }
 
     const header = parseHeader(newContent);
 
-    if (header.slug !== doc.slug) {
+    if (header.slug !== this.doc.slug) {
       // If we're changing the URL, we have to delay React's ability to re-render
       // the component until we're both done with updating the URL and updating
       // the Redux store.
       this.preventComponentUpdate = true;
 
-      this.props.actions.updateContent(doc, newContent);
+      this.props.actions.updateContent(this.doc, newContent);
 
       if (header.type === 'post') {
         this.router.replaceWith('/posts/' + header.slug);
@@ -75,10 +79,14 @@ export default class Doc extends Component {
 
       this.preventComponentUpdate = false;
     } else {
-      this.props.actions.updateContent(doc, newContent);
+      this.props.actions.updateContent(this.doc, newContent);
     }
 
-    this.debouncedSave(doc, newContent);
+    this.debouncedSave(this.doc, newContent);
+  }
+
+  findCurrentDoc(props = this.props) {
+    return _.find(props.docs, 'slug', props.params.slug);
   }
 
   static fetchData(store, params, query) {
@@ -89,22 +97,23 @@ export default class Doc extends Component {
 
   render() {
     require('./Doc.scss');
-    const doc = _.find(this.props.docs, 'slug', this.props.params.slug);
+    this.doc = this.findCurrentDoc();
+    console.log('rendering');
 
     return (
       <div className={this.props.editing && 'editing'}>
         { this.props.editing &&
           <Editor name="ace"
-            content={doc.content}
-            onChange={this.onChange.bind(this, doc)} />
+            content={this.doc.content}
+            onChange={this.onChange} />
         }
 
-        { this.props.editing && doc.updateError &&
-          <div className="updateError">{doc.updateError}</div>
+        { this.props.editing && this.doc.updateError &&
+          <div className="updateError">{this.doc.updateError}</div>
         }
 
         <div className="Doc container">
-          <div className="content" dangerouslySetInnerHTML={{__html: doc.html}} />
+          <div className="content" dangerouslySetInnerHTML={{__html: this.doc.html}} />
         </div>
       </div>
     );

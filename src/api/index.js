@@ -1,6 +1,7 @@
 import path from 'path';
 
 const routes = [
+  'routes/admin.js',
   'routes/docs.js'
 ];
 

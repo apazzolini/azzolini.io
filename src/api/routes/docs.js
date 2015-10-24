@@ -23,14 +23,17 @@ export async function getDocs(type) {
  * `html`, which represents the rendered Markdown of the doc.
  *
  * @param {Object} params - The params to use for looking up
+ * @param {Boolean} includeMd - Whether or not to include markdown in the response
  * @return {Object}
  */
-async function getDoc(params) {
-  // TODO: This should exclude the content field unless it's an admin session
+async function getDoc(params, includeMd) {
   const promise = docs.findOne(params);
 
   promise.then((doc) => {
     doc.html = parseMarkdown(doc.content);
+    if (!includeMd) {
+      delete doc.content;
+    }
   });
 
   return promise;
@@ -40,27 +43,29 @@ async function getDoc(params) {
  * Retrieves the specified doc by id.
  *
  * @param {ObjectId} id - The MongoDB id of the doc to retrieve
+ * @param {Boolean} includeMd - Whether or not to include markdown in the response
  * @return {Object}
  */
-export async function getDocById(id) {
-  return getDoc({_id: db.ObjectId(id)});
+export async function getDocById(id, includeMd) {
+  return getDoc({_id: db.ObjectId(id)}, includeMd);
 }
 
 /**
  * Retrieves the specified doc by slug and type.
  *
- * @param {String type - The type of the doc to retrieve
+ * @param {String} type - The type of the doc to retrieve
  * @param {String} slug - The URL slug of the doc to retrieve
+ * @param {Boolean} includeMd - Whether or not to include markdown in the response
  * @return {Object}
  */
-export async function getDocBySlug(type, slug) {
-  return getDoc({type, slug});
+export async function getDocBySlug(type, slug, includeMd) {
+  return getDoc({type, slug}, includeMd);
 }
 
 /**
  * Updates the given doc keyed by MongoID to have the new markdown content.
  *
- * @param {String} name - the MongoID of the post to update
+ * @param {String} docId - the MongoID of the post to update
  * @param {String} newContent - the new markdown content of the post
  */
 export async function saveDoc(docId, newContent) {
@@ -100,12 +105,21 @@ export async function createDoc(type) {
 /**
  * Deletes the given doc keyed by MongoID
  *
- * @param {String} name - the MongoID of the post to delete
+ * @param {String} docId - the MongoID of the post to delete
  */
 export async function deleteDoc(docId) {
   return docs.remove({
-    _id: db.ObjectId(docId),
+    _id: db.ObjectId(docId)
   });
+}
+
+// -----------------------------------------------------------------------------
+// Route helper functions ------------------------------------------------------
+// -----------------------------------------------------------------------------
+
+function isAdmin(request) {
+  // console.log(request.auth, !!request.auth.isAuthenticated);
+  return !!request.auth.isAuthenticated;
 }
 
 // -----------------------------------------------------------------------------
@@ -133,7 +147,7 @@ export const routes = [
   {
     path: '/docs/{id}', method: 'GET', handler: async (request, reply) => {
       try {
-        const post = await getDocById(request.params.id);
+        const post = await getDocById(request.params.id, isAdmin(request));
         reply(post === null ? Boom.notFound() : post);
       } catch (e) {
         reply(Boom.wrap(e));
@@ -157,6 +171,7 @@ export const routes = [
       }
     },
     config: {
+      auth: 'session',
       validate: {
         params: {
           id: Joi.string().length(24).hex().required()
@@ -174,6 +189,7 @@ export const routes = [
       }
     },
     config: {
+      auth: 'session',
       validate: {
         params: {
           id: Joi.string().length(24).hex().required()
@@ -185,7 +201,7 @@ export const routes = [
   {
     path: '/docs/{type}/{slug}', method: 'GET', handler: async (request, reply) => {
       try {
-        const post = await getDocBySlug(request.params.type, request.params.slug);
+        const post = await getDocBySlug(request.params.type, request.params.slug, isAdmin(request));
         reply(post === null ? Boom.notFound() : post);
       } catch (e) {
         reply(Boom.wrap(e));
@@ -210,9 +226,10 @@ export const routes = [
       }
     },
     config: {
+      auth: 'session',
       validate: {
         params: {
-          type: Joi.string().required(),
+          type: Joi.string().required()
         }
       }
     }

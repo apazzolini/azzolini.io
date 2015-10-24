@@ -7,7 +7,7 @@ import * as Docs from '../../redux/modules/docs';
 
 @connect(
   state => ({
-    editing: state.admin.get('editing'),
+    editing: state.admin.get('isEditing'),
     docs: state.docs.get('entities').toJS(),
   }),
   dispatch => ({
@@ -29,6 +29,11 @@ export default class Home extends Component {
 
   static contextTypes = {
     router: PropTypes.object.isRequired
+  }
+
+  constructor(props) {
+    super(props);
+    this.createAndRedirect = this.createAndRedirect.bind(this);
   }
 
   componentWillMount() {
@@ -72,9 +77,11 @@ export default class Home extends Component {
               <li key={postId}>
                 <Link to={`/posts/${post.slug}`}>
                   {post.title}
-                </Link> 
+                </Link>
                 - {post.date}
-                <div onClick={this.props.actions.deletePost.bind(null, post._id)}>Delete</div>
+                { this.props.editing &&
+                  <span onClick={this.props.actions.deletePost.bind(null, post._id)}>Delete</span>
+                }
               </li>
             );
           })
@@ -82,7 +89,7 @@ export default class Home extends Component {
 
           { this.props.editing &&
             <li>
-              <div onClick={this.createAndRedirect.bind(this)}>New Post</div>
+              <div onClick={this.createAndRedirect}>New Post</div>
             </li>
           }
         </ul>
