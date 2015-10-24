@@ -3,3 +3,7 @@ dist/
 config/local.json5
 webpack-stats.json
 npm-debug.log
+
+// Intellij
+.idea
+*.iml
