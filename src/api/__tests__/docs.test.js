@@ -6,6 +6,9 @@ import {server} from '../../../test/helper';
 describe('api', () => {
   describe('docs', () => {
     let testPostId;
+    const credentials = {
+      credentials: 'some-value'
+    };
 
     // -------------------------------------------------------------------------
     // Setup -------------------------------------------------------------------
@@ -155,7 +158,7 @@ describe('api', () => {
       });
 
       it('creates a new post', (done) => {
-        server.inject({method: 'POST', url: `/docs/post/create`}, (res) => {
+        server.inject({...credentials, method: 'POST', url: `/docs/post/create`}, (res) => {
           expect(res.result).to.have.property('_id');
           expect(res.result.type).to.equal('post');
           done();
@@ -174,6 +177,7 @@ describe('api', () => {
         ].join('\n');
 
         server.inject({
+          ...credentials,
           method: 'POST',
           url: `/docs/${testPostId}`,
           payload,
@@ -187,7 +191,7 @@ describe('api', () => {
       });
 
       it('deletes a doc', (done) => {
-        server.inject({method: 'DELETE', url: `/docs/${testPostId}`}, (res) => {
+        server.inject({...credentials, method: 'DELETE', url: `/docs/${testPostId}`}, (res) => {
           expect(res.result.n).to.equal(1);
           done();
         });

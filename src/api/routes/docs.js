@@ -14,7 +14,8 @@ import {parseHeader, parseMarkdown} from '../../utils/markdownParser.js';
  * @return {Array}
  */
 export async function getDocs(type) {
-  return docs.find({type}, {content: false}).toArray();
+  const params = type ? {type} : {};
+  return docs.find(params, {content: false}).toArray();
 }
 
 /**
@@ -46,7 +47,7 @@ async function getDoc(params, includeMd) {
  * @param {Boolean} includeMd - Whether or not to include markdown in the response
  * @return {Object}
  */
-export async function getDocById(id, includeMd) {
+export async function getDocById(id, includeMd = false) {
   return getDoc({_id: db.ObjectId(id)}, includeMd);
 }
 
@@ -58,7 +59,7 @@ export async function getDocById(id, includeMd) {
  * @param {Boolean} includeMd - Whether or not to include markdown in the response
  * @return {Object}
  */
-export async function getDocBySlug(type, slug, includeMd) {
+export async function getDocBySlug(type, slug, includeMd = false) {
   return getDoc({type, slug}, includeMd);
 }
 
