@@ -119,7 +119,6 @@ export async function deleteDoc(docId) {
 // -----------------------------------------------------------------------------
 
 function isAdmin(request) {
-  // console.log(request.auth, !!request.auth.isAuthenticated);
   return !!request.auth.isAuthenticated;
 }
 

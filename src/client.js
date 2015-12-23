@@ -11,6 +11,7 @@ import createStore from './redux/create';
 import ApiClient from './utils/ApiClient';
 import getRoutes from './views/routes';
 import fetchData from './utils/fetchComponentData';
+import {toggleEditMode} from './redux/modules/admin';
 
 const client = new ApiClient();
 const dest = document.getElementById('content');
@@ -21,6 +22,10 @@ const history = useScroll(createHistory)({routes: createRoutes(routes)});
 syncReduxAndRouter(history, store);
 
 let lastMatchedLocBefore;
+
+// -----------------------------------------------------------------------------
+// Manual client-side route matching until react-router 2.0 is released --------
+// -----------------------------------------------------------------------------
 
 history.listenBefore((location, callback) => {
   const loc = location.pathname + location.search + location.hash;
@@ -45,6 +50,22 @@ history.listenBefore((location, callback) => {
     }
   });
 });
+
+// -----------------------------------------------------------------------------
+// Toggle edit mode via a hotkey -----------------------------------------------
+// -----------------------------------------------------------------------------
+
+document.addEventListener('keydown', (e) => {
+  const cmdShiftE = e.metaKey && e.shiftKey && e.keyCode === 69;
+
+  if (cmdShiftE) {
+    store.dispatch(toggleEditMode());
+  }
+});
+
+// -----------------------------------------------------------------------------
+// Render the React component --------------------------------------------------
+// -----------------------------------------------------------------------------
 
 const component = (
   <Router history={history}>

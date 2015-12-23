@@ -5,6 +5,7 @@ import {fromError} from '../utils';
 const LOGIN = 'admin/LOGIN';
 const LOGIN_OK = 'admin/LOGIN_OK';
 const LOGIN_FAIL = 'admin/LOGIN_FAIL';
+const TOGGLE_EDIT_MODE = 'admin/TOGGLE_EDIT_MODE';
 
 const initialState = Immutable.fromJS({
   isAdmin: false,
@@ -30,7 +31,12 @@ export default createReducer(initialState, {
   [LOGIN_FAIL]: (state, action) => state.merge({
     loggingIn: false,
     isAdmin: false,
+    isEditing: false,
     loginError: fromError(action.error)
+  }),
+
+  [TOGGLE_EDIT_MODE]: (state, action) => state.merge({
+    isEditing: state.get('isAdmin') && !state.get('isEditing')
   })
 
 });
@@ -47,5 +53,11 @@ export function login(auth) {
   return {
     types: [LOGIN, LOGIN_OK, LOGIN_FAIL],
     promise: (client) => client.post('/login', {auth})
+  };
+}
+
+export function toggleEditMode() {
+  return {
+    type: TOGGLE_EDIT_MODE
   };
 }

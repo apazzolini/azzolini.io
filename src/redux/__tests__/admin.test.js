@@ -10,6 +10,10 @@ describe('redux', () => {
         isAdmin: false
       });
 
+      const initialStateAdmin = Immutable.fromJS({
+        isAdmin: true
+      });
+
       it('handles LOGIN', () => {
         const newState = reducer(initialState, {
           type: 'admin/LOGIN',
@@ -42,8 +46,29 @@ describe('redux', () => {
 
         expect(newState.toJS()).to.deep.equal({
           isAdmin: false,
+          isEditing: false,
           loggingIn: false,
           loginError: fromError(error)
+        });
+      });
+
+      it('handles TOGGLE_EDIT_MODE', () => {
+        const newState = reducer(initialStateAdmin, {
+          type: 'admin/TOGGLE_EDIT_MODE'
+        });
+
+        expect(newState.toJS()).to.deep.equal({
+          isAdmin: true,
+          isEditing: true
+        });
+
+        const newState2 = reducer(newState, {
+          type: 'admin/TOGGLE_EDIT_MODE'
+        });
+
+        expect(newState2.toJS()).to.deep.equal({
+          isAdmin: true,
+          isEditing: false
         });
       });
     });
