@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {replacePath} from 'redux-simple-router';
+import DocumentMeta from 'react-document-meta';
 import _ from 'lodash';
 import * as Docs from '../../redux/modules/docs';
 import NotFound from '../_errors/NotFound';
@@ -60,7 +61,7 @@ class Doc extends Component {
     const header = parseHeader(newContent);
 
     if (header.slug !== doc.slug) {
-      // If we're changing the URL, we have to delay React's ability to re-render the 
+      // If we're changing the URL, we have to delay React's ability to re-render the
       // component until we're both done with updating the URL and updating the Redux store.
       this.preventComponentUpdate = true;
 
@@ -97,6 +98,10 @@ class Doc extends Component {
   render() {
     require('./Doc.scss');
 
+    const meta = {
+      title: `${this.doc.title} | Andre Azzolini`
+    };
+
     if (!this.doc) {
       return (
         <NotFound />
@@ -105,6 +110,9 @@ class Doc extends Component {
 
     return (
       <div className={this.props.editing && 'editing'}>
+
+        <DocumentMeta {...meta} extend />
+
         { this.props.editing &&
           <Editor name="ace"
             content={this.doc.content}
