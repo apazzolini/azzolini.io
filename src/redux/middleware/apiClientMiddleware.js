@@ -11,8 +11,8 @@
  * When installing this middleware, be sure it comes after a thunk handling
  * middleware, such as redux-thunk.
  */
-export default function(apiClient) {
-  return store => next => action => {
+export default function (apiClient) {
+  return ({getState, dispatch}) => next => action => {
     // We only handle actions that have a `promise` field.
     const {promise, types, ...rest} = action;
     if (!promise) {

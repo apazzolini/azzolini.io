@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import ReactDOM from 'react-dom/server';
 import DocumentMeta from 'react-document-meta';
 import serialize from 'serialize-javascript';
 
@@ -20,6 +21,7 @@ export default class Html extends Component {
 
   render() {
     const {assets, component, store} = this.props;
+    const content = component ? ReactDOM.renderToString(component) : '';
 
     return (
       <html lang="en-us">
@@ -37,11 +39,12 @@ export default class Html extends Component {
           {/* styles (will be present only in production with webpack extract text plugin) */}
           {Object.keys(assets.styles).map((style, i) =>
             <link href={assets.styles[style]} key={i} media="screen, projection"
-                  rel="stylesheet" type="text/css"/>
+              rel="stylesheet" type="text/css"
+            />
           )}
         </head>
         <body>
-          <div id="content" dangerouslySetInnerHTML={{__html: React.renderToString(component)}}/>
+          <div id="content" dangerouslySetInnerHTML={{__html: content}}/>
           <script dangerouslySetInnerHTML={{__html: `window.__state=${serialize(store.getState())};`}} />
           <script src={assets.javascript.main}/>
         </body>

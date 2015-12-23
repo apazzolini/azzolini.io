@@ -1,8 +1,10 @@
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
+import {routeReducer} from 'redux-simple-router';
 import admin from './admin';
 import docs from './docs';
 
 export default combineReducers({
+  routing: routeReducer,
   admin,
   docs
 });
@@ -11,6 +13,8 @@ export default combineReducers({
  * The Redux state tree adheres to the following structure:
  *
  * {
+ *   routing: ...<the structure from redux-simple-router>,
+ *
  *   admin: {
  *     loggingIn: {boolean},
  *     loginError: {Object},

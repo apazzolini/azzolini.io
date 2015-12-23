@@ -11,22 +11,22 @@ import apiClientMiddleware from './middleware/apiClientMiddleware';
 export default function createCustomizedStore(apiClient, state) {
   let finalCreateStore;
 
+  const middleware = [
+    thunk,
+    apiClientMiddleware(apiClient)
+  ];
+
   if (__DEVELOPMENT__ && __CLIENT__ && __DEVTOOLS__) {
-    const {devTools, persistState} = require('redux-devtools');
+    const {persistState} = require('redux-devtools');
+    const DevTools = require('../components/DevTools/DevTools');
 
     finalCreateStore = compose(
-      applyMiddleware(
-        thunk,
-        apiClientMiddleware(apiClient)
-      ),
-      devTools(),
+      applyMiddleware(...middleware),
+      DevTools.instrument(),
       persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/))
     )(createStore);
   } else {
-    finalCreateStore = applyMiddleware(
-      thunk,
-      apiClientMiddleware(apiClient)
-    )(createStore);
+    finalCreateStore = applyMiddleware(...middleware)(createStore);
   }
 
   const reducer = require('./modules');

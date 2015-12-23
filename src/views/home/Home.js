@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import {pushPath} from 'redux-simple-router';
 import _ from 'lodash';
 import * as Docs from '../../redux/modules/docs';
 
@@ -13,7 +14,8 @@ import * as Docs from '../../redux/modules/docs';
   dispatch => ({
     actions: bindActionCreators({
       createNewPost: Docs.create.bind(null, 'post'),
-      deletePost: Docs.deleteDoc
+      deletePost: Docs.deleteDoc,
+      pushPath
     }, dispatch)
   })
 )
@@ -21,14 +23,11 @@ export default class Home extends Component {
   static propTypes = {
     actions: PropTypes.shape({
       createNewPost: PropTypes.func,
-      deletePost: PropTypes.func
+      deletePost: PropTypes.func,
+      pushPath: PropTypes.func.isRequired
     }),
     editing: PropTypes.bool,
     docs: PropTypes.object,
-  }
-
-  static contextTypes = {
-    router: PropTypes.object.isRequired
   }
 
   constructor(props) {
@@ -36,20 +35,15 @@ export default class Home extends Component {
     this.createAndRedirect = this.createAndRedirect.bind(this);
   }
 
-  componentWillMount() {
-    const {router} = this.context;
-    this.router = router;
-  }
-
   createAndRedirect() {
     this.props.actions.createNewPost().then((res) => {
-      this.router.transitionTo(`/posts/${res.result.slug}`);
+      this.props.actions.pushPath(`/posts/${res.result.slug}`);
     });
   }
 
-  static fetchData(store, params, query) {
-    if (!Docs.isLoaded(store.getState())) {
-      return store.dispatch(Docs.load());
+  static fetchData(getState, dispatch) {
+    if (!Docs.isLoaded(getState())) {
+      return dispatch(Docs.load());
     }
   }
 
