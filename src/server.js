@@ -113,7 +113,7 @@ server.ext('onPreResponse', (request, reply) => {
   if (request.auth.isAuthenticated) {
     initialState.admin = {
       isAdmin: true,
-      isEditing: true
+      isEditing: false
     };
   }
 

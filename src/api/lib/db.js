@@ -9,3 +9,4 @@ con += config.get('mongo.host') + '/' + config.get('mongo.db');
 
 export const db = pmongo(con);
 export const docs = db.collection('docs');
+export const admins = db.collection('admins');
