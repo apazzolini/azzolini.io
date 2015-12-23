@@ -1,5 +1,13 @@
 import marked from 'marked';
+import hljs from 'highlight.js';
 import yaml from 'js-yaml';
+
+(function initializeMarked() {
+  marked.setOptions({
+    langPrefix: 'hljs ',
+    highlight: (code) => hljs.highlightAuto(code).value
+  });
+})();
 
 function headerExists(content) {
   return content.indexOf('---') === 0;
