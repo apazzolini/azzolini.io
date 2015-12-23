@@ -53,6 +53,7 @@ export default class Home extends Component {
     const {docs} = this.props;
     const dateSortedIds = _.chain(docs)
       .filter('type', 'post')
+      .filter(d => this.props.editing || d.published)
       .sortBy('date')
       .pluck('_id')
       .value();
