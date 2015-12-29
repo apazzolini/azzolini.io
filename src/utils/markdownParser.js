@@ -3,9 +3,21 @@ import hljs from 'highlight.js';
 import yaml from 'js-yaml';
 
 (function initializeMarked() {
+  const renderer = new marked.Renderer();
+
+  // We want to render manually instead of using highlight.js's
+  // highlightAuto function for performance reasons.
+  renderer.code = (code, language) => {
+    if (!language || !hljs.getLanguage(language)) {
+      return `<pre><code class="hljs">${code}</code></pre>`;
+    }
+
+    const highlightedCode = hljs.highlight(language, code).value;
+    return `<pre><code class="hljs ${language}">${highlightedCode}</code></pre>`;
+  };
+
   marked.setOptions({
-    langPrefix: 'hljs ',
-    highlight: (code) => hljs.highlightAuto(code).value
+    renderer
   });
 })();
 

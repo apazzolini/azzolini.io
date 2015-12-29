@@ -3,7 +3,9 @@ $TopBarHeight: 0px;
 #Editor {
   position: fixed;
   width: 40%;
-  height: 100% !important;
+  bottom: 0px;
+  top: 66px;
+  height: auto;
 
   #Editor-TopBar {
     height: $TopBarHeight;
@@ -11,8 +13,7 @@ $TopBarHeight: 0px;
 
   #Editor-AceContainer {
     width: 100%;
-    top: $TopBarHeight;
-    bottom: 0;
-    position: absolute;
+    height: 100%;
+    position: relative;
   }
 }
