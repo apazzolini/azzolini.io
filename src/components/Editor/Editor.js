@@ -7,6 +7,52 @@ export default class Editor extends Component {
     onChange: PropTypes.func.isRequired
   }
 
+  onAceLoad(editor) {
+    editor.getSession().setUseWrapMode(true);
+
+    editor.getKeyboardHandler().defaultKeymap.unshift({
+      keys: 'j',
+      toKeys: 'gj',
+      type: 'keyToKey',
+      user: true
+    });
+
+    editor.getKeyboardHandler().defaultKeymap.unshift({
+      keys: 'k',
+      toKeys: 'gk',
+      type: 'keyToKey',
+      user: true
+    });
+
+    editor.getKeyboardHandler().defaultKeymap.unshift({
+      keys: 'H',
+      toKeys: '^',
+      type: 'keyToKey',
+      user: true
+    });
+
+    editor.getKeyboardHandler().defaultKeymap.unshift({
+      keys: 'L',
+      toKeys: '$',
+      type: 'keyToKey',
+      user: true
+    });
+
+    editor.getKeyboardHandler().defaultKeymap.unshift({
+      keys: '<Space>',
+      toKeys: '10j',
+      type: 'keyToKey',
+      user: true
+    });
+
+    editor.getKeyboardHandler().defaultKeymap.unshift({
+      keys: '<BS>',
+      toKeys: '10k',
+      type: 'keyToKey',
+      user: true
+    });
+  }
+
   render() {
     require('./Editor.scss');
 
@@ -30,6 +76,7 @@ export default class Editor extends Component {
               theme="solarized_light"
               value={this.props.content}
               onChange={this.props.onChange}
+              onLoad={this.onAceLoad}
               name={this.props.name}
               editorProps={{$blockScrolling: true}}
             />
