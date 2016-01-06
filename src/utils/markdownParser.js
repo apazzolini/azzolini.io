@@ -1,6 +1,7 @@
 import marked from 'marked';
 import hljs from 'highlight.js';
 import yaml from 'js-yaml';
+import moment from 'moment';
 
 (function initializeMarked() {
   const renderer = new marked.Renderer();
@@ -16,6 +17,10 @@ import yaml from 'js-yaml';
     return `<pre><code class="hljs ${language}">${highlightedCode}</code></pre>`;
   };
 
+  renderer.image = (href, title, text) => {
+    return `<img src="${href}" alt="${text}" /> <span class="caption">${text}</span>`;
+  };
+
   marked.setOptions({
     renderer
   });
@@ -27,6 +32,14 @@ function headerExists(content) {
 
 function stripHeader(content) {
   return content.substring(content.indexOf('---', 1) + 3);
+}
+
+function getFormattedDate(header) {
+  if (header.date) {
+    return moment(header.date).format('MMMM YYYY');
+  } else {
+    return '';
+  }
 }
 
 export function parseHeader(content) {
@@ -55,6 +68,12 @@ export function isHeaderValid(content) {
 }
 
 export function parseMarkdown(content) {
-  const mdContent = headerExists(content) ? stripHeader(content) : content;
-  return marked(mdContent);
+  if (headerExists(content)) {
+    const header = parseHeader(content);
+    const mdTitle = `# ${header.title}`;
+    const mdDate = getFormattedDate(header);
+    return marked(`${mdTitle}\n\n${stripHeader(content)}\n\n${mdDate}`);
+  } else {
+    return marked(content);
+  }
 }

@@ -41,6 +41,12 @@ export default class Home extends Component {
     });
   }
 
+  deletePost(post) {
+    if (confirm(`Really delete ${post.title}?`)) {
+      this.props.actions.deletePost(post._id);
+    }
+  }
+
   static fetchData(getState, dispatch) {
     if (!Docs.isLoaded(getState())) {
       return dispatch(Docs.load());
@@ -60,9 +66,9 @@ export default class Home extends Component {
 
     return (
       <div className="container">
-        <h2>Thoughts on programming and things.</h2>
+        <h1>Thoughts on programming and things</h1>
 
-        <h6>Posts</h6>
+        <h3>Posts</h3>
 
         <ul>
           { dateSortedIds.reverse().map((postId) => {
@@ -73,9 +79,8 @@ export default class Home extends Component {
                 <Link to={`/posts/${post.slug}`}>
                   {post.title}
                 </Link>
-                - {post.date}
                 { this.props.editing &&
-                  <span onClick={this.props.actions.deletePost.bind(null, post._id)}>Delete</span>
+                  <span className="edit" onClick={() => this.deletePost(post)}>Delete</span>
                 }
               </li>
             );
@@ -84,7 +89,7 @@ export default class Home extends Component {
 
           { this.props.editing &&
             <li>
-              <div onClick={this.createAndRedirect}>New Post</div>
+              <span className="edit" onClick={this.createAndRedirect}>New Post</span>
             </li>
           }
         </ul>

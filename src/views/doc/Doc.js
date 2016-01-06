@@ -98,9 +98,10 @@ class Doc extends Component {
   render() {
     require('./Doc.scss');
 
-    const meta = {
-      title: `${this.doc.title} | Andre Azzolini`
-    };
+    const meta = {};
+    if (this.doc && this.doc.title) {
+      meta.title = `${this.doc.title} | Andre Azzolini`;
+    }
 
     if (!this.doc) {
       return (

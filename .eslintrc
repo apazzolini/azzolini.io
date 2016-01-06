@@ -13,6 +13,8 @@
     "object-curly-spacing": [2, "never"],
     "new-cap": 0,
     "no-unused-vars": [2, {"vars": "all", "args": "none"}],
+    "no-else-return": 0,
+    "no-alert": 0,
     "object-curly-spacing": 0
   },
   "plugins": [

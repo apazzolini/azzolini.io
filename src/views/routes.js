@@ -13,9 +13,9 @@ export default (store) => {
     <Route path="/" component={App}>
       <IndexRoute component={Home} />
 
-      <Route path="/login" component={Login} />
-      <Route path="/posts/:slug" component={DocPost} />
-      <Route path="/:slug" component={DocPage} />
+      <Route path="login" component={Login} />
+      <Route path="posts/:slug" component={DocPost} />
+      <Route path="about" component={DocPage} />
 
       <Route path="*" component={NotFound} status={404} />
     </Route>

@@ -10,4 +10,17 @@
   section {
     margin-bottom: 50px;
   }
+
+  img {
+    display: block;
+    margin: 0 auto;
+
+    & + span.caption {
+      display: block;
+      margin: 0 auto;
+      text-align: center;
+      font-size: .8em;
+      font-style: italic;
+    }
+  }
 }

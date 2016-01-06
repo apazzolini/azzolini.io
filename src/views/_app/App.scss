@@ -12,10 +12,35 @@
   }
 }
 
-h2 {
+h1 {
   text-align: center;
-  margin-top: 6em;
-  margin-bottom: 3.5em;
+  margin-top: 3.5em;
+  margin-bottom: 3em;
+}
+
+h2 {
+  margin-top: 2em;
+  font-size: 2.3rem;
+  font-weight: 500;
+}
+
+h3 {
+  text-transform: uppercase;
+  margin-top: 1.6em;
+  font-size: 1.4rem;
+  letter-spacing: .2rem;
+  font-weight: 500;
+}
+
+blockquote {
+  background: #F1F1F1;
+  border-left: 7px solid #D8E0E5;
+  margin: 0 0 2em;
+  padding: 3px 10px;
+
+  p {
+    margin-bottom: 0;
+  }
 }
 
 h6 {
