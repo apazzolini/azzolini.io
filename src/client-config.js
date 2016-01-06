@@ -16,7 +16,7 @@ module.exports = {
   production: {
     isProduction: true,
     port: process.env.PORT,
-    apiPath: 'http://localhost:8080/api'
+    apiPath: 'https://azzolini.io/api'
   }
 
 }[process.env.NODE_ENV || 'development'];

@@ -34,7 +34,7 @@ class Doc extends Component {
     editing: PropTypes.bool,
     docs: PropTypes.object,
     params: PropTypes.shape({
-      slug: PropTypes.string.isRequired
+      slug: PropTypes.string
     })
   }
 
@@ -86,12 +86,14 @@ class Doc extends Component {
   }
 
   findDoc(props) {
-    return _.find(props.docs, 'slug', props.params.slug);
+    const slug = props.params.slug || props.route.path;
+    return _.find(props.docs, 'slug', slug);
   }
 
   static fetchData(getState, dispatch, location, params) {
-    if (!Docs.isFullyLoaded(getState(), this.type, params.slug)) {
-      return dispatch(Docs.loadDoc(getState(), this.type, params.slug));
+    const slug = params.slug || location.pathname.substring(1);
+    if (!Docs.isFullyLoaded(getState(), this.type, slug)) {
+      return dispatch(Docs.loadDoc(getState(), this.type, slug));
     }
   }
 
