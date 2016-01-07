@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import {pushPath} from 'redux-simple-router';
 import * as Admin from '../../redux/modules/admin';
 
 @connect(
@@ -9,38 +10,32 @@ import * as Admin from '../../redux/modules/admin';
   }),
   dispatch => ({
     actions: bindActionCreators({
-      login: Admin.login
+      login: Admin.login,
+      pushPath
     }, dispatch)
   })
 )
-export default class Home extends Component {
+export default class Login extends Component {
   static propTypes = {
     actions: PropTypes.shape({
-      login: PropTypes.func
+      login: PropTypes.func.isRequired,
+      pushPath: PropTypes.func.isRequired
     }),
     admin: PropTypes.object
-  }
-
-  static contextTypes = {
-    router: PropTypes.object.isRequired
-  }
-
-  componentWillMount() {
-    const {router} = this.context;
-    this.router = router;
   }
 
   loginAndRedirect(e) {
     e.preventDefault();
 
-    const auth = this.refs.auth.getDOMNode().value.trim();
+    const auth = this.refs.auth.value.trim();
     if (!auth) {
       return;
     }
 
     this.props.actions.login(auth).then((res) => {
-      console.log(res);
-      // window.location = '/';
+      if (res.type === Admin.LOGIN_OK) {
+        this.props.actions.pushPath(`/`);
+      }
     }, (err) => {
       console.log('error', err);
     });
@@ -53,17 +48,13 @@ export default class Home extends Component {
 
     return (
       <div className="container">
-        <h2>Thoughts on programming and things.</h2>
+        <h1>Login</h1>
 
         <form onSubmit={this.loginAndRedirect.bind(this)}>
           <input type="text" placeholder="Password" ref="auth" />
 
           { this.props.admin.loginError &&
             <span>Error logging in</span>
-          }
-
-          { this.props.admin.isAdmin &&
-            <span>isAdmin set to true</span>
           }
         </form>
       </div>

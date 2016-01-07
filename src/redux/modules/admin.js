@@ -3,7 +3,7 @@ import Immutable from 'immutable';
 import {fromError} from '../utils';
 
 const LOGIN = 'admin/LOGIN';
-const LOGIN_OK = 'admin/LOGIN_OK';
+export const LOGIN_OK = 'admin/LOGIN_OK';
 const LOGIN_FAIL = 'admin/LOGIN_FAIL';
 const TOGGLE_EDIT_MODE = 'admin/TOGGLE_EDIT_MODE';
 
