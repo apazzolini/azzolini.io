@@ -116,6 +116,10 @@
       li {
         float: left;
         padding-right: 0;
+
+        a {
+          padding: 0;
+        }
       }
 
       &.menu-expand {

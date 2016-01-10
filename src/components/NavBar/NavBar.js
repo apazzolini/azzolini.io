@@ -13,23 +13,25 @@ export default class NavBar extends Component {
   }
 
   componentDidMount() {
-    // If we've determined this is a mobile browser, we want to use an expanding
-    // menu with animation. This must be determined client-side.
-    this.isExpandingMenu = typeof window !== 'undefined' && window.innerWidth < 550;
-    if (this.isExpandingMenu) {
-      this.forceUpdate();
-    }
+    this.determineExpandingMenu();
 
     // Delay the binding in case the browser is restoring scroll position
     setTimeout(() => {
       this.boundHandleScroll = this.handleScroll.bind(this);
+      this.boundDetermineExpandingMenu = this.determineExpandingMenu.bind(this);
+
       window.addEventListener('scroll', this.boundHandleScroll);
+      window.addEventListener('resize', this.boundDetermineExpandingMenu);
     }, 1000);
   }
 
   componentWillUnmount() {
     if (typeof this.boundHandleScroll !== 'undefined') {
       window.removeEventListener('scroll', this.boundHandleScroll);
+    }
+
+    if (typeof this.boundDetermineExpandingMenu !== 'undefined') {
+      window.removeEventListener('resize', this.boundDetermineExpandingMenu);
     }
   }
 
@@ -41,6 +43,18 @@ export default class NavBar extends Component {
       menuPinned: pos < this.state.scrollY,
       menuExpanded: this.state.menuExpanded && pos < this.state.scrollY
     });
+  }
+
+  determineExpandingMenu() {
+    // If we've determined this is a mobile browser, we want to use an expanding
+    // menu with animation. This must be determined client-side.
+    this.isExpandingMenu = typeof window !== 'undefined' && window.innerWidth < 550;
+    if (this.isExpandingMenu) {
+      this.setState({...this.state, menuExpanded: false});
+      this.forceUpdate();
+    } else {
+      this.setState({...this.state, menuExpanded: true});
+    }
   }
 
   collapseMenu() {
