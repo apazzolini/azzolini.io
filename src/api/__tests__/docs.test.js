@@ -80,14 +80,14 @@ describe('api', () => {
           'slug: test-post-updated',
           '---',
           '',
-          '# Test Post Headline Updated'
+          '## Test Post Headline Updated'
         ].join('\n');
 
         const result = await Docs.saveDoc(testPostId, newContent);
         expect(result._id).to.equal(testPostId);
 
         const doc = await Docs.getDocById(testPostId);
-        expect(doc.html).to.equal('<h1 id="test-post-headline-updated">Test Post Headline Updated</h1>\n');
+        expect(doc.html).to.equal('<h1 id="test-post-updated">Test Post Updated</h1>\n<h2 id="test-post-headline-updated">Test Post Headline Updated</h2>\n');
       });
 
       it('creates a new doc with type post', async() => {
@@ -144,7 +144,7 @@ describe('api', () => {
       it('responds with the requested post by id', (done) => {
         server.inject({method: 'GET', url: `/docs/${testPostId}`}, (res) => {
           expect(res.result.title).to.equal('Test Post Updated');
-          expect(res.result.html).to.equal('<h1 id="test-post-headline-updated">Test Post Headline Updated</h1>\n');
+          expect(res.result.html).to.equal('<h1 id="test-post-updated">Test Post Updated</h1>\n<h2 id="test-post-headline-updated">Test Post Headline Updated</h2>\n');
           done();
         });
       });

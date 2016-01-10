@@ -231,8 +231,9 @@ describe('redux', () => {
               slug: 'test-post-updated',
               loaded: true,
               content: newContent,
-              html: '<h2 id="test-update">Test Update</h2>\n',
-              updateError: false
+              html: '<h1 id=\"test-post-updated\">Test Post Updated</h1>\n<h2 id="test-update">Test Update</h2>\n',
+              updateError: false,
+              dirty: true
             }
           }
         });
@@ -305,7 +306,8 @@ describe('redux', () => {
               html: '<h1>Test</h1>',
               loaded: true,
               saving: false,
-              saved: true
+              saved: true,
+              dirty: false
             }
           }
         });

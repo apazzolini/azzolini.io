@@ -127,6 +127,10 @@ class Doc extends Component {
           <div className="updateError">{this.doc.updateError}</div>
         }
 
+        { this.props.editing && !this.doc.dirty && this.doc.saved &&
+          <div className="saved">Saved</div>
+        }
+
         <div className="Doc container">
           <div className="content" dangerouslySetInnerHTML={{__html: this.doc.html}} />
         </div>

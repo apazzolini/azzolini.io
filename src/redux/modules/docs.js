@@ -129,7 +129,8 @@ export default createReducer(initialState, {
         ...parseHeader(action.newContent),
         content: action.newContent,
         html: parseMarkdown(action.newContent),
-        updateError: false
+        updateError: false,
+        dirty: true
       }
     }
   }),
@@ -155,7 +156,8 @@ export default createReducer(initialState, {
     entities: {
       [action.doc._id]: {
         saving: false,
-        saved: true
+        saved: true,
+        dirty: false
       }
     }
   }),
