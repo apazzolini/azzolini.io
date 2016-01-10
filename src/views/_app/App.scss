@@ -12,6 +12,10 @@
   }
 }
 
+a {
+  cursor: pointer;
+}
+
 h1 {
   text-align: center;
   margin-top: 3.5em;
@@ -52,4 +56,8 @@ h6 {
 
 #MainContainer {
   padding-top: 66px;
+}
+
+.u-hidden {
+  display: none;
 }

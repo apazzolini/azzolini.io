@@ -35,6 +35,7 @@ export default class Html extends Component {
           <link href="//cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css" rel="stylesheet" type="text/css" />
           <link href="//cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" rel="stylesheet" type="text/css" />
           <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/styles/tomorrow-night-eighties.min.css" rel="stylesheet" type="text/css" />
+          <link href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.1/animate.min.css" rel="stylesheet" type="text/css" />
 
           {/* styles (will be present only in production with webpack extract text plugin) */}
           {Object.keys(assets.styles).map((style, i) =>
