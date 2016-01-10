@@ -6,12 +6,14 @@ import {Router, match, createRoutes} from 'react-router';
 import {syncReduxAndRouter} from 'redux-simple-router';
 import createHistory from 'history/lib/createBrowserHistory';
 import useScroll from 'scroll-behavior/lib/useStandardScroll';
+import ga from 'react-ga';
 
 import createStore from './redux/create';
 import ApiClient from './utils/ApiClient';
 import getRoutes from './views/routes';
 import fetchData from './utils/fetchComponentData';
 import {toggleEditMode} from './redux/modules/admin';
+import clientConfig from './client-config';
 
 const client = new ApiClient();
 const dest = document.getElementById('content');
@@ -20,6 +22,11 @@ const routes = getRoutes(store);
 const history = useScroll(createHistory)({routes: createRoutes(routes)});
 
 syncReduxAndRouter(history, store);
+
+ga.initialize('UA-26694937-1', {
+  debug: !clientConfig.isProduction
+});
+ga.pageview(store.getState().routing.path);
 
 let lastMatchedLocBefore;
 
@@ -38,6 +45,7 @@ history.listenBefore((location, callback) => {
       fetchData(nextState.components, store.getState, store.dispatch, location, nextState.params)
       .then(() => {
         lastMatchedLocBefore = loc;
+        ga.pageview(location.pathname);
         callback();
       })
       .catch(err2 => {
@@ -81,7 +89,7 @@ ReactDOM.render(
   dest
 );
 
-if (process.env.NODE_ENV !== 'production') {
+if (!clientConfig.isProduction) {
   window.React = React; // enable debugger
 
   if (!dest || !dest.firstChild || !dest.firstChild.attributes || !dest.firstChild.attributes['data-react-checksum']) {

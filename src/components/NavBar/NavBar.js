@@ -76,7 +76,7 @@ export default class NavBar extends Component {
     return (
       <nav className={'MainNav ' + mainNavAnimation}>
         <div className="container">
-          <Link to="/">Andre Azzolini</Link>
+          <Link to="/" onClick={() => this.collapseMenu()}>Andre Azzolini</Link>
 
           <ul className={'u-pull-right ' + (this.isExpandingMenu ? 'expanding-menu' : '')}>
             { this.isExpandingMenu &&
