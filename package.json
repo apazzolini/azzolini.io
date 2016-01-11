@@ -29,7 +29,7 @@
     "watch-client": "node ./node_modules/better-npm-run watch-client",
     "dev": "concurrent --kill-others \"npm run watch-client\" \"npm run start-dev\"",
     "test": "node ./node_modules/better-npm-run test",
-    "postinstall": "npm run build"
+    "postinstall": "npm run test && npm run build"
   },
   "betterScripts": {
     "start": {
