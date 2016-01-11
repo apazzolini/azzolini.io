@@ -1,5 +1,4 @@
 import React, {Component, PropTypes} from 'react';
-import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {replacePath} from 'redux-simple-router';
 import DocumentMeta from 'react-document-meta';
@@ -9,28 +8,14 @@ import NotFound from '../_errors/NotFound';
 import {Editor} from '../../components';
 import {parseHeader, isHeaderValid} from '../../utils/markdownParser.js';
 
-@connect(
-  state => ({
-    editing: state.admin.get('isEditing'),
-    docs: state.docs.get('entities').toJS(),
-  }),
-  dispatch => ({
-    actions: bindActionCreators({
-      updateContent: Docs.updateContent,
-      updateContentFailed: Docs.updateContentFailed,
-      save: Docs.save,
-      replacePath
-    }, dispatch)
-  })
-)
+const docState = (state) => ({
+  editing: state.admin.get('isEditing'),
+  docs: state.docs.get('entities').toJS()
+});
+
 class Doc extends Component {
   static propTypes = {
-    actions: PropTypes.shape({
-      updateContent: PropTypes.func,
-      updateContentFailed: PropTypes.func,
-      save: PropTypes.func,
-      replacePath: PropTypes.func.isRequired
-    }),
+    dispatch: PropTypes.func,
     editing: PropTypes.bool,
     docs: PropTypes.object,
     params: PropTypes.shape({
@@ -40,20 +25,22 @@ class Doc extends Component {
 
   constructor(props) {
     super(props);
-    this.onEditorChange = this.onEditorChange.bind(this);
+    this.dispatch = props.dispatch;
   }
 
   componentWillMount() {
-    this.debouncedSave = _.debounce(this.props.actions.save, 1000);
+    this.debouncedSave = _.debounce((doc, newContent) => (
+      this.dispatch(Docs.save(doc, newContent))
+    ), 1000);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return !this.preventComponentUpdate;
   }
 
-  onEditorChange(newContent) {
+  onEditorChange = (newContent) => {
     if (!isHeaderValid(newContent)) {
-      this.props.actions.updateContentFailed(this.doc, newContent, 'Header invalid');
+      this.dispatch(Docs.updateContentFailed(this.doc, newContent, 'Header invalid'));
       return;
     }
 
@@ -65,12 +52,12 @@ class Doc extends Component {
       // component until we're both done with updating the URL and updating the Redux store.
       this.preventComponentUpdate = true;
 
-      this.props.actions.updateContent(doc, newContent);
-      this.props.actions.replacePath('/posts/' + header.slug);
+      this.dispatch(Docs.updateContent(doc, newContent));
+      this.dispatch(replacePath('/posts/' + header.slug));
 
       this.preventComponentUpdate = false;
     } else {
-      this.props.actions.updateContent(doc, newContent);
+      this.dispatch(Docs.updateContent(doc, newContent));
     }
 
     this.debouncedSave(doc, newContent);
@@ -87,8 +74,9 @@ class Doc extends Component {
 
   static fetchData(getState, dispatch, location, params) {
     const slug = params.slug || location.pathname.substring(1);
-    if (!Docs.isFullyLoaded(getState(), this.type, slug)) {
-      return dispatch(Docs.loadDoc(getState(), this.type, slug));
+    const type = location.pathname.indexOf('/posts') === 0 ? 'post' : 'page';
+    if (!Docs.isFullyLoaded(getState(), type, slug)) {
+      return dispatch(Docs.loadDoc(getState(), type, slug));
     }
   }
 
@@ -134,5 +122,4 @@ class Doc extends Component {
   }
 }
 
-export class DocPost extends Doc { static type = 'post' }
-export class DocPage extends Doc { static type = 'page' }
+export default connect(docState)(Doc);

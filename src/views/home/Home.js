@@ -1,49 +1,36 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
-import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {pushPath} from 'redux-simple-router';
 import _ from 'lodash';
 import * as Docs from '../../redux/modules/docs';
 
-@connect(
-  state => ({
-    editing: state.admin.get('isEditing'),
-    docs: state.docs.get('entities').toJS(),
-  }),
-  dispatch => ({
-    actions: bindActionCreators({
-      createNewPost: Docs.create.bind(null, 'post'),
-      deletePost: Docs.deleteDoc,
-      pushPath
-    }, dispatch)
-  })
-)
-export default class Home extends Component {
+const homeState = (state) => ({
+  editing: state.admin.get('isEditing'),
+  docs: state.docs.get('entities').toJS()
+});
+
+class Home extends Component {
   static propTypes = {
-    actions: PropTypes.shape({
-      createNewPost: PropTypes.func,
-      deletePost: PropTypes.func,
-      pushPath: PropTypes.func.isRequired
-    }),
+    dispatch: PropTypes.func,
     editing: PropTypes.bool,
-    docs: PropTypes.object,
+    docs: PropTypes.object
   }
 
   constructor(props) {
     super(props);
-    this.createAndRedirect = this.createAndRedirect.bind(this);
+    this.dispatch = props.dispatch;
   }
 
-  createAndRedirect() {
-    this.props.actions.createNewPost().then((res) => {
-      this.props.actions.pushPath(`/posts/${res.result.slug}`);
+  createAndRedirect = () => {
+    this.dispatch(Docs.create('post')).then((res) => {
+      this.dispatch(pushPath(`/posts/${res.result.slug}`));
     });
   }
 
-  deletePost(post) {
+  deletePost = (post) => {
     if (confirm(`Really delete ${post.title}?`)) {
-      this.props.actions.deletePost(post._id);
+      this.dispatch(Docs.deleteDoc(post._id));
     }
   }
 
@@ -97,3 +84,5 @@ export default class Home extends Component {
     );
   }
 }
+
+export default connect(homeState)(Home);
