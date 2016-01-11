@@ -42,11 +42,25 @@ function getFormattedDate(header) {
   }
 }
 
+function getUrlSlug(title) {
+  return title.toLowerCase()
+    .replace(/[^\w ]+/g, '')
+    .replace(/ +/g, '-');
+}
+
 export function parseHeader(content) {
   const frontMatter = content.substring(3, content.indexOf('---', 1));
-  return yaml.safeLoad(frontMatter, {
+  const header = yaml.safeLoad(frontMatter, {
     schema: yaml.JSON_SCHEMA
   });
+
+  if (header.type === 'page') {
+    header.slug = header.pageName;
+  } else {
+    header.slug = getUrlSlug(header.title);
+  }
+
+  return header;
 }
 
 export function isHeaderValid(content) {

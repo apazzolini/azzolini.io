@@ -60,18 +60,13 @@ class Doc extends Component {
     const doc = this.doc;
     const header = parseHeader(newContent);
 
-    if (header.slug !== doc.slug) {
+    if (header.slug !== doc.slug && header.type === 'post') {
       // If we're changing the URL, we have to delay React's ability to re-render the
       // component until we're both done with updating the URL and updating the Redux store.
       this.preventComponentUpdate = true;
 
       this.props.actions.updateContent(doc, newContent);
-
-      if (header.type === 'post') {
-        this.props.actions.replacePath('/posts/' + header.slug);
-      } else {
-        this.props.actions.replacePath('/' + header.slug);
-      }
+      this.props.actions.replacePath('/posts/' + header.slug);
 
       this.preventComponentUpdate = false;
     } else {
