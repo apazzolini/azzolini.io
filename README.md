@@ -1,14 +1,14 @@
-## andreazzolini.com
+## azzolini.io
 
-This project holds the source code that drives my personal site, [andreazzolini.com](https://www.andreazzolini.com). The project initially started with a copy of [erikras/react-redux-universal-hot-example](https://github.com/erikras/react-redux-universal-hot-example), but most things have been pretty drastically changed.
+This project holds the source code that drives my personal site, [azzolini.io](https://azzolini.io). The project initially started with a copy of [erikras/react-redux-universal-hot-example](https://github.com/erikras/react-redux-universal-hot-example), but most things have been pretty drastically changed.
 
-Although it's completely over-engineered for a simple blog, a lot of care was taken in creating something that could be used as a basis for a legitimate production app. It was also a great learning experience on the React/Redux/Hapi stack, which was the main motivation for deconstructing erikra's project and reassembling to learn the intricacies of the interactions of the different components.
+Although it's completely over-engineered for a simple blog, a lot of care was taken in creating something that could be used as a basis for a legitimate production app. It was also a great learning experience on the React/Redux/Hapi stack, which was the main motivation for deconstructing erikras' project and reassembling to learn the intricacies of the interactions of the different components.
 
 This repository is designed as a playground for me to test new technologies and I don't intend on releasing this as a "create-your-own" blog framework. However, it would not be difficult to strip the customizations on top of the base project structure as a bootstrap application.
 
 ### Framework Files
 
-If using this repository as a bootstrap, feel free to ignore the following files as they do not hold any andreazzolini.com specific information:
+If using this repository as a bootstrap, feel free to ignore the following files as they do not hold any azzolini.io specific information:
 
 - `bin/`
 - `src/redux/middleware/`
