@@ -45,7 +45,13 @@ history.listenBefore((location, callback) => {
       fetchData(nextState.components, store.getState, store.dispatch, location, nextState.params)
       .then(() => {
         lastMatchedLocBefore = loc;
-        ga.pageview(location.pathname);
+
+        // Editing can cause replace states, and I don't care about tracking my
+        // own analytics.
+        if (!store.getState().admin.get('isAdmin')) {
+          ga.pageview(location.pathname);
+        }
+
         callback();
       })
       .catch(err2 => {
