@@ -1,0 +1,128 @@
+@import url(http://fonts.googleapis.com/css?family=Lato:300,400,700);
+
+body {
+  margin: 0;
+	background: #fff;
+	font-family: Lato, sans-serif;
+	font-size: 14px;
+	color: #333;
+  line-height: 21px;
+  font-weight: 300;
+}
+
+a.download-pdf {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  background-color: #B5D2DC;
+  padding: 5px;
+  color: black !important;
+  font-weight: 400;
+}
+
+section {
+  width: 800px;
+  margin: 0 auto;
+}
+
+header {
+  width: 100%;
+  text-align: center;
+  background-color: #f4f6f6;
+  padding: 20px 0;
+}
+
+p.about {
+  margin: 30px auto 0;
+  width: 85%;
+}
+
+a, a:focus, a:visited {
+  color: #0FA0CE;
+  text-decoration: none;
+}
+
+h1 {
+  margin: 0;
+  font-size: 36px;
+  font-weight: 500;
+  line-height: 40px;
+}
+
+h2 {
+  color: #6B7D86;
+  font-weight: 500;
+}
+
+h3 {
+  margin-top: 50px;
+  border-top: 1px solid #eee;
+  font-size: 18px;
+}
+
+h3 span {
+  top: -14px;
+  background: white;
+  position: relative;
+  padding-right: 10px;
+}
+
+h4 span.date {
+  font-weight: 300;
+  float: right;
+}
+
+h4 span.position {
+  margin-left: 5px;
+  font-weight: 300;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul li {
+  padding-left: 2.5em;
+  text-indent: -20px;
+}
+
+ul li:before {
+  content: "• ";
+  color: #777;
+  padding-right: 10px;
+}
+
+@media print {
+  body {
+    font-size: 12px;
+  }
+
+  a.download-pdf {
+    display: none;
+  }
+
+  p.about {
+    margin: 30px auto 30px;
+  }
+
+  header {
+    padding: 0;
+    background-color: white;
+  }
+
+  h3.first {
+    margin-top: 60px;
+  }
+
+  h3 {
+    margin-top: 30px;
+    margin-bottom: 0;
+  }
+
+  h4.first {
+    margin-top: 0;
+  }
+
+}

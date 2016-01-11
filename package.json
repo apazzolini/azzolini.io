@@ -1,14 +1,14 @@
 {
-  "name": "andreazzolini.com",
-  "description": "The platform behind andreazzolini.com",
+  "name": "azzolini.io",
+  "description": "The platform behind azzolini.io",
   "author": "Andre Azzolini <apazzolini@gmail.com> (http://github.com/apazzolini)",
   "license": "MIT",
   "version": "0.1.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/apazzolini/andreazzolini.com"
+    "url": "https://github.com/apazzolini/azzolini.io"
   },
-  "homepage": "https://github.com/apazzolini/andreazzolini.com",
+  "homepage": "https://github.com/apazzolini/azzolini.io",
   "keywords": [
     "react",
     "isomorphic",
