@@ -15,6 +15,8 @@ export default class NavBar extends Component {
   componentDidMount() {
     this.determineExpandingMenu();
 
+    // TODO: Consider using touchmove in addition to scroll for better mobile support
+
     // Delay the binding in case the browser is restoring scroll position
     setTimeout(() => {
       window.addEventListener('scroll', this.handleScroll);

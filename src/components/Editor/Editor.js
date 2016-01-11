@@ -10,6 +10,10 @@ export default class Editor extends Component {
   onAceLoad(editor) {
     editor.getSession().setUseWrapMode(true);
 
+    // -------------------------------------------------------------------------
+    // These are my personal keybindings for Vim efficiency --------------------
+    // -------------------------------------------------------------------------
+
     editor.getKeyboardHandler().defaultKeymap.unshift({
       keys: 'j',
       toKeys: 'gj',
