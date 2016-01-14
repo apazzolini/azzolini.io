@@ -1,40 +1,12 @@
 ## azzolini.io
 
+> Note: This README is a work in progress and will be accompanied by several blog posts detailing the structure of this project and the decisions I went through to get here.
+
 This project holds the source code that drives my personal site, [azzolini.io](https://azzolini.io). The project initially started with a copy of [erikras/react-redux-universal-hot-example](https://github.com/erikras/react-redux-universal-hot-example), but most things have been pretty drastically changed.
 
 Although it's completely over-engineered for a simple blog, a lot of care was taken in creating something that could be used as a basis for a legitimate production app. It was also a great learning experience on the React/Redux/Hapi stack, which was the main motivation for deconstructing erikras' project and reassembling to learn the intricacies of the interactions of the different components.
 
 This repository is designed as a playground for me to test new technologies and I don't intend on releasing this as a "create-your-own" blog framework. However, it would not be difficult to strip the customizations on top of the base project structure as a bootstrap application.
-
-### Framework Files
-
-If using this repository as a bootstrap, feel free to ignore the following files as they do not hold any azzolini.io specific information:
-
-- `bin/`
-- `src/redux/middleware/`
-- `src/redux/create.js`
-- `src/utils/`
-- `src/client.js`
-- `src/server.js` --> the api, inert, and onPreResponse sections
-- `webpack/`
-- `test/helper.js`
-
-### Testing Approach
-
-There are 5 different categories of things we want to test in our application:
-
-- Api library methods (mocha)
-- Api Hapi.js routes (mocha + Hapi.js inject)
-- Reducers (mocha)
-- Components (mocha + React TestUtils + jsdom) 
-- Views (mocha + React TestUtils + jsdom)
-
-The tests all run in the same suite and do not require a browser as even the DOM-based tests can utilize mocks. A high level overview of the testing instrumentation is:
-
-1. Connect to a test-specific Mongo database
-2. Launch the backend server
-3. Run through the tests
-4. Teardown environment and delete all contents of the test db
 
 ### Future Enhancements
 
