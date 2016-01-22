@@ -27,7 +27,7 @@ class Login extends Component {
     }
 
     this.dispatch(Admin.login(auth)).then((res) => {
-      if (res.type === Admin.LOGIN_OK) {
+      if (this.props.admin.isAdmin) {
         this.dispatch(pushPath(`/`));
       }
     }, (err) => {

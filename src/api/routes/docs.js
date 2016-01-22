@@ -74,11 +74,13 @@ export async function saveDoc(docId, newContent) {
 
   // TODO: This needs to clear out fields that are no longer present in the header.
 
-  return docs.save({
+  const x = docs.save({
     _id: db.ObjectId(docId),
     ...header,
     content: newContent
   });
+
+  return x;
 }
 
 /**
@@ -129,109 +131,60 @@ function isAdmin(request) {
 export const routes = [
   {
     path: '/docs', method: 'GET', handler: async (request, reply) => {
-      try {
-        reply(await getDocs(request.query.type));
-      } catch (e) {
-        reply(Boom.wrap(e));
-      }
+      return reply(await getDocs(request.query.type));
     },
-    config: {
-      validate: {
-        query: {
-          type: Joi.string()
-        }
-      }
+    query: {
+      type: Joi.string()
     }
   },
 
   {
     path: '/docs/{id}', method: 'GET', handler: async (request, reply) => {
-      try {
-        const post = await getDocById(request.params.id, isAdmin(request));
-        reply(post === null ? Boom.notFound() : post);
-      } catch (e) {
-        reply(Boom.wrap(e));
-      }
+      return await getDocById(request.params.id, isAdmin(request));
     },
-    config: {
-      validate: {
-        params: {
-          id: Joi.string().length(24).hex().required()
-        }
-      }
+    params: {
+      id: Joi.string().length(24).hex().required()
     }
   },
 
+  // TODO: 'session' is unclear as to what it means for auth
   {
     path: '/docs/{id}', method: 'POST', handler: async (request, reply) => {
-      try {
-        reply(await saveDoc(request.params.id, request.payload));
-      } catch (e) {
-        reply(Boom.wrap(e));
-      }
+      return await saveDoc(request.params.id, request.payload);
     },
-    config: {
-      auth: 'session',
-      validate: {
-        params: {
-          id: Joi.string().length(24).hex().required()
-        }
-      }
+    auth: 'session',
+    params: {
+      id: Joi.string().length(24).hex().required()
     }
   },
 
   {
     path: '/docs/{id}', method: 'DELETE', handler: async (request, reply) => {
-      try {
-        reply(await deleteDoc(request.params.id));
-      } catch (e) {
-        reply(Boom.wrap(e));
-      }
+      return await deleteDoc(request.params.id);
     },
-    config: {
-      auth: 'session',
-      validate: {
-        params: {
-          id: Joi.string().length(24).hex().required()
-        }
-      }
+    auth: 'session',
+    params: {
+      id: Joi.string().length(24).hex().required()
     }
   },
 
   {
     path: '/docs/{type}/{slug}', method: 'GET', handler: async (request, reply) => {
-      try {
-        const post = await getDocBySlug(request.params.type, request.params.slug, isAdmin(request));
-        reply(post === null ? Boom.notFound() : post);
-      } catch (e) {
-        reply(Boom.wrap(e));
-      }
+      return await getDocBySlug(request.params.type, request.params.slug, isAdmin(request));
     },
-    config: {
-      validate: {
-        params: {
-          type: Joi.string(),
-          slug: Joi.string()
-        }
-      }
+    params: {
+      type: Joi.string(),
+      slug: Joi.string()
     }
   },
 
   {
     path: '/docs/{type}/create', method: 'POST', handler: async (request, reply) => {
-      try {
-        reply(await createDoc(request.params.type));
-      } catch (e) {
-        reply(Boom.wrap(e));
-      }
+      return await createDoc(request.params.type);
     },
-    config: {
-      auth: 'session',
-      validate: {
-        params: {
-          type: Joi.string().required()
-        }
-      }
+    auth: 'session',
+    params: {
+      type: Joi.string().required()
     }
   }
 ];

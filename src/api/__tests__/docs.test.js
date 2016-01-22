@@ -5,6 +5,11 @@ import {server} from '../../../test/helper';
 
 describe('api', () => {
   describe('docs', () => {
+
+    // -------------------------------------------------------------------------
+    // Expected test result helpers --------------------------------------------
+    // -------------------------------------------------------------------------
+
     let testPostId;
     const credentials = {
       credentials: 'some-value'

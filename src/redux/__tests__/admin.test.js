@@ -14,9 +14,9 @@ describe('redux', () => {
         isAdmin: true
       });
 
-      it('handles LOGIN', () => {
+      it('handles login', () => {
         const newState = reducer(initialState, {
-          type: 'admin/LOGIN',
+          type: 'admin/login',
         });
 
         expect(newState.toJS()).to.deep.equal({
@@ -26,9 +26,9 @@ describe('redux', () => {
         });
       });
 
-      it('handles LOGIN_OK', () => {
+      it('handles loginOk', () => {
         const newState = reducer(initialState, {
-          type: 'admin/LOGIN_OK'
+          type: 'admin/loginOk'
         });
 
         expect(newState.toJS()).to.deep.equal({
@@ -37,10 +37,10 @@ describe('redux', () => {
         });
       });
 
-      it('handles LOGIN_FAIL', () => {
+      it('handles loginFail', () => {
         const error = new Error('Login Fail');
         const newState = reducer(initialState, {
-          type: 'admin/LOGIN_FAIL',
+          type: 'admin/loginFail',
           error
         });
 
@@ -52,9 +52,9 @@ describe('redux', () => {
         });
       });
 
-      it('handles TOGGLE_EDIT_MODE', () => {
+      it('handles toggleEditMode', () => {
         const newState = reducer(initialStateAdmin, {
-          type: 'admin/TOGGLE_EDIT_MODE'
+          type: 'admin/toggleEditMode'
         });
 
         expect(newState.toJS()).to.deep.equal({
@@ -63,7 +63,7 @@ describe('redux', () => {
         });
 
         const newState2 = reducer(newState, {
-          type: 'admin/TOGGLE_EDIT_MODE'
+          type: 'admin/toggleEditMode'
         });
 
         expect(newState2.toJS()).to.deep.equal({

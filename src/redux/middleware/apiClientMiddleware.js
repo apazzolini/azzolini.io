@@ -14,13 +14,18 @@
 export default function (apiClient) {
   return ({getState, dispatch}) => next => action => {
     // We only handle actions that have a `promise` field.
-    const {promise, types, ...rest} = action;
+    const {promise, type, ...rest} = action;
     if (!promise) {
       return next(action);
     }
 
+    // TODO: Check type field, auto generate names
     // Immediately dispatch the REQUEST action.
-    const [REQUEST, OK, FAIL] = types;
+
+    const REQUEST = type;
+    const OK = `${type}Ok`;
+    const FAIL = `$Ptype}Fail`;
+
     next({...rest, type: REQUEST});
 
     // Execute the API promise call and then dispatch either the

@@ -27,12 +27,8 @@ export const routes = [
         reply({error: 'Unknown Auth'});
       }
     },
-    config: {
-      validate: {
-        payload: {
-          auth: Joi.string()
-        }
-      }
+    payload: {
+      auth: Joi.string()
     }
   }
 ];
