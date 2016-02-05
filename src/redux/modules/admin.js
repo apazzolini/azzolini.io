@@ -1,17 +1,15 @@
-import {createReducer} from 'redux-immutablejs';
-import Immutable from 'immutable';
-import {fromError} from '../utils';
+import fromError from '../utils/fromError';
 
-const initialState = Immutable.fromJS({
+// Initial State ---------------------------------------------------------------
+
+export const initialState = {
   isAdmin: false,
   isEditing: false
-});
+};
 
-// -----------------------------------------------------------------------------
 // Reducers --------------------------------------------------------------------
-// -----------------------------------------------------------------------------
 
-export default createReducer(initialState, {
+export const reducers = {
 
   'admin/login': (state, action) => state.merge({
     loggingIn: true,
@@ -34,29 +32,27 @@ export default createReducer(initialState, {
     isEditing: state.get('isAdmin') && !state.get('isEditing')
   })
 
-});
+};
 
-// -----------------------------------------------------------------------------
-// Utility functions -----------------------------------------------------------
-// -----------------------------------------------------------------------------
+// Action Creators -------------------------------------------------------------
 
-export function isAdmin(globalState) {
-  return globalState.admin.get('isAdmin');
-}
+export const actions = {
 
-// -----------------------------------------------------------------------------
-// Actions creators ------------------------------------------------------------
-// -----------------------------------------------------------------------------
-
-export function login(auth) {
-  return {
+  login: (auth) => ({
     type: 'admin/login',
-    promise: (api) => api.post('/login', {auth})
-  };
-}
+    apiRequest: (api) => api.post('/login', {auth})
+  }),
 
-export function toggleEditMode() {
-  return {
-    type: 'admin/toggleEditModle'
-  };
-}
+  toggleEditMode: () => ({
+    type: 'admin/toggleEditMode'
+  })
+
+};
+
+// Selectors -------------------------------------------------------------------
+
+export const selectors = {
+
+  isAdmin: (globalState) => globalState.admin.get('isAdmin')
+
+};

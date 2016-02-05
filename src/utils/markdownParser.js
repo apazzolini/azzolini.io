@@ -1,9 +1,17 @@
 import marked from 'marked';
-import hljs from 'highlight.js';
+import hljs from 'highlight.js/lib/highlight.js';
 import yaml from 'js-yaml';
 import moment from 'moment';
 
 (function initializeMarked() {
+
+  const registeredLangs = ['bash', 'css', 'go', 'java', 'javascript',
+    'json', 'less', 'markdown', 'ruby', 'scss', 'sql', 'vim', 'yaml'];
+
+  for (let lang of registeredLangs) {
+    hljs.registerLanguage(lang, require('highlight.js/lib/languages/' + lang));
+  }
+
   const renderer = new marked.Renderer();
 
   // We want to render manually instead of using highlight.js's

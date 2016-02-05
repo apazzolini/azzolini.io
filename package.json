@@ -1,147 +1,44 @@
 {
-  "name": "azzolini.io",
-  "description": "The platform behind azzolini.io",
-  "author": "Andre Azzolini <apazzolini@gmail.com> (http://github.com/apazzolini)",
-  "license": "MIT",
-  "version": "0.1.0",
+  "name": "universal-redux-starter",
+  "version": "0.0.1",
+  "description": "Minimal starter for using universal-redux npm package",
   "repository": {
     "type": "git",
-    "url": "https://github.com/apazzolini/azzolini.io"
+    "url": "git+https://github.com/bdefore/universal-redux-starter.git"
   },
-  "homepage": "https://github.com/apazzolini/azzolini.io",
-  "keywords": [
-    "react",
-    "isomorphic",
-    "universal",
-    "webpack",
-    "hapi",
-    "hot reloading",
-    "react-hot-reloader",
-    "redux",
-    "babel"
-  ],
-  "main": "bin/server.js",
   "scripts": {
-    "start": "node ./node_modules/better-npm-run start",
-    "build": "webpack --verbose --colors --display-error-details --config webpack/prod.config.js",
-    "lint": "./node_modules/eslint/bin/eslint.js -c .eslintrc src",
-    "start-dev": "node ./node_modules/better-npm-run start-dev",
-    "watch-client": "node ./node_modules/better-npm-run watch-client",
-    "dev": "concurrent --kill-others \"npm run watch-client\" \"npm run start-dev\"",
-    "test": "node ./node_modules/better-npm-run test",
-    "postinstall": "npm run build"
+    "build": "rook-build",
+    "dev-server": "NODE_CONFIG_DIR=./config/server NODE_PATH=./src nodemon --watch src --watch config -e js,json,json5 ./node_modules/.bin/rook-server",
+    "dev": "concurrent --kill-others \"npm run watch-client\" \"npm run dev-server\"",
+    "lint": "./node_modules/.bin/eslint -c .eslintrc src",
+    "server": "NODE_CONFIG_DIR=./config/server NODE_PATH=./src NODE_ENV=production ./node_modules/.bin/rook-server",
+    "test": "NODE_CONFIG_DIR=./config/server NODE_ENV=test mocha --colors --compilers js:babel-core/register --require ./node_modules/rook/bin/test.js --recursive ./src/**/*.test.js",
+    "watch-client": "rook-watch"
   },
-  "betterScripts": {
-    "start": {
-      "command": "node ./bin/server.js",
-      "env": {
-        "NODE_PATH": "./src",
-        "NODE_ENV": "production",
-        "PORT": 8080
-      }
-    },
-    "start-dev": {
-      "command": "nodemon --watch src --watch config -e js,json ./bin/server.js",
-      "env": {
-        "NODE_PATH": "./src",
-        "NODE_ENV": "development",
-        "PORT": 3000
-      }
-    },
-    "test": {
-      "command": "mocha --colors --compilers js:babel/register --require ./test/helper.js --recursive ./src/**/*.test.js",
-      "env": {
-        "MONGO_DB": "andreazzolini_test",
-        "NODE_ENV": "development",
-        "PORT": 4000
-      }
-    },
-    "watch-client": {
-      "command": "node webpack/webpack-dev-server.js",
-      "env": {
-        "UV_THREADPOOL_SIZE": 100,
-        "NODE_PATH": "./src"
-      }
-    }
+  "author": {
+    "name": "Buck DeFore"
   },
+  "license": "MIT",
   "dependencies": {
-    "babel": "^5.8.23",
-    "babel-plugin-typecheck": "1.2.0",
-    "boom": "^3.0.0",
-    "brace": "^0.7.0",
-    "config": "^1.17.1",
-    "hapi": "^11.1.2",
     "hapi-auth-cookie": "^3.1.0",
     "highlight.js": "^9.0.0",
-    "history": "~1.13.x",
-    "immutable": "^3.7.6",
-    "inert": "^3.2.0",
-    "isomorphic-fetch": "^2.2.0",
-    "joi": "^7.0.1",
-    "js-yaml": "^3.4.6",
-    "json5": "^0.4.0",
+    "js-yaml": "^3.5.2",
     "kerberos": "^0.0",
     "lodash": "^3.10.1",
     "marked": "^0.3.5",
     "moment": "^2.10.6",
-    "pretty-error": "^1.2.0",
     "promised-mongo": "^1.2.0",
-    "query-string": "^3.0.0",
-    "react": "^0.14.5",
     "react-ace": "^3.0.0",
-    "react-document-meta": "^2.0.0",
     "react-ga": "^1.2.0",
-    "react-redux": "^4.0.2",
-    "react-router": "1.0.2",
-    "redux": "^3.0.0",
-    "redux-immutablejs": "0.0.8",
-    "redux-simple-router": "^1.0.1",
-    "redux-thunk": "^1.0.2",
-    "scroll-behavior": "^0.3.0",
-    "serialize-javascript": "^1.1.2",
-    "webpack-isomorphic-tools": "^2.2.18"
+    "rook": "file:///Users/Andre/GitHub/rook"
   },
   "devDependencies": {
-    "autoprefixer": "^6.0.3",
-    "autoprefixer-loader": "^3.1.0",
-    "babel-core": "^5.8.24",
-    "babel-eslint": "^4.1.2",
-    "babel-loader": "5.3.2",
-    "babel-plugin-react-transform": "~1.1.1",
-    "babel-runtime": "^5.8.24",
-    "better-npm-run": "0.0.5",
-    "chai": "^3.4.1",
-    "chai-immutable": "^1.5.3",
-    "clean-webpack-plugin": "^0.1.5",
     "concurrently": "1.0.0",
-    "css-loader": "^0.18.0",
-    "eslint": "^1.10.3",
-    "eslint-config-airbnb": "^2.1.1",
-    "eslint-loader": "^1.1.1",
-    "eslint-plugin-react": "^3.12.0",
-    "express": "^4.13.3",
-    "extract-text-webpack-plugin": "^0.9.1",
-    "file-loader": "^0.8.4",
-    "json-loader": "0.5.2",
-    "mocha": "^2.3.4",
-    "postcss-loader": "^0.6.0",
-    "precss": "^1.2.3",
-    "react-hot-loader": "1.3.0",
-    "react-transform-catch-errors": "^1.0.1",
-    "react-transform-hmr": "^1.0.1",
-    "redbox-react": "^1.2.0",
-    "redux-devtools": "^3.0.0",
-    "redux-devtools-dock-monitor": "^1.0.1",
-    "redux-devtools-log-monitor": "^1.0.1",
-    "strip-loader": "^0.1.0",
-    "style-loader": "^0.12.3",
-    "url-loader": "^0.5.6",
-    "webpack": "^1.12.9",
-    "webpack-dev-middleware": "^1.4.0",
-    "webpack-hot-middleware": "^2.6.0"
-  },
-  "engines": {
-    "node": "5.3.0",
-    "npm": "3.3.12"
+    "hapi": "^11.1.2",
+    "react": "^0.14.6",
+    "react-dom": "^0.14.6",
+    "react-redux": "4.2.1",
+    "react-router": "2.0.0-rc5",
+    "react-router-redux": "3.0.0"
   }
 }

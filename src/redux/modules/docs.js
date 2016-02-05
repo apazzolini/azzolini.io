@@ -1,16 +1,14 @@
-import {createReducer} from 'redux-immutablejs';
-import Immutable from 'immutable';
-import {fromError} from '../utils';
+import fromError from '../utils/fromError';
 import {parseMarkdown, parseHeader} from '../../utils/markdownParser.js';
 
-const initialState = Immutable.fromJS({
+// Initial State ---------------------------------------------------------------
+
+export const initialState = {
   loaded: false,
   entities: {}
-});
+};
 
-// -----------------------------------------------------------------------------
-// Utility functions -----------------------------------------------------------
-// -----------------------------------------------------------------------------
+// Utility Functions -----------------------------------------------------------
 
 const getBySlug = (state, type, slug) => (
   state.get('entities').find(doc => (
@@ -18,11 +16,9 @@ const getBySlug = (state, type, slug) => (
   )
 );
 
-// -----------------------------------------------------------------------------
 // Reducers --------------------------------------------------------------------
-// -----------------------------------------------------------------------------
 
-export default createReducer(initialState, {
+export const reducers = {
 
   'docs/loadList': (state, action) => state.merge({
     loading: true
@@ -97,7 +93,7 @@ export default createReducer(initialState, {
       });
     }
 
-    // See above comment in LOAD_DOC
+    // See above comment in loadDoc
     return state;
   },
 
@@ -187,76 +183,64 @@ export default createReducer(initialState, {
     createError: fromError(action.error)
   })
 
-});
+};
 
-// -----------------------------------------------------------------------------
-// Utility functions -----------------------------------------------------------
-// -----------------------------------------------------------------------------
+// Action Creators -------------------------------------------------------------
 
-export function isLoaded(globalState) {
-  return globalState.docs.get('loaded');
-}
+export const actions = {
 
-export function isFullyLoaded(globalState, type, slug) {
-  const doc = getBySlug(globalState.docs, type, slug);
-  return doc && doc.get('loaded');
-}
+  load: () => ({
+    type: 'docs/loadList',
+    apiRequest: (api) => api.get('/docs?type=post')
+  }),
 
-// -----------------------------------------------------------------------------
-// Actions creators ------------------------------------------------------------
-// -----------------------------------------------------------------------------
-
-export function load() {
-  return {
-    type: 'docs/load',
-    promise: (api) => api.get('/docs?type=post')
-  };
-}
-
-export function loadDoc(globalState, type, slug) {
-  return {
+  loadDoc: (globalState, type, slug) => ({
     type: 'docs/loadDoc',
-    promise: (api) => api.get(`/docs/${type}/${slug}`),
+    apiRequest: (api) => api.get(`/docs/${type}/${slug}`),
     slug
-  };
-}
+  }),
 
-export function updateContent(doc, newContent) {
-  return {
+  updateContent: (doc, newContent) => ({
     type: 'docs/updateContent',
     doc,
     newContent
-  };
-}
+  }),
 
-export function updateContentFailed(doc, newContent, message) {
-  return {
+  updateContentFailed: (doc, newContent, message) => ({
     type: 'docs/updateContentFail',
     doc,
     newContent,
     message
-  };
-}
+  }),
 
-export function save(doc, newContent) {
-  return {
+  save: (doc, newContent) => ({
     type: 'docs/save',
-    promise: (api) => api.post(`/docs/${doc._id}`, newContent),
+    apiRequest: (api) => api.post(`/docs/${doc._id}`, newContent),
     doc
-  };
-}
+  }),
 
-export function create(type) {
-  return {
+  create: (type) => ({
     type: 'docs/create',
-    promise: (api) => api.post(`/docs/${type}/create`)
-  };
-}
+    apiRequest: (api) => api.post(`/docs/${type}/create`)
+  }),
 
-export function deleteDoc(docId) {
-  return {
+  deleteDoc: (docId) => ({
     type: 'docs/delete',
-    promise: (api) => api.delete(`/docs/${docId}`),
+    apiRequest: (api) => api.delete(`/docs/${docId}`),
     docId
-  };
-}
+  })
+
+};
+
+// Selectors -------------------------------------------------------------------
+
+export const selectors = {
+
+  isLoaded: (globalState) => globalState.docs.get('loaded'),
+
+  isFullyLoaded: (globalState, type, slug) => {
+    const doc = getBySlug(globalState.docs, type, slug);
+    return doc && doc.get('loaded');
+  }
+
+};

@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
-import {replacePath} from 'redux-simple-router';
+import {routeActions} from 'react-router-redux';
 import DocumentMeta from 'react-document-meta';
 import _ from 'lodash';
 import * as Docs from '../../redux/modules/docs';
@@ -8,7 +8,7 @@ import NotFound from '../_errors/NotFound';
 import {Editor} from '../../components';
 import {parseHeader, isHeaderValid} from '../../utils/markdownParser.js';
 
-const docState = (state) => ({
+const mapStateToProps = (state) => ({
   editing: state.admin.get('isEditing'),
   docs: state.docs.get('entities').toJS()
 });
@@ -21,7 +21,7 @@ class Doc extends Component {
     params: PropTypes.shape({
       slug: PropTypes.string
     })
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -30,7 +30,7 @@ class Doc extends Component {
 
   componentWillMount() {
     this.debouncedSave = _.debounce((doc, newContent) => (
-      this.dispatch(Docs.save(doc, newContent))
+      this.dispatch(Docs.actions.save(doc, newContent))
     ), 1000);
   }
 
@@ -40,7 +40,7 @@ class Doc extends Component {
 
   onEditorChange = (newContent) => {
     if (!isHeaderValid(newContent)) {
-      this.dispatch(Docs.updateContentFailed(this.doc, newContent, 'Header invalid'));
+      this.dispatch(Docs.actions.updateContentFailed(this.doc, newContent, 'Header invalid'));
       return;
     }
 
@@ -52,16 +52,16 @@ class Doc extends Component {
       // component until we're both done with updating the URL and updating the Redux store.
       this.preventComponentUpdate = true;
 
-      this.dispatch(Docs.updateContent(doc, newContent));
-      this.dispatch(replacePath('/posts/' + header.slug));
+      this.dispatch(Docs.actions.updateContent(doc, newContent));
+      this.dispatch(routeActions.replace('/posts/' + header.slug));
 
       this.preventComponentUpdate = false;
     } else {
-      this.dispatch(Docs.updateContent(doc, newContent));
+      this.dispatch(Docs.actions.updateContent(doc, newContent));
     }
 
     this.debouncedSave(doc, newContent);
-  }
+  };
 
   get doc() {
     return this.findDoc(this.props);
@@ -75,8 +75,8 @@ class Doc extends Component {
   static fetchData(getState, dispatch, location, params) {
     const slug = params.slug || location.pathname.substring(1);
     const type = location.pathname.indexOf('/posts') === 0 ? 'post' : 'page';
-    if (!Docs.isFullyLoaded(getState(), type, slug)) {
-      return dispatch(Docs.loadDoc(getState(), type, slug));
+    if (!Docs.selectors.isFullyLoaded(getState(), type, slug)) {
+      return dispatch(Docs.actions.loadDoc(getState(), type, slug));
     }
   }
 
@@ -122,4 +122,4 @@ class Doc extends Component {
   }
 }
 
-export default connect(docState)(Doc);
+export default connect(mapStateToProps)(Doc);

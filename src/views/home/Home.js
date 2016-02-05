@@ -1,11 +1,11 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
 import {connect} from 'react-redux';
-import {pushPath} from 'redux-simple-router';
+import {routeActions} from 'react-router-redux';
 import _ from 'lodash';
 import * as Docs from '../../redux/modules/docs';
 
-const homeState = (state) => ({
+const mapStateToProps = (state) => ({
   editing: state.admin.get('isEditing'),
   docs: state.docs.get('entities').toJS()
 });
@@ -15,7 +15,7 @@ class Home extends Component {
     dispatch: PropTypes.func,
     editing: PropTypes.bool,
     docs: PropTypes.object
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -23,20 +23,20 @@ class Home extends Component {
   }
 
   createAndRedirect = () => {
-    this.dispatch(Docs.create('post')).then((res) => {
-      this.dispatch(pushPath(`/posts/${res.result.slug}`));
+    this.dispatch(Docs.actions.create('post')).then((res) => {
+      this.dispatch(routeActions.push(`/posts/${res.result.slug}`));
     });
-  }
+  };
 
   deletePost = (post) => {
     if (confirm(`Really delete ${post.title}?`)) {
-      this.dispatch(Docs.deleteDoc(post._id));
+      this.dispatch(Docs.actions.deleteDoc(post._id));
     }
-  }
+  };
 
   static fetchData(getState, dispatch) {
-    if (!Docs.isLoaded(getState())) {
-      return dispatch(Docs.load());
+    if (!Docs.selectors.isLoaded(getState())) {
+      return dispatch(Docs.actions.load());
     }
   }
 
@@ -85,4 +85,4 @@ class Home extends Component {
   }
 }
 
-export default connect(homeState)(Home);
+export default connect(mapStateToProps)(Home);

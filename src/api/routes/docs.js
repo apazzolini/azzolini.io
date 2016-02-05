@@ -1,137 +1,12 @@
 import Joi from 'joi';
-import Boom from 'boom';
-import {db, docs} from '../lib/db';
-import {parseHeader, parseMarkdown} from '../../utils/markdownParser.js';
+import {docs} from '../db';
 
-// -----------------------------------------------------------------------------
-// Database interaction functions ----------------------------------------------
-// -----------------------------------------------------------------------------
-
-/**
- * Returns all docs of the given type with the content field omitted.
- *
- * @param {String} type - the type of the docs to retrieve
- * @return {Array}
- */
-export async function getDocs(type) {
-  const params = type ? {type} : {};
-  return docs.find(params, {content: false}).toArray();
-}
-
-/**
- * Retrieves one doc based on the given query parameters. Additionally,
- * retrieving docs via this method will add an additional field to the object,
- * `html`, which represents the rendered Markdown of the doc.
- *
- * @param {Object} params - The params to use for looking up
- * @param {Boolean} includeMd - Whether or not to include markdown in the response
- * @return {Object}
- */
-async function getDoc(params, includeMd) {
-  const promise = docs.findOne(params);
-
-  promise.then((doc) => {
-    doc.html = parseMarkdown(doc.content);
-    if (!includeMd) {
-      delete doc.content;
-    }
-  });
-
-  return promise;
-}
-
-/**
- * Retrieves the specified doc by id.
- *
- * @param {ObjectId} id - The MongoDB id of the doc to retrieve
- * @param {Boolean} includeMd - Whether or not to include markdown in the response
- * @return {Object}
- */
-export async function getDocById(id, includeMd = false) {
-  return getDoc({_id: db.ObjectId(id)}, includeMd);
-}
-
-/**
- * Retrieves the specified doc by slug and type.
- *
- * @param {String} type - The type of the doc to retrieve
- * @param {String} slug - The URL slug of the doc to retrieve
- * @param {Boolean} includeMd - Whether or not to include markdown in the response
- * @return {Object}
- */
-export async function getDocBySlug(type, slug, includeMd = false) {
-  return getDoc({type, slug}, includeMd);
-}
-
-/**
- * Updates the given doc keyed by MongoID to have the new markdown content.
- *
- * @param {String} docId - the MongoID of the post to update
- * @param {String} newContent - the new markdown content of the post
- */
-export async function saveDoc(docId, newContent) {
-  const header = parseHeader(newContent);
-
-  // TODO: This needs to clear out fields that are no longer present in the header.
-
-  const x = docs.save({
-    _id: db.ObjectId(docId),
-    ...header,
-    content: newContent
-  });
-
-  return x;
-}
-
-/**
- * Creates a new post object in the database and returns the MongoID.
- */
-export async function createDoc(type) {
-  const newId = db.ObjectId().toString();
-  const content = [
-    '---',
-    'type: ' + type,
-    'title: ' + newId,
-    'slug: ' + newId,
-    '---'
-  ].join('\n');
-
-  return docs.save({
-    _id: db.ObjectId(newId),
-    title: newId,
-    slug: newId,
-    type,
-    content
-  });
-}
-
-/**
- * Deletes the given doc keyed by MongoID
- *
- * @param {String} docId - the MongoID of the post to delete
- */
-export async function deleteDoc(docId) {
-  return docs.remove({
-    _id: db.ObjectId(docId)
-  });
-}
-
-// -----------------------------------------------------------------------------
-// Route helper functions ------------------------------------------------------
-// -----------------------------------------------------------------------------
-
-function isAdmin(request) {
-  return !!request.auth.isAuthenticated;
-}
-
-// -----------------------------------------------------------------------------
-// Hapi routes -----------------------------------------------------------------
-// -----------------------------------------------------------------------------
+const isAdmin = (request) => !!request.auth.isAuthenticated;
 
 export const routes = [
   {
     path: '/docs', method: 'GET', handler: async (request, reply) => {
-      return reply(await getDocs(request.query.type));
+      return await docs.getAllByType(request.query.type);
     },
     query: {
       type: Joi.string()
@@ -140,7 +15,7 @@ export const routes = [
 
   {
     path: '/docs/{id}', method: 'GET', handler: async (request, reply) => {
-      return await getDocById(request.params.id, isAdmin(request));
+      return await docs.getById(request.params.id, isAdmin(request));
     },
     params: {
       id: Joi.string().length(24).hex().required()
@@ -150,7 +25,7 @@ export const routes = [
   // TODO: 'session' is unclear as to what it means for auth
   {
     path: '/docs/{id}', method: 'POST', handler: async (request, reply) => {
-      return await saveDoc(request.params.id, request.payload);
+      return await docs.save(request.params.id, request.payload);
     },
     auth: 'session',
     params: {
@@ -160,7 +35,7 @@ export const routes = [
 
   {
     path: '/docs/{id}', method: 'DELETE', handler: async (request, reply) => {
-      return await deleteDoc(request.params.id);
+      return await docs.remove(request.params.id);
     },
     auth: 'session',
     params: {
@@ -170,7 +45,7 @@ export const routes = [
 
   {
     path: '/docs/{type}/{slug}', method: 'GET', handler: async (request, reply) => {
-      return await getDocBySlug(request.params.type, request.params.slug, isAdmin(request));
+      return await docs.getBySlug(request.params.type, request.params.slug, isAdmin(request));
     },
     params: {
       type: Joi.string(),
@@ -180,7 +55,7 @@ export const routes = [
 
   {
     path: '/docs/{type}/create', method: 'POST', handler: async (request, reply) => {
-      return await createDoc(request.params.type);
+      return await docs.create(request.params.type);
     },
     auth: 'session',
     params: {

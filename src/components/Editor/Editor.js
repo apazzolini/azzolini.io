@@ -5,7 +5,7 @@ export default class Editor extends Component {
     name: PropTypes.string.isRequired,
     content: PropTypes.string,
     onChange: PropTypes.func.isRequired
-  }
+  };
 
   onAceLoad(editor) {
     editor.getSession().setUseWrapMode(true);

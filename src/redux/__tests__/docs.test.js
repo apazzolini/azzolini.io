@@ -1,7 +1,9 @@
 import {expect} from 'chai';
 import Immutable from 'immutable';
-import reducer from '../modules/docs';
-import {fromError} from '../utils';
+import {createReducer} from 'rook/lib/redux/createStore';
+import reducers from '../modules';
+import fromError from '../utils/fromError';
+const reducer = createReducer(reducers.docs);
 
 describe('redux', () => {
   describe('reducers', () => {
@@ -135,7 +137,7 @@ describe('redux', () => {
               _id: 2,
               type: 'post',
               slug: 'new-post-2'
-            },
+            }
           }
         });
       });

@@ -1,24 +1,10 @@
 import Joi from 'joi';
-import {admins} from '../lib/db';
-
-// -----------------------------------------------------------------------------
-// Hapi routes -----------------------------------------------------------------
-// -----------------------------------------------------------------------------
-
-/*
- * Returns an admin entry based on the provided auth value if it exists.
- *
- * @param {String} auth - the authentication string
- * @return {Object}
- */
-export async function getAdmin(auth) {
-  return admins.findOne({auth});
-}
+import {admins} from '../db';
 
 export const routes = [
   {
     path: '/login', method: 'POST', handler: async (request, reply) => {
-      const foundAuth = await getAdmin(request.payload.auth);
+      const foundAuth = await admins.getAdmin(request.payload.auth);
       if (foundAuth) {
         request.auth.session.set({pass: request.payload.auth});
         reply({status: 'OK'});
