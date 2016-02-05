@@ -38,7 +38,7 @@ export default class NavBar extends Component {
       menuPinned: pos < this.state.scrollY,
       menuExpanded: this.state.menuExpanded && pos < this.state.scrollY
     });
-  }
+  };
 
   determineExpandingMenu = () => {
     // If we've determined this is a mobile browser, we want to use an expanding
@@ -52,15 +52,15 @@ export default class NavBar extends Component {
     }
 
     this.forceUpdate();
-  }
+  };
 
   collapseMenu = () => {
-    this.setState({ ...this.state, menuExpanded: false });
-  }
+    this.setState({...this.state, menuExpanded: false});
+  };
 
   toggleMenuExpanded = () => {
-    this.setState({ ...this.state, menuExpanded: !this.state.menuExpanded });
-  }
+    this.setState({...this.state, menuExpanded: !this.state.menuExpanded});
+  };
 
   render() {
     require('./NavBar.scss');

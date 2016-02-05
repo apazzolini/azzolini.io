@@ -1,0 +1,11 @@
+{
+  "hapi": {
+    "authCookie": {
+      "password": "sekrit"
+    }
+  },
+
+  "mongo": {
+    "url": "localhost/andreazzolini"
+  }
+}

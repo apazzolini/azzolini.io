@@ -1,7 +1,9 @@
 import {expect} from 'chai';
 import Immutable from 'immutable';
-import reducer from '../modules/docs';
-import {fromError} from '../utils';
+import {createReducer} from 'rook/lib/redux/createStore';
+import reducers from '../modules';
+import fromError from '../utils/fromError';
+const reducer = createReducer(reducers.docs);
 
 describe('redux', () => {
   describe('reducers', () => {
@@ -26,9 +28,9 @@ describe('redux', () => {
       let loadPendingState;
       let loadedState;
 
-      it('handles LOAD_LIST', () => {
+      it('handles loadList', () => {
         loadPendingState = reducer(initialState, {
-          type: 'docs/LOAD_LIST'
+          type: 'docs/loadList'
         });
 
         expect(loadPendingState.toJS()).to.deep.equal({
@@ -40,9 +42,9 @@ describe('redux', () => {
         });
       });
 
-      it('handles LOAD_LIST_OK', () => {
+      it('handles loadListOk', () => {
         loadedState = reducer(loadPendingState, {
-          type: 'docs/LOAD_LIST_OK',
+          type: 'docs/loadListOk',
           result: [
             {
               _id: 0,
@@ -79,10 +81,10 @@ describe('redux', () => {
         });
       });
 
-      it('handles LOAD_LIST_FAIL', () => {
+      it('handles loadListFail', () => {
         const error = new Error('Load Fail');
         const newState = reducer(loadPendingState, {
-          type: 'docs/LOAD_LIST_FAIL',
+          type: 'docs/loadListFail',
           error
         });
 
@@ -98,9 +100,9 @@ describe('redux', () => {
 
       let partiallyLoadingState;
 
-      it('handles LOAD from scratch', () => {
+      it('handles loadDoc from scratch', () => {
         const newState = reducer(initialState, {
-          type: 'docs/LOAD_DOC',
+          type: 'docs/loadDoc',
           docType: 'post',
           slug: 'new-post'
         });
@@ -113,9 +115,9 @@ describe('redux', () => {
         });
       });
 
-      it('handles LOAD of a partially loaded post', () => {
+      it('handles loadDoc of a partially loaded post', () => {
         partiallyLoadingState = reducer(loadedState, {
-          type: 'docs/LOAD_DOC',
+          type: 'docs/loadDoc',
           docType: 'post',
           slug: 'new-post'
         });
@@ -135,14 +137,14 @@ describe('redux', () => {
               _id: 2,
               type: 'post',
               slug: 'new-post-2'
-            },
+            }
           }
         });
       });
 
-      it('handles LOAD_DOC_OK', () => {
+      it('handles loadDocOk', () => {
         const newState = reducer(partiallyLoadingState, {
-          type: 'docs/LOAD_DOC_OK',
+          type: 'docs/loadDocOk',
           result: {
             _id: 1,
             html: '<h1>New</h1>'
@@ -171,10 +173,10 @@ describe('redux', () => {
         });
       });
 
-      it('handles LOAD_DOC_FAIL', () => {
+      it('handles loadDocFail', () => {
         const error = new Error('Load Fail');
         const newState = reducer(partiallyLoadingState, {
-          type: 'docs/LOAD_DOC_FAIL',
+          type: 'docs/loadDocFail',
           docType: 'post',
           slug: 'new-post',
           error
@@ -202,7 +204,7 @@ describe('redux', () => {
         });
       });
 
-      it('handles UPDATE_CONTENT', () => {
+      it('handles updateContent', () => {
         const newContent = [
           '---',
           'type: post',
@@ -214,7 +216,7 @@ describe('redux', () => {
         ].join('\n');
 
         const newState = reducer(initialState, {
-          type: 'docs/UPDATE_CONTENT',
+          type: 'docs/updateContent',
           doc: {
             _id: 0
           },
@@ -239,9 +241,9 @@ describe('redux', () => {
         });
       });
 
-      it('handles UPDATE_CONTENT_FAIL', () => {
+      it('handles updateContentFail', () => {
         const newState = reducer(initialState, {
-          type: 'docs/UPDATE_CONTENT_FAIL',
+          type: 'docs/updateContentFail',
           doc: {
             _id: 0
           },
@@ -265,9 +267,9 @@ describe('redux', () => {
         });
       });
 
-      it('handles SAVE', () => {
+      it('handles save', () => {
         const newState = reducer(initialState, {
-          type: 'docs/SAVE',
+          type: 'docs/save',
           doc: {
             _id: 0
           }
@@ -288,9 +290,9 @@ describe('redux', () => {
         });
       });
 
-      it('handles SAVE_OK', () => {
+      it('handles saveOk', () => {
         const newState = reducer(initialState, {
-          type: 'docs/SAVE_OK',
+          type: 'docs/saveOk',
           doc: {
             _id: 0
           }
@@ -313,10 +315,10 @@ describe('redux', () => {
         });
       });
 
-      it('handles SAVE_FAIL', () => {
+      it('handles saveFail', () => {
         const error = new Error('Save Fail');
         const newState = reducer(initialState, {
-          type: 'docs/SAVE_FAIL',
+          type: 'docs/saveFail',
           doc: {
             _id: 0
           },
@@ -340,9 +342,9 @@ describe('redux', () => {
         });
       });
 
-      it('handles CREATE', () => {
+      it('handles create', () => {
         const newState = reducer(initialState, {
-          type: 'docs/CREATE'
+          type: 'docs/create'
         });
 
         expect(newState.toJS()).to.deep.equal({
@@ -354,9 +356,9 @@ describe('redux', () => {
         });
       });
 
-      it('handles CREATE_OK', () => {
+      it('handles createOk', () => {
         const newState = reducer(initialState, {
-          type: 'docs/CREATE_OK',
+          type: 'docs/createOk',
           result: {
             _id: 3,
             type: 'post',
@@ -380,10 +382,10 @@ describe('redux', () => {
         });
       });
 
-      it('handles CREATE_FAIL', () => {
+      it('handles createFail', () => {
         const error = new Error('Create Fail');
         const newState = reducer(initialState, {
-          type: 'docs/CREATE_FAIL',
+          type: 'docs/createFail',
           error
         });
 
@@ -397,9 +399,9 @@ describe('redux', () => {
         });
       });
 
-      it('handles DELETE', () => {
+      it('handles delete', () => {
         const newState = reducer(initialState, {
-          type: 'docs/DELETE',
+          type: 'docs/delete',
           docId: '0'
         });
 
@@ -418,9 +420,9 @@ describe('redux', () => {
         });
       });
 
-      it('handles DELETE_OK', () => {
+      it('handles deleteOk', () => {
         const newState = reducer(initialState, {
-          type: 'docs/DELETE_OK',
+          type: 'docs/deleteOk',
           docId: '0'
         });
 
@@ -430,10 +432,10 @@ describe('redux', () => {
         });
       });
 
-      it('handles DELETE_FAIL', () => {
+      it('handles deleteFail', () => {
         const error = new Error('Delete Fail');
         const newState = reducer(initialState, {
-          type: 'docs/DELETE_FAIL',
+          type: 'docs/deleteFail',
           docId: '0',
           error
         });

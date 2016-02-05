@@ -8,7 +8,7 @@ import Home from 'views/home/Home';
 import Login from 'views/login/Login';
 import Doc from 'views/doc/Doc';
 
-export default (store) => {
+export default () => {
   return (
     <Route path="/" component={App}>
       <IndexRoute component={Home} />

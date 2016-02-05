@@ -9,14 +9,14 @@ module.exports = {
 
   development: {
     isProduction: false,
-    port: process.env.PORT,
-    apiPath: 'http://localhost:3000/api'
+    apiPath: 'http://localhost:3000/api',
+    gaId: 'UA-26694937-1'
   },
 
   production: {
     isProduction: true,
-    port: process.env.PORT,
-    apiPath: 'https://azzolini.io/api'
+    apiPath: 'https://azzolini.io/api',
+    gaId: 'UA-26694937-1'
   }
 
 }[process.env.NODE_ENV || 'development'];

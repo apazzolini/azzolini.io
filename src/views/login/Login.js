@@ -1,9 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
-import {pushPath} from 'redux-simple-router';
+import {routeActions} from 'react-router-redux';
 import * as Admin from '../../redux/modules/admin';
 
-const loginState = (state) => ({
+const mapStateToProps = (state) => ({
   admin: state.admin.toJS()
 });
 
@@ -11,7 +11,7 @@ class Login extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
     admin: PropTypes.object
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -26,16 +26,16 @@ class Login extends Component {
       return;
     }
 
-    this.dispatch(Admin.login(auth)).then((res) => {
-      if (res.type === Admin.LOGIN_OK) {
-        this.dispatch(pushPath(`/`));
+    this.dispatch(Admin.actions.login(auth)).then((res) => {
+      if (this.props.admin.isAdmin) {
+        this.dispatch(routeActions.push(`/`));
       }
     }, (err) => {
       console.log('error', err);
     });
 
     this.refs.auth.value = '';
-  }
+  };
 
   render() {
     require('./Login.scss');
@@ -56,4 +56,4 @@ class Login extends Component {
   }
 }
 
-export default connect(loginState)(Login);
+export default connect(mapStateToProps)(Login);

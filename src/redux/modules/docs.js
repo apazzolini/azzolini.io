@@ -1,38 +1,14 @@
-import {createReducer} from 'redux-immutablejs';
-import Immutable from 'immutable';
-import {fromError} from '../utils';
+import fromError from '../utils/fromError';
 import {parseMarkdown, parseHeader} from '../../utils/markdownParser.js';
 
-const LOAD_LIST = 'docs/LOAD_LIST';
-const LOAD_LIST_OK = 'docs/LOAD_LIST_OK';
-const LOAD_LIST_FAIL = 'docs/LOAD_LIST_FAIL';
+// Initial State ---------------------------------------------------------------
 
-const LOAD_DOC = 'docs/LOAD_DOC';
-const LOAD_DOC_OK = 'docs/LOAD_DOC_OK';
-const LOAD_DOC_FAIL = 'docs/LOAD_DOC_FAIL';
-
-const UPDATE_CONTENT = 'docs/UPDATE_CONTENT';
-const UPDATE_CONTENT_FAIL = 'docs/UPDATE_CONTENT_FAIL';
-const SAVE = 'docs/SAVE';
-const SAVE_OK = 'docs/SAVE_OK';
-const SAVE_FAIL = 'docs/SAVE_FAIL';
-
-const DELETE = 'docs/DELETE';
-const DELETE_OK = 'docs/DELETE_OK';
-const DELETE_FAIL = 'docs/DELETE_FAIL';
-
-const CREATE = 'docs/CREATE';
-const CREATE_OK = 'docs/CREATE_OK';
-const CREATE_FAIL = 'docs/CREATE_FAIL';
-
-const initialState = Immutable.fromJS({
+export const initialState = {
   loaded: false,
   entities: {}
-});
+};
 
-// -----------------------------------------------------------------------------
-// Utility functions -----------------------------------------------------------
-// -----------------------------------------------------------------------------
+// Utility Functions -----------------------------------------------------------
 
 const getBySlug = (state, type, slug) => (
   state.get('entities').find(doc => (
@@ -40,17 +16,15 @@ const getBySlug = (state, type, slug) => (
   )
 );
 
-// -----------------------------------------------------------------------------
 // Reducers --------------------------------------------------------------------
-// -----------------------------------------------------------------------------
 
-export default createReducer(initialState, {
+export const reducers = {
 
-  [LOAD_LIST]: (state, action) => state.merge({
+  'docs/loadList': (state, action) => state.merge({
     loading: true
   }),
 
-  [LOAD_LIST_OK]: (state, action) => {
+  'docs/loadListOk': (state, action) => {
     const unloadedDocs = {};
 
     // We only want to merge in docs that haven't already been loaded. Also,
@@ -69,13 +43,13 @@ export default createReducer(initialState, {
     });
   },
 
-  [LOAD_LIST_FAIL]: (state, action) => state.merge({
+  'docs/loadListFail': (state, action) => state.merge({
     loading: false,
     loaded: false,
     loadError: fromError(action.error)
   }),
 
-  [LOAD_DOC]: (state, action) => {
+  'docs/loadDoc': (state, action) => {
     const doc = getBySlug(state, action.docType, action.slug);
 
     if (doc) {
@@ -94,7 +68,7 @@ export default createReducer(initialState, {
     return state;
   },
 
-  [LOAD_DOC_OK]: (state, action) => state.mergeDeep({
+  'docs/loadDocOk': (state, action) => state.mergeDeep({
     entities: {
       [action.result._id]: {
         loading: false,
@@ -104,7 +78,7 @@ export default createReducer(initialState, {
     }
   }),
 
-  [LOAD_DOC_FAIL]: (state, action) => {
+  'docs/loadDocFail': (state, action) => {
     const doc = getBySlug(state, action.docType, action.slug);
 
     if (doc) {
@@ -119,11 +93,11 @@ export default createReducer(initialState, {
       });
     }
 
-    // See above comment in LOAD_DOC
+    // See above comment in loadDoc
     return state;
   },
 
-  [UPDATE_CONTENT]: (state, action) => state.mergeDeep({
+  'docs/updateContent': (state, action) => state.mergeDeep({
     entities: {
       [action.doc._id]: {
         ...parseHeader(action.newContent),
@@ -135,7 +109,7 @@ export default createReducer(initialState, {
     }
   }),
 
-  [UPDATE_CONTENT_FAIL]: (state, action) => state.mergeDeep({
+  'docs/updateContentFail': (state, action) => state.mergeDeep({
     entities: {
       [action.doc._id]: {
         content: action.newContent,
@@ -144,7 +118,7 @@ export default createReducer(initialState, {
     }
   }),
 
-  [SAVE]: (state, action) => state.mergeDeep({
+  'docs/save': (state, action) => state.mergeDeep({
     entities: {
       [action.doc._id]: {
         saving: true
@@ -152,7 +126,7 @@ export default createReducer(initialState, {
     }
   }),
 
-  [SAVE_OK]: (state, action) => state.mergeDeep({
+  'docs/saveOk': (state, action) => state.mergeDeep({
     entities: {
       [action.doc._id]: {
         saving: false,
@@ -162,7 +136,7 @@ export default createReducer(initialState, {
     }
   }),
 
-  [SAVE_FAIL]: (state, action) => state.mergeDeep({
+  'docs/saveFail': (state, action) => state.mergeDeep({
     entities: {
       [action.doc._id]: {
         saving: false,
@@ -172,7 +146,7 @@ export default createReducer(initialState, {
     }
   }),
 
-  [DELETE]: (state, action) => state.mergeDeep({
+  'docs/delete': (state, action) => state.mergeDeep({
     entities: {
       [action.docId]: {
         deleting: true
@@ -180,10 +154,11 @@ export default createReducer(initialState, {
     }
   }),
 
-  [DELETE_OK]: (state, action) =>
-    state.deleteIn(['entities', action.docId]),
+  'docs/deleteOk': (state, action) => (
+    state.deleteIn(['entities', action.docId])
+  ),
 
-  [DELETE_FAIL]: (state, action) => state.mergeDeep({
+  'docs/deleteFail': (state, action) => state.mergeDeep({
     entities: {
       [action.docId]: {
         deleting: false,
@@ -192,93 +167,80 @@ export default createReducer(initialState, {
     }
   }),
 
-  [CREATE]: (state, action) => state.mergeDeep({
+  'docs/create': (state, action) => state.mergeDeep({
     creating: true
   }),
 
-  [CREATE_OK]: (state, action) => state.mergeDeep({
+  'docs/createOk': (state, action) => state.mergeDeep({
     creating: false,
     entities: {
       [action.result._id]: action.result
     }
   }),
 
-  [CREATE_FAIL]: (state, action) => {
-    return state.mergeDeep({
-      creating: false,
-      createError: fromError(action.error)
-    });
-  }
-});
+  'docs/createFail': (state, action) => state.mergeDeep({
+    creating: false,
+    createError: fromError(action.error)
+  })
 
-// -----------------------------------------------------------------------------
-// Actions creators ------------------------------------------------------------
-// -----------------------------------------------------------------------------
+};
 
-export function isLoaded(globalState) {
-  return globalState.docs.get('loaded');
-}
+// Action Creators -------------------------------------------------------------
 
-export function load() {
-  return {
-    types: [LOAD_LIST, LOAD_LIST_OK, LOAD_LIST_FAIL],
-    promise: (client) => client.get('/docs?type=post')
-  };
-}
+export const actions = {
 
-export function isFullyLoaded(globalState, type, slug) {
-  const doc = getBySlug(globalState.docs, type, slug);
-  return doc && doc.get('loaded');
-}
+  load: () => ({
+    type: 'docs/loadList',
+    apiRequest: (api) => api.get('/docs?type=post')
+  }),
 
-export function loadDoc(globalState, type, slug) {
-  return {
-    types: [LOAD_DOC, LOAD_DOC_OK, LOAD_DOC_FAIL],
-    promise: (client) => client.get(`/docs/${type}/${slug}`),
+  loadDoc: (globalState, type, slug) => ({
+    type: 'docs/loadDoc',
+    apiRequest: (api) => api.get(`/docs/${type}/${slug}`),
     slug
-  };
-}
+  }),
 
-export function updateContent(doc, newContent) {
-  return {
-    type: UPDATE_CONTENT,
+  updateContent: (doc, newContent) => ({
+    type: 'docs/updateContent',
     doc,
     newContent
-  };
-}
+  }),
 
-export function updateContentFailed(doc, newContent, message) {
-  return {
-    type: UPDATE_CONTENT_FAIL,
+  updateContentFailed: (doc, newContent, message) => ({
+    type: 'docs/updateContentFail',
     doc,
     newContent,
     message
-  };
-}
+  }),
 
-export function save(doc, newContent) {
-  return {
-    types: [SAVE, SAVE_OK, SAVE_FAIL],
-    promise: (client) => client.post(`/docs/${doc._id}`, newContent),
+  save: (doc, newContent) => ({
+    type: 'docs/save',
+    apiRequest: (api) => api.post(`/docs/${doc._id}`, newContent),
     doc
-  };
-}
+  }),
 
-export function create(type) {
-  return {
-    types: [CREATE, CREATE_OK, CREATE_FAIL],
-    promise: (client) => {
-      return client.post(`/docs/${type}/create`);
-    }
-  };
-}
+  create: (type) => ({
+    type: 'docs/create',
+    apiRequest: (api) => api.post(`/docs/${type}/create`)
+  }),
 
-export function deleteDoc(docId) {
-  return {
-    types: [DELETE, DELETE_OK, DELETE_FAIL],
-    promise: (client) => {
-      return client.delete(`/docs/${docId}`);
-    },
+  deleteDoc: (docId) => ({
+    type: 'docs/delete',
+    apiRequest: (api) => api.delete(`/docs/${docId}`),
     docId
-  };
-}
+  })
+
+};
+
+// Selectors -------------------------------------------------------------------
+
+export const selectors = {
+
+  isLoaded: (globalState) => globalState.docs.get('loaded'),
+
+  isFullyLoaded: (globalState, type, slug) => {
+    const doc = getBySlug(globalState.docs, type, slug);
+    return doc && doc.get('loaded');
+  }
+
+};
