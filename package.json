@@ -1,24 +1,23 @@
 {
-  "name": "universal-redux-starter",
-  "version": "0.0.1",
-  "description": "Minimal starter for using universal-redux npm package",
+  "name": "azzolini.io",
+  "description": "The platform behind azzolini.io",
+  "author": "Andre Azzolini <apazzolini@gmail.com> (http://github.com/apazzolini)",
+  "license": "MIT",
+  "version": "0.1.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bdefore/universal-redux-starter.git"
+    "url": "https://github.com/apazzolini/azzolini.io"
   },
+  "homepage": "https://github.com/apazzolini/azzolini.io",
   "scripts": {
     "build": "rook-build",
     "dev-server": "NODE_CONFIG_DIR=./config/server NODE_PATH=./src nodemon --watch src --watch config -e js,json,json5 ./node_modules/.bin/rook-server",
     "dev": "concurrent --kill-others \"npm run watch-client\" \"npm run dev-server\"",
     "lint": "./node_modules/.bin/eslint -c .eslintrc src",
-    "server": "NODE_CONFIG_DIR=./config/server NODE_PATH=./src NODE_ENV=production ./node_modules/.bin/rook-server",
+    "start": "NODE_CONFIG_DIR=./config/server NODE_PATH=./src NODE_ENV=production ./node_modules/.bin/rook-server",
     "test": "NODE_CONFIG_DIR=./config/server NODE_ENV=test mocha --colors --compilers js:babel-core/register --require ./node_modules/rook/bin/test.js --recursive ./src/**/*.test.js",
     "watch-client": "rook-watch"
   },
-  "author": {
-    "name": "Buck DeFore"
-  },
-  "license": "MIT",
   "dependencies": {
     "hapi-auth-cookie": "^3.1.0",
     "highlight.js": "^9.0.0",
@@ -30,7 +29,7 @@
     "promised-mongo": "^1.2.0",
     "react-ace": "^3.0.0",
     "react-ga": "^1.2.0",
-    "rook": "file:///Users/Andre/GitHub/rook"
+    "rook": "git://github.com/apazzolini/rook.git"
   },
   "devDependencies": {
     "concurrently": "1.0.0",
@@ -40,5 +39,9 @@
     "react-redux": "4.2.1",
     "react-router": "2.0.0-rc5",
     "react-router-redux": "3.0.0"
+  },
+  "engines": {
+    "node": "5.3.0",
+    "npm": "3.3.12"
   }
 }
