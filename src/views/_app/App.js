@@ -31,7 +31,7 @@ export default class App extends Component {
     }
 
     if (__CLIENT__) {
-      const clientConfig = require('clientConfig');
+      const clientConfig = require('client-app-config');
       ga.initialize(clientConfig.gaId, {
         debug: __DEVELOPMENT__
       });

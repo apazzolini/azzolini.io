@@ -15,7 +15,7 @@
     "dev": "concurrent --kill-others \"npm run watch-client\" \"npm run dev-server\"",
     "lint": "./node_modules/.bin/eslint -c .eslintrc src",
     "start": "NODE_CONFIG_DIR=./config/server NODE_PATH=./src NODE_ENV=production ./node_modules/.bin/rook-server",
-    "test": "NODE_CONFIG_DIR=./config/server NODE_ENV=test mocha --colors --compilers js:babel-core/register --require ./node_modules/rook/bin/test.js --recursive ./src/**/*.test.js",
+    "test": "NODE_CONFIG_DIR=./config/server NODE_ENV=test mocha --colors --compilers js:babel-core/register --require ./node_modules/rook/lib/tests/setup.js --recursive ./src/**/*.test.js",
     "watch-client": "rook-watch",
     "postinstall": "npm run build"
   },

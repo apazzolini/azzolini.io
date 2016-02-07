@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import {docs} from '../db';
-import {server} from 'rook/bin/test';
+import {server} from 'rook/lib/tests/setup';
 
 describe('api', () => {
   describe('docs', () => {
