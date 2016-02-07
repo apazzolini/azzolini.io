@@ -1,4 +1,4 @@
-import {parseHeader, parseMarkdown} from '../../utils/markdownParser.js';
+import { parseHeader, parseMarkdown } from '../../utils/markdownParser.js';
 
 export default (db) => {
   const docs = db.collection('docs');
@@ -57,8 +57,8 @@ export default (db) => {
      * @return {Array}
      */
     getAllByType: async (type) => {
-      const params = type ? {type} : {};
-      return docs.find(params, {content: false}).toArray();
+      const params = type ? { type } : {};
+      return docs.find(params, { content: false }).toArray();
     },
 
     /**
@@ -68,7 +68,7 @@ export default (db) => {
      * @param {Boolean} includeMd - Whether or not to include markdown in the response
      * @return {Object}
      */
-    getById: async (id, includeMd = false) => findDoc({_id: db.ObjectId(id)}, includeMd),
+    getById: async (id, includeMd = false) => findDoc({ _id: db.ObjectId(id) }, includeMd),
 
     /**
      * Retrieves the specified doc by slug and type.
@@ -78,7 +78,7 @@ export default (db) => {
      * @param {Boolean} includeMd - Whether or not to include markdown in the response
      * @return {Object}
      */
-    getBySlug: async (type, slug, includeMd = false) => findDoc({type, slug}, includeMd),
+    getBySlug: async (type, slug, includeMd = false) => findDoc({ type, slug }, includeMd),
 
     /**
      * Updates the given doc keyed by MongoID to have the new markdown content.

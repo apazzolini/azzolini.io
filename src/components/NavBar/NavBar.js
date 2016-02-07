@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {Link} from 'react-router';
+import React, { Component } from 'react';
+import { Link } from 'react-router';
 
 export default class NavBar extends Component {
   constructor() {
@@ -46,20 +46,20 @@ export default class NavBar extends Component {
     this.isExpandingMenu = typeof window !== 'undefined' && window.innerWidth < 550;
 
     if (this.isExpandingMenu) {
-      this.setState({...this.state, menuExpanded: false});
+      this.setState({ ...this.state, menuExpanded: false });
     } else {
-      this.setState({...this.state, menuExpanded: true});
+      this.setState({ ...this.state, menuExpanded: true });
     }
 
     this.forceUpdate();
   };
 
   collapseMenu = () => {
-    this.setState({...this.state, menuExpanded: false});
+    this.setState({ ...this.state, menuExpanded: false });
   };
 
   toggleMenuExpanded = () => {
-    this.setState({...this.state, menuExpanded: !this.state.menuExpanded});
+    this.setState({ ...this.state, menuExpanded: !this.state.menuExpanded });
   };
 
   render() {

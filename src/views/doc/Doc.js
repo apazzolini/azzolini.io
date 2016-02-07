@@ -1,12 +1,12 @@
-import React, {Component, PropTypes} from 'react';
-import {connect} from 'react-redux';
-import {routeActions} from 'react-router-redux';
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { routeActions } from 'react-router-redux';
 import DocumentMeta from 'react-document-meta';
 import _ from 'lodash';
 import * as Docs from '../../redux/modules/docs';
 import NotFound from '../_errors/NotFound';
-import {Editor} from '../../components';
-import {parseHeader, isHeaderValid} from '../../utils/markdownParser.js';
+import { Editor } from '../../components';
+import { parseHeader, isHeaderValid } from '../../utils/markdownParser.js';
 
 const mapStateToProps = (state) => ({
   editing: state.admin.get('isEditing'),
@@ -115,7 +115,7 @@ class Doc extends Component {
         }
 
         <div className="Doc container">
-          <div className="content" dangerouslySetInnerHTML={{__html: this.doc.html}} />
+          <div className="content" dangerouslySetInnerHTML={{ __html: this.doc.html }} />
         </div>
       </div>
     );

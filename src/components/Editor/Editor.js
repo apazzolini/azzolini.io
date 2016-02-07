@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 
 export default class Editor extends Component {
   static propTypes = {
@@ -82,7 +82,7 @@ export default class Editor extends Component {
               onChange={this.props.onChange}
               onLoad={this.onAceLoad}
               name={this.props.name}
-              editorProps={{$blockScrolling: true}}
+              editorProps={{ $blockScrolling: true }}
             />
           </div>
         </div>

@@ -1,7 +1,7 @@
-import React, {Component, PropTypes} from 'react';
-import {Link} from 'react-router';
-import {connect} from 'react-redux';
-import {routeActions} from 'react-router-redux';
+import React, { Component, PropTypes } from 'react';
+import { Link } from 'react-router';
+import { connect } from 'react-redux';
+import { routeActions } from 'react-router-redux';
 import _ from 'lodash';
 import * as Docs from '../../redux/modules/docs';
 
@@ -43,7 +43,7 @@ class Home extends Component {
   render() {
     require('./Home.scss');
 
-    const {docs} = this.props;
+    const { docs } = this.props;
     const dateSortedIds = _.chain(docs)
       .filter('type', 'post')
       .filter(d => this.props.editing || d.published)

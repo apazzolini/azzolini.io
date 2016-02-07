@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import {docs} from '../db';
+import { docs } from '../db';
 
 const isAdmin = (request) => !!request.auth.isAuthenticated;
 

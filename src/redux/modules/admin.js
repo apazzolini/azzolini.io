@@ -40,7 +40,7 @@ export const actions = {
 
   login: (auth) => ({
     type: 'admin/login',
-    apiRequest: (api) => api.post('/login', {auth})
+    apiRequest: (api) => api.post('/login', { auth })
   }),
 
   toggleEditMode: () => ({

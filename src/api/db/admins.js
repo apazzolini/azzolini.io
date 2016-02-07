@@ -5,7 +5,7 @@ export default (db) => {
 
     __collection: admins,
 
-    getAdmin: async (auth) => admins.findOne({auth})
+    getAdmin: async (auth) => admins.findOne({ auth })
 
   };
 };

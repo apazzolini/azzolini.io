@@ -1,6 +1,6 @@
-import {expect} from 'chai';
-import {docs} from '../db';
-import {server} from 'rook/lib/tests/setup';
+import { expect } from 'chai';
+import { docs } from '../db';
+import { server } from 'rook/lib/tests/setup';
 
 describe('api', () => {
   describe('docs', () => {
@@ -38,7 +38,7 @@ describe('api', () => {
         date: '2015-09-02'
       });
 
-      docsDb.findOne({slug: 'test-post'}).then((doc) => {
+      docsDb.findOne({ slug: 'test-post' }).then((doc) => {
         testPostId = doc._id;
         done();
       });
@@ -49,7 +49,7 @@ describe('api', () => {
     // -------------------------------------------------------------------------
 
     it('responds with an array of posts', (done) => {
-      server.inject({method: 'GET', url: '/docs?type=post'}, (res) => {
+      server.inject({ method: 'GET', url: '/docs?type=post' }, (res) => {
         expect(res.result).to.be.an('array');
         expect(res.result).to.have.length(1);
         done();
@@ -57,7 +57,7 @@ describe('api', () => {
     });
 
     it('responds with an array of docs', (done) => {
-      server.inject({method: 'GET', url: '/docs'}, (res) => {
+      server.inject({ method: 'GET', url: '/docs' }, (res) => {
         expect(res.result).to.be.an('array');
         expect(res.result).to.have.length(2);
         done();
@@ -65,21 +65,21 @@ describe('api', () => {
     });
 
     it('responds with the requested post by slug', (done) => {
-      server.inject({method: 'GET', url: '/docs/post/test-post'}, (res) => {
+      server.inject({ method: 'GET', url: '/docs/post/test-post' }, (res) => {
         expect(res.result.title).to.equal('Test Post');
         done();
       });
     });
 
     it('responds with the requested page by slug', (done) => {
-      server.inject({method: 'GET', url: '/docs/page/test-page'}, (res) => {
+      server.inject({ method: 'GET', url: '/docs/page/test-page' }, (res) => {
         expect(res.result.title).to.equal('Test Page');
         done();
       });
     });
 
     it('responds with the requested post by id', (done) => {
-      server.inject({method: 'GET', url: `/docs/${testPostId}`}, (res) => {
+      server.inject({ method: 'GET', url: `/docs/${testPostId}` }, (res) => {
         expect(res.result.title).to.equal('Test Post');
         done();
       });
@@ -87,14 +87,14 @@ describe('api', () => {
 
     it('ensures id is a mongo ObjectId', (done) => {
       const badId = testPostId + 'xx';
-      server.inject({method: 'GET', url: `/docs/${badId}`}, (res) => {
+      server.inject({ method: 'GET', url: `/docs/${badId}` }, (res) => {
         expect(res.statusCode).to.equal(400);
         done();
       });
     });
 
     it('creates a new post', (done) => {
-      server.inject({...credentials, method: 'POST', url: `/docs/post/create`}, (res) => {
+      server.inject({ ...credentials, method: 'POST', url: `/docs/post/create` }, (res) => {
         expect(res.result).to.have.property('_id');
         expect(res.result.type).to.equal('post');
         done();
@@ -127,7 +127,7 @@ describe('api', () => {
     });
 
     it('retrieves the updated post', (done) => {
-      server.inject({method: 'GET', url: '/docs/post/test-post-updated'}, (res) => {
+      server.inject({ method: 'GET', url: '/docs/post/test-post-updated' }, (res) => {
         expect(res.result.title).to.equal('Test Post Updated');
         expect(res.result.html).to.equal('<h1 id="test-post-updated">Test Post Updated</h1>\n<h2 id="test-post-headline-updated">Test Post Headline Updated</h2>\n');
         done();
@@ -135,7 +135,7 @@ describe('api', () => {
     });
 
     it('deletes a doc', (done) => {
-      server.inject({...credentials, method: 'DELETE', url: `/docs/${testPostId}`}, (res) => {
+      server.inject({ ...credentials, method: 'DELETE', url: `/docs/${testPostId}` }, (res) => {
         expect(res.result.n).to.equal(1);
         done();
       });

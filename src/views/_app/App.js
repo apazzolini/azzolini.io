@@ -1,7 +1,7 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import DocumentMeta from 'react-document-meta';
 import ga from 'react-ga';
-import {NavBar} from '../../components';
+import { NavBar } from '../../components';
 import * as admin from '../../redux/modules/admin';
 
 const meta = {

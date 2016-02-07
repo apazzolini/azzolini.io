@@ -1,5 +1,5 @@
 import fromError from '../utils/fromError';
-import {parseMarkdown, parseHeader} from '../../utils/markdownParser.js';
+import { parseMarkdown, parseHeader } from '../../utils/markdownParser.js';
 
 // Initial State ---------------------------------------------------------------
 

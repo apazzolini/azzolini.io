@@ -1,6 +1,6 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 import Immutable from 'immutable';
-import {createReducer} from 'rook/lib/redux/createStore';
+import { createReducer } from 'rook/lib/redux/createStore';
 import reducers from '../modules';
 import fromError from '../utils/fromError';
 const reducer = createReducer(reducers.docs);
