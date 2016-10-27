@@ -11,7 +11,7 @@
   "homepage": "https://github.com/apazzolini/azzolini.io",
   "scripts": {
     "build": "rook-build",
-    "dev-server": "NODE_CONFIG_DIR=./config/server NODE_PATH=./src nodemon --watch src --watch config -e js,json,json5 ./node_modules/.bin/rook-server",
+    "dev-server": "NODE_CONFIG_DIR=./config/server NODE_PATH=./src ./node_modules/.bin/nodemon --watch src --watch config -e js,json,json5 ./node_modules/.bin/rook-server",
     "dev": "concurrent --kill-others \"npm run watch-client\" \"npm run dev-server\"",
     "lint": "./node_modules/.bin/eslint -c .eslintrc src config",
     "start": "NODE_CONFIG_DIR=./config/server NODE_PATH=./src NODE_ENV=production ./node_modules/.bin/rook-server",
@@ -35,6 +35,7 @@
   "devDependencies": {
     "concurrently": "1.0.0",
     "hapi": "^11.1.2",
+    "nodemon": "^1.9.2",
     "react": "^0.14.6",
     "react-dom": "^0.14.6",
     "react-redux": "4.2.1",

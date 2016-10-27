@@ -20,9 +20,9 @@ export default class App extends Component {
   componentWillMount() {
     if (__CLIENT__) {
       this.keydownHandler = (e) => {
-        const cmdShiftE = e.metaKey && e.shiftKey && e.keyCode === 69;
+        const cmdShiftA = e.metaKey && e.shiftKey && e.keyCode === 65;
 
-        if (cmdShiftE) {
+        if (cmdShiftA) {
           this.context.store.dispatch(admin.actions.toggleEditMode());
         }
       };
