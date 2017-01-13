@@ -19,10 +19,14 @@ describe('api', () => {
     // Setup -------------------------------------------------------------------
     // -------------------------------------------------------------------------
 
-    before((done) => {
-      docsDb.drop();
+    before(async (done) => {
+      try {
+        await docsDb.dropAsync();
+      } catch (e) {
+        // Do nothing
+      }
 
-      docsDb.save({
+      await docsDb.saveAsync({
         type: 'post',
         title: 'Test Post',
         slug: 'test-post',
@@ -30,7 +34,7 @@ describe('api', () => {
         date: '2015-09-01'
       });
 
-      docsDb.save({
+      await docsDb.saveAsync({
         type: 'page',
         title: 'Test Page',
         slug: 'test-page',
@@ -38,7 +42,7 @@ describe('api', () => {
         date: '2015-09-02'
       });
 
-      docsDb.findOne({ slug: 'test-post' }).then((doc) => {
+      docsDb.findOneAsync({ slug: 'test-post' }).then((doc) => {
         testPostId = doc._id;
         done();
       });

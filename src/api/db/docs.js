@@ -38,7 +38,6 @@ export default (db) => {
         '---',
         'type: ' + type,
         'title: ' + newId,
-        'slug: ' + newId,
         '---'
       ].join('\n');
 
