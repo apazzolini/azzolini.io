@@ -1,14 +1,15 @@
+import Promise from 'bluebird';
 import { parseHeader, parseMarkdown } from '../../utils/markdownParser.js';
 
 export default (db) => {
-  const docs = db.collection('docs');
+  const docs = Promise.promisifyAll(db.collection('docs'));
 
   // ---------------------------------------------------------------------------
   // Private -------------------------------------------------------------------
   // ---------------------------------------------------------------------------
 
   const findDoc = async (params, includeMd) => {
-    const promise = docs.findOne(params);
+    const promise = docs.findOneAsync(params);
 
     promise.then((doc) => {
       doc.html = parseMarkdown(doc.content);
@@ -41,7 +42,7 @@ export default (db) => {
         '---'
       ].join('\n');
 
-      return docs.save({
+      return docs.saveAsync({
         _id: db.ObjectId(newId),
         title: newId,
         slug: newId,
@@ -58,7 +59,7 @@ export default (db) => {
      */
     getAllByType: async (type) => {
       const params = type ? { type } : {};
-      return docs.find(params, { content: false }).toArray();
+      return docs.findAsync(params, { content: false });
     },
 
     /**
@@ -91,7 +92,7 @@ export default (db) => {
 
       // TODO: This needs to clear out fields that are no longer present in the header.
 
-      const x = docs.save({
+      const x = await docs.saveAsync({
         _id: db.ObjectId(docId),
         ...header,
         content: newContent
@@ -105,7 +106,7 @@ export default (db) => {
      *
      * @param {String} docId - the MongoID of the post to delete
      */
-    remove: async (docId) => docs.remove({
+    remove: async (docId) => docs.removeAsync({
       _id: db.ObjectId(docId)
     })
 

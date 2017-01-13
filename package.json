@@ -20,6 +20,7 @@
     "postinstall": "npm run build"
   },
   "dependencies": {
+    "bluebird": "3.4.7",
     "hapi-auth-cookie": "^3.1.0",
     "highlight.js": "^9.0.0",
     "js-yaml": "^3.5.2",
@@ -27,7 +28,7 @@
     "lodash": "^3.10.1",
     "marked": "^0.3.5",
     "moment": "^2.10.6",
-    "promised-mongo": "^1.2.0",
+    "mongojs": "2.4.0",
     "react-ace": "^3.0.0",
     "react-ga": "^1.2.0",
     "rook": "git://github.com/apazzolini/rook.git"

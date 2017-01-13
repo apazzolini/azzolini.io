@@ -1,4 +1,4 @@
-import pmongo from 'promised-mongo';
+import mongo from 'mongojs';
 import config from 'config';
 
 if (!config.has('mongo.url')) {
@@ -6,7 +6,7 @@ if (!config.has('mongo.url')) {
 }
 
 const con = config.get('mongo.url');
-export const db = pmongo(con);
+export const db = mongo(con);
 
 export const docs = require('./docs').default(db);
 export const admins = require('./admins').default(db);

@@ -1,11 +1,13 @@
+import Promise from 'bluebird';
+
 export default (db) => {
-  const admins = db.collection('admins');
+  const admins = Promise.promisifyAll(db.collection('admins'));
 
   return {
 
     __collection: admins,
 
-    getAdmin: async (auth) => admins.findOne({ auth })
+    getAdmin: async (auth) => admins.findOneAsync({ auth })
 
   };
 };
