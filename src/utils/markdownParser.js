@@ -6,7 +6,7 @@ import moment from 'moment';
 (function initializeMarked() {
 
   const registeredLangs = ['bash', 'css', 'go', 'java', 'javascript',
-    'json', 'less', 'markdown', 'ruby', 'scss', 'sql', 'vim', 'yaml'];
+    'json', 'less', 'markdown', 'ruby', 'scss', 'sql', 'vim', 'yaml', 'xml'];
 
   for (let lang of registeredLangs) {
     hljs.registerLanguage(lang, require('highlight.js/lib/languages/' + lang));
