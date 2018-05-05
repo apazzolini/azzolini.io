@@ -3,6 +3,7 @@ dist/
 config/server/local.json5
 webpack-stats.json
 npm-debug.log
+yarn-error.log
 
 // Intellij
 .idea

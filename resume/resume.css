@@ -1,11 +1,11 @@
-@import url(//fonts.googleapis.com/css?family=Raleway:400,300,600);
+@import url(https://fonts.googleapis.com/css?family=Raleway:400,300,600);
 
 body {
   margin: 0;
-	background: #fff;
-	font-family: Raleway, sans-serif;
-	font-size: 14px;
-  line-height: 21px;
+  background: #fff;
+  font-family: Raleway, sans-serif;
+  font-size: 14px;
+  line-height: 19px;
   font-weight: 300;
   -webkit-font-smoothing: antialiased;
 }
@@ -44,7 +44,7 @@ a, a:focus, a:visited {
 
 h1 {
   margin: 0;
-  font-size: 36px;
+  font-size: 30px;
   font-weight: 500;
   line-height: 40px;
 }
@@ -52,6 +52,7 @@ h1 {
 h2 {
   color: #354C57;
   font-weight: 500;
+  font-size: 17px;
 }
 
 h3 {
@@ -97,14 +98,29 @@ ul li:before {
 @media print {
   body {
     font-size: 12px;
+    font-weight: 500;
+  }
+
+  section {
+    width: 100%;
   }
 
   a.download-pdf {
     display: none;
   }
 
+  h2 {
+    color: #000;
+  }
+
+  a {
+    color: #000;
+  }
+
   p.about {
-    margin: 30px auto 30px;
+    width: 81%;
+    margin: 20px auto 20px;
+    text-align: justify;
   }
 
   header {
@@ -113,7 +129,7 @@ ul li:before {
   }
 
   h3.first {
-    margin-top: 40px;
+    margin-top: 30px;
   }
 
   h3 {
@@ -125,4 +141,19 @@ ul li:before {
     margin-top: 0;
   }
 
+  div.body-container {
+    margin: 0.22in 0.5in .4in;
+  }
+
+  h4 span.date {
+    font-weight: 300;
+    right: .55in;
+    float: none;
+    position: absolute;
+  }
+
+  @page {
+     margin: 0;
+     size: auto;
+  }
 }
