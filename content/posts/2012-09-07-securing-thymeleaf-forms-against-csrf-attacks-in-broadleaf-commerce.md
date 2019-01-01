@@ -1,0 +1,97 @@
+---
+title: Securing Thymeleaf Forms Against CSRF Attacks in Broadleaf Commerce
+date: 2012-09-07
+published: true
+---
+
+Security is one of my favorite topics, and I really enjoy working with it any chance I get. Recently, I wanted to establish a really easy way to secure [Broadleaf Commerce](http://www.broadleafcommerce.com) against CSRF attacks. Initially, we had an implementation that relied on a user adding a CSRF token to a form that he wanted to secure and then check the token in the controller. It worked well, but it didn't seem powerful enough. Also, it was tough to get it to collaborate with Spring Security 3.1 since the login requests don't go through your own controller by default, but rather through Spring's when you're using `<sec:form-login>`.
+
+I ran across [a great blog by Eyal Lupu](http://blog.eyallupu.com/2012/04/csrf-defense-in-spring-mvc-31.html) that deals with a more generic way of securing forms, and I decided to implement something similar that works with the default templating engine for Broadleaf, Thyemleaf. My goal was to have the token automatically injected into any form that submits via POST and then a security filter to check all POST requests. Let's check it out.
+
+## Adding the CSRF token to all forms
+
+I decided to handle this by creating a Thymeleaf processor that would add a child node to a given element. I created a generic `FormProcessor` that could be extended to modify forms in other ways than just adding this token, but for now, that's all it does.
+
+
+```java
+public class FormProcessor extends AbstractElementProcessor {
+
+  ...
+
+  @Override
+  protected ProcessorResult processElement(Arguments arguments, Element element) {
+    // If the form will be not be submitted with a GET, we must add the CSRF token
+    // We do this instead of checking for a POST because post is default
+    if (!"GET".equalsIgnoreCase(element.getAttributeValueFromNormalizedName("method"))) {
+      try {
+        ExploitProtectionService eps =  ProcessorUtils.getExploitProtectionService(arguments);
+        String csrfToken = eps.getCSRFToken();
+        Element csrfNode = new Element("input");
+        csrfNode.setAttribute("type", "hidden");
+        csrfNode.setAttribute("name", eps.getCsrfTokenParameter());
+        csrfNode.setAttribute("value", csrfToken);
+        element.addChild(csrfNode);
+      } catch (ServiceException e) {
+        throw new RuntimeException("Could not get a CSRF token for this session", e);
+      }
+    }
+
+    // Convert the <blc:form> node to a normal <form> node
+    Element newElement = element.cloneElementNodeWithNewName(element.getParent(), "form", false);
+    newElement.setRecomputeProcessorsImmediately(true);
+    element.getParent().insertAfter(element, newElement);
+    element.getParent().removeChild(element);
+
+    return ProcessorResult.OK;
+  }
+}
+
+```
+
+This processor will apply on an HTML node called `<blc:form>` and add a hidden input element with the current CSRF value. It then replaces itself with a normal HTML `<form>` element.
+
+## Verifying the CSRF token on all POST requests
+
+So far, so good. We're correctly submitting our token with our POST forms. Now we need to create a filter to verify the token.
+
+```java
+public class CsrfFilter extends GenericFilterBean {
+
+  @Override
+  public void doFilter(ServletRequest baseRequest, ServletResponse baseResponse,
+      FilterChain chain) throws IOException, ServletException {
+    HttpServletRequest request = (HttpServletRequest) baseRequest;
+
+    if (request.getMethod().equals("POST")) {
+      String requestToken = request.getParameter(eps.getCsrfTokenParameter());
+      try {
+        exploitProtectionService.compareToken(requestToken);
+      } catch (ServiceException e) {
+        throw new ServletException(e);
+      }
+    }
+
+    chain.doFilter(request, response);
+  }
+
+}
+```
+
+This will pull the csrfToken parameter from every POST request and ensure that it matches the value we're expecting. The last thing to do is add this filter to our Spring Security configuration:
+
+```xml
+<bean id="blCsrfFilter" class="org.broadleafcommerce.common.security.handler.CsrfFilter" />
+<sec:custom-filter ref="blCsrfFilter" before="FORM_LOGIN_FILTER"/>
+```
+
+We want this filter to happen before the `FORM_LOGIN_FILTER` so that we ensure the login form is protected too.
+
+> Note: Eyal suggested the alternate approach of using `<mvc:interceptors>` to call the filter. That didn't catch the login form submittal event since I'm not using a custom controller for login. It also applies the filter to all requests (even for resources like images and css files), which I found to be unnecessary overhead.
+
+## Notes on this strategy
+
+Since this strategy binds to all POST requests, you must ensure you always use `<blc:form>` and not just normal `<form>` to get the CSRF token. It's also necessary to note that AJAX calls fall under this umbrella and will need to pass in a CSRF token as well. You can do this by easily by using jQuery's [serialize](http://api.jquery.com/serialize/) method on the form you want to submit via AJAX or by [extending ajax](http://api.jquery.com/extending-ajax/) with a prefilter.
+
+## Closing thoughts
+
+Cross site request forgery protection is only one of the many important aspects of a secure web application. I plan on describing the various other aspects of security inside of Broadleaf Commerce in the future. For now, rest assured that our framework definitely emphasizes security!

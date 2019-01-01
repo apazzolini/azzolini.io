@@ -1,0 +1,43 @@
+---
+title: Write better dates!
+date: 2011-10-30
+published: true
+---
+
+It's awful to log into a server, run `ls`, and get back dates out of order:
+
+```
+-rw-r--r--@   1 tomcat  staff   194230 Sep 27 15:06 localhost_access_log.09-27-2010.txt
+-rw-r--r--@   1 tomcat  staff    79065 Sep 27 15:56 localhost_access_log.09-27-2011.txt
+-rw-r--r--@   1 tomcat  staff    18234 Sep 29 12:37 localhost_access_log.09-29-2010.txt
+-rw-r--r--@   1 tomcat  staff   293834 Sep 29 16:37 localhost_access_log.09-29-2011.txt
+-rw-r--r--@   1 tomcat  staff    79360 Oct  3 15:00 localhost_access_log.10-03-2010.txt
+-rw-r--r--@   1 tomcat  staff    19460 Oct  3 15:23 localhost_access_log.10-03-2011.txt
+```
+
+If you were going to organize these log files in folders, would your directory structure look like this?
+
+```txt
+Logs
+|---09
+    |---27
+        |---localhost_access_log.09-27-2010.txt
+        |---localhost_access_log.09-27-2011.txt
+    |---29
+        |---localhost_access_log.09-29-2010.txt
+        |---localhost_access_log.09-29-2011.txt
+```
+
+Unlikely, so why do that with dates? Hierarchical information is best grouped starting with the broadest category and narrowing down. A better way to structure your dates would be:
+
+> Year - Month - Day - Hour - Minute - Second
+
+```sh
+-rw-r--r--@   1 tomcat  staff    79065 Sep 27 15:56 localhost_access_log.2011-09-27.txt
+-rw-r--r--@   1 tomcat  staff   293834 Sep 29 16:37 localhost_access_log.2011-09-29.txt
+-rw-r--r--@   1 tomcat  staff    19460 Oct  3 15:23 localhost_access_log.2011-10-03.txt
+```
+
+Now that's much better!
+
+PS: Hours should be in military style - it's the same idea!

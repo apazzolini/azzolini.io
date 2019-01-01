@@ -1,0 +1,3 @@
+let NERDTreeIgnore = ['node_modules', 'public', 'jsconfig.json']
+set colorcolumn=101
+let g:ale_fix_on_save=1
