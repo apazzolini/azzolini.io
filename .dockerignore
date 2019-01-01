@@ -1,0 +1,13 @@
+Dockerfile
+
+.git
+.gitignore
+
+.cache
+public
+node_modules
+build.tar
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
