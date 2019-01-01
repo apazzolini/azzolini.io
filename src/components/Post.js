@@ -47,6 +47,10 @@ const PostContainer = styled.div`
   }
 `
 
+const DateContainer = styled.p`
+  margin-top: 2.5rem;
+`
+
 class BlogPostTemplate extends React.Component {
   render() {
     const post = this.props.data.markdownRemark
@@ -56,7 +60,7 @@ class BlogPostTemplate extends React.Component {
         <SEO title={post.frontmatter.title} description={post.excerpt} />
         <h1>{post.frontmatter.title}</h1>
         <PostContainer dangerouslySetInnerHTML={{ __html: post.html }} />
-        <p>{post.frontmatter.date}</p>
+        <DateContainer>{post.frontmatter.date}</DateContainer>
       </Layout>
     )
   }
