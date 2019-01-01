@@ -1,6 +1,0 @@
-.git
-.gitignore
-.gitlab-ci.yml
-
-dist
-node_modules
