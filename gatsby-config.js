@@ -46,6 +46,17 @@ module.exports = {
         trackingId: `UA-26694937-1`,
       },
     },
+    {
+      resolve: `gatsby-plugin-prefetch-google-fonts`,
+      options: {
+        fonts: [
+          {
+            family: `Raleway`,
+            variants: [`300`, `400`, `600`],
+          },
+        ],
+      },
+    },
     `gatsby-plugin-feed`,
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-styled-components`,

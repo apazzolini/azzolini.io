@@ -9,10 +9,6 @@ export default class HTML extends React.Component {
           <meta charSet="utf-8" />
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
           <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-          <link
-            href="https://fonts.googleapis.com/css?family=Raleway:300,400,600"
-            rel="stylesheet"
-          />
           <meta httpEquiv="x-ua-compatible" content="ie=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
           {this.props.headComponents}
