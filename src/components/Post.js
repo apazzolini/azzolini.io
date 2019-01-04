@@ -33,6 +33,7 @@ const PostContainer = styled.div`
 
   pre {
     padding: 0;
+    margin-bottom: 2.5rem;
   }
 
   p code {
