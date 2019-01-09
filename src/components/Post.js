@@ -8,7 +8,7 @@ const PostContainer = styled.div`
   h2 {
     margin-top: 2em;
     font-size: 2.3rem;
-    font-weight: 500;
+    font-weight: 300;
   }
 
   h3 {

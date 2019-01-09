@@ -21,6 +21,7 @@ const NavWrapper = styled.div`
   width: 100%;
   border-bottom: 1px solid #eee;
   background: white;
+  font-family: 'Raleway', 'HelveticaNeue', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
   nav {
     margin: 0 auto;
