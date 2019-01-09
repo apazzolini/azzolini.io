@@ -62,6 +62,7 @@ module.exports = {
       },
     },
     'gatsby-plugin-feed',
+    'gatsby-plugin-catch-links',
     'gatsby-plugin-react-helmet',
     'gatsby-plugin-styled-components',
   ],

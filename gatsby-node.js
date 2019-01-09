@@ -39,6 +39,12 @@ exports.createPages = async ({ graphql, actions }) => {
   })
 }
 
+const urlSlug = title =>
+  title
+    .toLowerCase()
+    .replace(/[^\w ]+/g, '')
+    .replace(/ +/g, '-')
+
 exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions
 
@@ -46,7 +52,7 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
     let value = createFilePath({ node, getNode })
 
     if (value.startsWith('/posts')) {
-      value = `/posts/${value.substring('/posts/yyyy-mm-dd-'.length)}`
+      value = `/posts/${urlSlug(node.frontmatter.title)}`
     }
 
     createNodeField({
