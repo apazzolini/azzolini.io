@@ -8,7 +8,7 @@ exports.createPages = async ({ graphql, actions }) => {
 
   const result = await graphql(`
     {
-      allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }, limit: 1000) {
+      allMarkdownRemark(sort: { fields: [fields___sortKey], order: DESC }, limit: 1000) {
         edges {
           node {
             fields {
@@ -49,16 +49,26 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions
 
   if (node.internal.type === 'MarkdownRemark') {
-    let value = createFilePath({ node, getNode })
+    let slug = createFilePath({ node, getNode })
+    let sortKey
 
-    if (value.startsWith('/posts')) {
-      value = `/posts/${urlSlug(node.frontmatter.title)}`
+    if (slug.startsWith('/posts')) {
+      sortKey = slug
+      slug = `/posts/${urlSlug(node.frontmatter.title)}`
     }
 
     createNodeField({
       name: 'slug',
       node,
-      value,
+      value: slug,
     })
+
+    if (sortKey) {
+      createNodeField({
+        name: 'sortKey',
+        node,
+        value: sortKey,
+      })
+    }
   }
 }
