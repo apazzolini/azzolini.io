@@ -6,9 +6,8 @@ yarn-error.log*
 # Dependency directories
 node_modules/
 
-# gatsby files
-.cache/
-public
+# Artifacts
+dist
 
 # Mac files
 .DS_Store
