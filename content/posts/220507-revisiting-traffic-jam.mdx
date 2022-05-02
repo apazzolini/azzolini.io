@@ -1,0 +1,28 @@
+---
+title: Revisiting Traffic Jam
+date: 2022-05-07
+published: true
+---
+
+I wanted to try out Vite and a few related plugins for generating psuedo-static MDX sites, so I
+decided to rebuild this blog that I never post on. As an example entry, I chose to re-implement
+[Traffic Jam](/posts/traffic-jam) in React.
+
+A quick recap of the rules: Players are allowed to move forward into an empty spot or jump over a person
+directly in front of them, provided the two persons are facing each other and the spot behind the person
+is empty. Players cannot move backwards. You win by moving all pieces to the opposite side.
+
+import Game from './revisiting-traffic-jam/Game.tsx';
+
+<Game numPlayers={8} />
+
+### So, how was it?
+
+The setup was a little more annoying than expected. I think it's a little tough to statically render
+MDX (since it can't fully flatten to just HTML), and the combination of vite-plugin-pages and the
+Rollup plugin for MDX required some custom glue code.
+
+For the most part, hot reloading works, but I did have to manually refresh the page sometimes, which is
+always frustrating. Tailwind is a joy to use, and it's nice to author posts in Neovim (versus a previous
+iteration of my blog that had an in-page editor). The autosolver in React required a bit of annoying
+logic to manage state in a reducer, but was mostly straightfoward.
