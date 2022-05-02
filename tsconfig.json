@@ -24,6 +24,6 @@
       "static/*": ["./static/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "content"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

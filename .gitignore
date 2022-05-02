@@ -8,6 +8,7 @@ node_modules/
 
 # Artifacts
 dist
+stats.html
 
 # Mac files
 .DS_Store

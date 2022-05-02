@@ -1,0 +1,161 @@
+:root {
+  --base00: #1e2027;
+  --base01: #de718b;
+  --base02: #b1cfa9;
+  --base03: #e8dcb0;
+  --base04: #9494bc;
+  --base05: #b088d7;
+  --base06: #68b2c9;
+  --base07: #c8cedc;
+  --base08: #747c84;
+  --base09: #d19b9b;
+  --base0A: #b1cfa9;
+  --base0B: #e8dcb0;
+  --base0C: #9494bc;
+  --base0D: #ff007c;
+  --base0E: #87cfc7;
+  --base0F: #f3f4f5;
+  --base10: #747c84;
+}
+
+code[class*='language-'],
+pre[class*='language-'] {
+  color: var(--base07);
+  background: none;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+pre[class*='language-']::-moz-selection,
+pre[class*='language-'] ::-moz-selection,
+code[class*='language-']::-moz-selection,
+code[class*='language-'] ::-moz-selection {
+  color: inherit;
+  background: var(--base02);
+}
+
+pre[class*='language-']::selection,
+pre[class*='language-'] ::selection,
+code[class*='language-']::selection,
+code[class*='language-'] ::selection {
+  color: inherit;
+  background: var(--base02);
+}
+
+/* Code blocks */
+pre[class*='language-'] {
+  padding: 1em;
+  margin: 0.5em 0;
+  overflow: auto;
+}
+
+:not(pre) > code[class*='language-'],
+pre[class*='language-'] {
+  background: var(--base00);
+}
+
+/* Inline code */
+:not(pre) > code[class*='language-'] {
+  padding: 0.1em;
+  border-radius: 0.3em;
+  white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.cdata {
+  color: var(--base10);
+}
+
+.token.entity,
+.language-css .token.string,
+.style .token.string {
+  color: var(--base04);
+  background: var(--base01);
+}
+
+.token.punctuation {
+  color: var(--base05);
+}
+
+.token.variable,
+.token.tag,
+.token.operator,
+.token.deleted {
+  color: var(--base08);
+}
+
+.token.property,
+.token.number,
+.token.boolean,
+.token.constant,
+.token.url {
+  color: var(--base09);
+}
+
+.token.class-name,
+.token.bold {
+  color: var(--base0A);
+}
+
+.token.string,
+.token.symbol,
+.token.attr-value,
+.token.inserted,
+.token.atrule {
+  color: var(--base0B);
+}
+
+.token.regex,
+.token.important {
+  color: var(--base0C);
+}
+
+.token.function,
+.token.attr-name {
+  color: var(--base0D);
+}
+.token.punctuation + .token.function {
+  color: var(--base03);
+}
+
+.token.keyword,
+.token.selector,
+.token.italic,
+.token.char,
+.token.builtin {
+  color: var(--base0E);
+}
+
+.token.doctype {
+  color: var(--base0F);
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+.token.italic {
+  font-style: italic;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+.namespace {
+  opacity: 0.7;
+}
