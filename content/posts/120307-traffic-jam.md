@@ -29,13 +29,17 @@ for (var i = 0; i < spaces; i++) {
   while (successfulMoves < movesPerPass) {
     currentSpace += currentDirection;
 
-    var personId = $("#space" + currentSpace).children(":first").attr('id');
+    var personId = $('#space' + currentSpace)
+      .children(':first')
+      .attr('id');
     if (personId == null) {
       continue;
     }
 
-    if ((currentDirection < 0 && isFacingRight(personId)) ||
-        (currentDirection > 0 && !isFacingRight(personId))) {
+    if (
+      (currentDirection < 0 && isFacingRight(personId)) ||
+      (currentDirection > 0 && !isFacingRight(personId))
+    ) {
       var success = move(personId);
       if (success) {
         successfulMoves++;

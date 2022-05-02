@@ -8,7 +8,7 @@ A few months ago, Julian Wälde and Alexander Klink presented at [28C3](http://e
 
 ## A new attack you say?
 
-Actually, not quite. This attack was identified back in 2003, but it seems like it just disappeared even though just about every language has this weakness, since most of them use hashtables for POST parameters. Note that this isn't even a distributed DoS! And that's not even the best part - with any half-decent residential connection, you can likely transmit enough data to lock down *entire servers.*  And no, I didn't add an extra s to servers!
+Actually, not quite. This attack was identified back in 2003, but it seems like it just disappeared even though just about every language has this weakness, since most of them use hashtables for POST parameters. Note that this isn't even a distributed DoS! And that's not even the best part - with any half-decent residential connection, you can likely transmit enough data to lock down _entire servers._ And no, I didn't add an extra s to servers!
 
 ## Hash collisions?
 
@@ -16,11 +16,11 @@ The way many application servers work (from here on out I'll focus on Java and A
 
 ## Non randomized hashcode functions are bad, mmk?
 
-The details of how Java hashcode works boils down to using DJBX33A with mutliplication constant 31 and a start value of 0, and if you're interested, some Googling will show you details. For our purposes, it's enough to know that the (extremely short) strings "Aa" and "BB" hash to the same value. ("C#" shares the hash too, but we'll ignore it for our purposes) Even more importantly, there's an easy way to generate permutations of these two tokens that will share a hash as well! Considering we have 2MB to work with, some math will show us that if we use 32-character long strings, we will be able to get a query constructed that causes *65,536* keys to hash to the same value! Since we're using 2 character tokens, the number of permutations can be calculated with the formula 2^n, where n is the number of spots (16 in our case).
+The details of how Java hashcode works boils down to using DJBX33A with mutliplication constant 31 and a start value of 0, and if you're interested, some Googling will show you details. For our purposes, it's enough to know that the (extremely short) strings "Aa" and "BB" hash to the same value. ("C#" shares the hash too, but we'll ignore it for our purposes) Even more importantly, there's an easy way to generate permutations of these two tokens that will share a hash as well! Considering we have 2MB to work with, some math will show us that if we use 32-character long strings, we will be able to get a query constructed that causes _65,536_ keys to hash to the same value! Since we're using 2 character tokens, the number of permutations can be calculated with the formula 2^n, where n is the number of spots (16 in our case).
 
 ## You found colliding hashes! Congratulations!
 
-The key is that you're generating ~65k keys that *ALL* hash to the same value, which makes processing take ridiculous amounts of time. My residential internet that costs less than $40 a month has 250KB/s upload. Trasmitting a 2MB POST at this rate takes a whopping eight seconds. So how long does this POST take to process? Inserting into a HashMap that has a key collision takes O(n^2) time. Since every single key we generate will collide, that's 65k^2, which is a lot of comparisons.
+The key is that you're generating ~65k keys that _ALL_ hash to the same value, which makes processing take ridiculous amounts of time. My residential internet that costs less than $40 a month has 250KB/s upload. Trasmitting a 2MB POST at this rate takes a whopping eight seconds. So how long does this POST take to process? Inserting into a HashMap that has a key collision takes O(n^2) time. Since every single key we generate will collide, that's 65k^2, which is a lot of comparisons.
 
 ## Stop talking, show me some cool stuff already
 
@@ -60,7 +60,7 @@ for (int i = 0; i < 59000; i++) {
 }
 ```
 
-Like I mentioned earlier, Java's hashing has an interesting property here. At any given level, EVERY combination generated will hash to the exact same thing. At the 16th level (32 bytes per key), we have 2^16 (65,536) combinations to work with. This gives us just over 2MB of keys. However, we can't just submit a list of keys; we need values to tie them to. The smallest number of bytes then is is 35, which would be `<key>=1&`. So, 2^16 * 32 / 35 = 59,918. Leaving some extra room for fun, let's call it 59,000 keys. So now, you can generate a POST that's just at 2MB for our particular attack. Save that to a file, and then run:
+Like I mentioned earlier, Java's hashing has an interesting property here. At any given level, EVERY combination generated will hash to the exact same thing. At the 16th level (32 bytes per key), we have 2^16 (65,536) combinations to work with. This gives us just over 2MB of keys. However, we can't just submit a list of keys; we need values to tie them to. The smallest number of bytes then is is 35, which would be `<key>=1&`. So, 2^16 \* 32 / 35 = 59,918. Leaving some extra room for fun, let's call it 59,000 keys. So now, you can generate a POST that's just at 2MB for our particular attack. Save that to a file, and then run:
 
     lwp-request -m POST localhost < attack.txt
 

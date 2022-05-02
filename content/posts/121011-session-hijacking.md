@@ -115,4 +115,3 @@ and then we add our custom filter to the chain:
 ## Closing remarks
 
 All in all, it's a pretty easy exercise to plug in this method of session fixation protection. It's configured this way by default in Broadleaf, but as I'm sure you can see, it'd be extremely easy to duplicate in any other app that utilizes Spring Security. Being aware of the security precautions the frameworks you use take is important, and we plan on detailing out more of our approaches to security in the future.
-
