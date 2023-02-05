@@ -26,7 +26,7 @@ const postsByYear = toRender.reduce((acc: Record<string, CollectionEntry<'posts'
         .map(([year, posts]) => {
           return (
             <div>
-              <h3 class="font-mono text-sm mb-2 border-b border-zinc-800 inline-block">{year}</h3>
+              <h3 class="font-mono font-medium text-sm mb-2 border-b border-zinc-800 inline-block">{year}</h3>
               <ul class="mb-10">
                 {posts.map((p) => {
                   return (

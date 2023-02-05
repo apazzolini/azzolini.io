@@ -1,6 +1,4 @@
-export function formatDateLong(dateStr: string): string {
-  const date = new Date(dateStr);
-
+export function formatDateLong(date: Date): string {
   const month = date.toLocaleString('en-US', { month: 'long' });
   const day = date.getDate();
   const year = date.getFullYear();

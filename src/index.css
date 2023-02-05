@@ -30,7 +30,7 @@ a:hover {
 }
 
 .blog-content h3 {
-  @apply mb-4 uppercase font-mono font-normal tracking-wider border-b-zinc-700 border-b inline-block text-sm;
+  @apply mb-4 uppercase font-mono font-medium tracking-wider border-b-zinc-700 border-b inline-block text-sm;
 }
 
 .blog-content p {
