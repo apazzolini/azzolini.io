@@ -51,6 +51,14 @@ a:hover {
   @apply !mb-4 p-3 font-light !bg-zinc-850 rounded-sm text-xs;
 }
 
+.blog-content pre > code {
+  @apply !py-0 !px-0 !bg-zinc-850;
+}
+
+.blog-content code {
+  @apply !py-0.5 !px-1 font-light bg-zinc-700 rounded-sm text-xs;
+}
+
 @media (max-width: 768px) {
   .blog-content pre {
     width: 100vw;

@@ -1,5 +1,5 @@
 ---
-title: Preventing Session Hijacking With Spring
+title: Preventing session hijacking with Spring
 date: 2012-10-11
 published: true
 ---
