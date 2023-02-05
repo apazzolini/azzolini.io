@@ -57,7 +57,3 @@ a:hover {
     @apply !-ml-4 text-xs;
   }
 }
-
-.turbo-progress-bar {
-  visibility: hidden;
-}
