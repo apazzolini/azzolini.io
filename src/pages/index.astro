@@ -1,0 +1,50 @@
+---
+import { CollectionEntry, getCollection, getEntryBySlug } from 'astro:content';
+
+import Layout from '../layouts/Layout.astro';
+import slug from '../util/slug';
+
+const { Content: AboutContent } = await (await getEntryBySlug('snippets', 'about')).render();
+
+const toRender = (await getCollection('posts'))
+  .filter((p) => p.data.published)
+  .sort((a, b) => b.data.date.toISOString().localeCompare(a.data.date.toISOString()));
+
+const postsByYear = toRender.reduce((acc: Record<string, CollectionEntry<'posts'>[]>, p) => {
+  const year = p.data.date.getFullYear();
+  if (!acc[year]) acc[year] = [];
+  acc[year]!.push(p);
+  return acc;
+}, {});
+---
+
+<Layout title="Home">
+  <main>
+    {
+      Object.entries(postsByYear)
+        .sort((a, b) => b[0].localeCompare(a[0]))
+        .map(([year, posts]) => {
+          return (
+            <div>
+              <h3 class="font-mono text-sm mb-2 border-b border-zinc-800 inline-block">{year}</h3>
+              <ul class="mb-10">
+                {posts.map((p) => {
+                  return (
+                    <li class="mb-4">
+                      <a href={`/posts/${slug(p.data.title)}`} class="no-underline">
+                        {p.data.title}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          );
+        })
+    }
+    <hr class="mt-16 mb-10 border-zinc-800 w-16" />
+    <div class="about-content max-w-xs text-sm text-zinc-300 tracking-normal">
+      <AboutContent />
+    </div>
+  </main>
+</Layout>

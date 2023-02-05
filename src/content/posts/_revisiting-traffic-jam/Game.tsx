@@ -1,5 +1,5 @@
-import { Dispatch, useEffect, useReducer } from 'react';
-import GameReducer, { createInitialState, calculateNextMove, canAct, Action, GameState } from './reducer';
+import { useEffect, useReducer } from 'preact/compat';
+import GameReducer, { createInitialState, calculateNextMove, canAct, Dispatch, GameState } from './reducer';
 
 const PIECES = {
   FACING_RIGHT: '>',
@@ -14,7 +14,7 @@ function GamePiece({
 }: {
   pieceIdx: number;
   state: GameState;
-  dispatch: Dispatch<Action>;
+  dispatch: Dispatch;
 }) {
   function handleClick() {
     dispatch({ kind: 'MOVE', pieceIdx });
@@ -40,7 +40,7 @@ function GamePiece({
   );
 }
 
-function Board({ state, dispatch }: { state: GameState; dispatch: Dispatch<Action> }) {
+function Board({ state, dispatch }: { state: GameState; dispatch: Dispatch }) {
   return (
     <div className="flex flex-row mt-8 justify-center">
       {state.board.map((p, idx) => (

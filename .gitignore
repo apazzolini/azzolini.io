@@ -1,14 +1,21 @@
-# Logs
+# build output
+dist/
+
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 
-# Dependency directories
-node_modules/
+# environment variables
+.env
+.env.production
 
-# Artifacts
-dist
-stats.html
-
-# Mac files
+# macOS-specific files
 .DS_Store

@@ -1,0 +1,29 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { formatDateLong } from '../../util/dates';
+import slug from '../../util/slug';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((p) => ({
+    params: {
+      slug: slug(p.data.title),
+    },
+    props: {
+      post: p,
+    },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<Layout title={post.data.title}>
+  <div>
+    <h1 class="text-2xl mb-2 font-black md:text-3xl">{post.data.title}</h1>
+    <h2 class="mb-8 md:mb-16 font-mono text-xs">{formatDateLong(post.data.date)}</h2>
+    <div class="blog-content"><Content /></div>
+  </div>
+</Layout>

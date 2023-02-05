@@ -7,8 +7,7 @@ module.exports = {
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:import/errors',
-    'plugin:react/recommended',
-    'plugin:react-hooks/recommended',
+    'plugin:astro/recommended',
   ],
   plugins: ['@typescript-eslint'],
   parser: '@typescript-eslint/parser',
@@ -25,13 +24,16 @@ module.exports = {
     'import/no-duplicates': 'error',
     'import/no-named-as-default-member': 'off',
     'import/no-useless-path-segments': 'error',
+    'import/no-unresolved': [
+      'error',
+      {
+        ignore: ['react', 'astro:content'],
+      },
+    ],
     'no-constant-condition': 'off',
     'no-var': 'error',
     'prefer-const': 'error',
     'prefer-template': 'error',
-    'react/react-in-jsx-scope': 'off',
-    'react-hooks/exhaustive-deps': 'error',
-    'react-hooks/rules-of-hooks': 'error',
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-empty-function': 'off',
@@ -48,8 +50,21 @@ module.exports = {
     'import/parsers': {
       '@typescript-eslint/parser': ['.ts', '.tsx', '.d.ts'],
     },
-    react: {
-      version: 'detect',
-    },
   },
+  overrides: [
+    {
+      files: ['*.astro'],
+      parser: 'astro-eslint-parser',
+      // Parse the script in `.astro` as TypeScript by adding the following configuration.
+      // It's the setting you need when using TypeScript.
+      parserOptions: {
+        parser: '@typescript-eslint/parser',
+        extraFileExtensions: ['.astro'],
+      },
+      rules: {
+        // override/add rules settings here, such as:
+        // "astro/no-set-html-directive": "error"
+      },
+    },
+  ],
 };

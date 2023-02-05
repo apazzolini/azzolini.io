@@ -24,6 +24,8 @@ export type Action =
   | { kind: 'START_AUTOSOLVE'; numPlayers: number }
   | { kind: 'FINISH_AUTOSOLVE' };
 
+export type Dispatch = (action: Action) => void;
+
 export function createInitialState(numPlayers: number): GameState {
   if (numPlayers % 2 !== 0) {
     throw new Error('numPlayers must be even');

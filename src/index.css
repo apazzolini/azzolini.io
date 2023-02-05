@@ -48,7 +48,7 @@ a:hover {
 
 .blog-content pre {
   width: calc(100vw - 196px);
-  @apply !mb-4 py-2 font-light !bg-zinc-850 rounded-sm text-xs;
+  @apply !mb-4 p-3 font-light !bg-zinc-850 rounded-sm text-xs;
 }
 
 @media (max-width: 768px) {
@@ -56,4 +56,8 @@ a:hover {
     width: 100vw;
     @apply !-ml-4 text-xs;
   }
+}
+
+.turbo-progress-bar {
+  visibility: hidden;
 }
