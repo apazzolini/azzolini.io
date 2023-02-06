@@ -1,0 +1,31 @@
+---
+export interface Props {
+  left: string[];
+  right: string[];
+}
+
+const { left, right } = Astro.props;
+---
+
+<table class="w-full font-light font-mono mb-4">
+  <thead>
+    <tr class="border-b border-b-rose-200">
+      <th class="min-w-[24px]"></th>
+      <th class="text-left w-1/2 font-light">Transaction 1</th>
+      <th class="text-left w-1/2 font-light">Transaction 2</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      new Array(Math.max(left.length, right.length)).fill(0).map((_, idx) => {
+        return (
+          <tr class="border-b border-b-rose-200 border-opacity-25 text-xs leading-5">
+            <td>{idx}</td>
+            <td>{left[idx]}</td>
+            <td>{right[idx]}</td>
+          </tr>
+        );
+      })
+    }
+  </tbody>
+</table>

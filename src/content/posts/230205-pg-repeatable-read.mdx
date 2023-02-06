@@ -1,0 +1,201 @@
+---
+title: Postgres repeatable read nuances
+date: 2023-02-06
+published: true
+---
+
+import Timeline from './_pg-repeatable-read/Timeline.astro';
+import Question from './_pg-repeatable-read/Question.tsx';
+import Box from './_pg-repeatable-read/Box.astro';
+
+The [`REPEATABLE READ`](https://www.postgresql.org/docs/current/transaction-iso.html#XACT-REPEATABLE-READ) isolation level in Postgres is a great fit for a lot of applications. It strikes a balance between the performance overhead required for `SERIALIZABLE` and the data guarantees that the default level, `READ COMMITED`, lacks. It's not a silver bullet though; let's explore some nuances.
+
+### Our testbed
+
+For the examples below, we'll be working with a single table that has two columns: `ID` and `V`. We'll skip using the table name in our queries for simplicity.
+
+The pre-existing data is two rows: `ID: 1, V: 'a'` and `ID: 2, V: 'x'`.
+
+### When does the snapshot boundary start?
+
+Let's start with the more intuitive case:
+
+<Box>
+  <Timeline
+    left={['BEGIN TRANSACTION', 'SELECT V WHERE ID = 1', null, null, null, 'COMMIT']}
+    right={[null, null, "BEGIN TRANSACTION", "UPDATE V = 'b' WHERE ID = 1", "COMMIT"]}
+  />
+
+  <Question
+    client:load
+    q="What V did we get back from Transaction 1?"
+    answers={['a', 'b']}
+    rightAnswer={0}
+    answerDescription="Since we selected V before transaction 2 updated it, we got back 'a'."
+  />
+</Box>
+
+<Box>
+  <Timeline
+    left={['BEGIN TRANSACTION', null, null, null, 'SELECT V WHERE ID = 1', 'COMMIT']}
+    right={[null, "BEGIN TRANSACTION", "UPDATE V = 'b' WHERE ID = 1", "COMMIT"]}
+  />
+
+  <Question
+    client:load
+    q="What V did we get back from Transaction 1?"
+    answers={['a', 'b']}
+    rightAnswer={1}
+    answerDescription="Postgres doesn't set the snapshot that it will use for its transaction until the first non-transaction-control statement has happened. In this case, the SELECT was the first such statement in Transaction 1, at which point V was already updated."
+  />
+</Box>
+
+<Box>
+  <Timeline
+    left={['BEGIN TRANSACTION', 'SELECT current_timestamp', null, null, null, 'SELECT V WHERE ID = 1', 'COMMIT']}
+    right={[null, null, "BEGIN TRANSACTION", "UPDATE V = 'b' WHERE ID = 1", "COMMIT"]}
+  />
+
+  <Question
+    client:load
+    q="What V did we get back from Transaction 1?"
+    answers={['a', 'b']}
+    rightAnswer={0}
+    answerDescription="The snapshot was set as soon as the first non-transaction-control statement executed in step 1. It doesn't matter that the selected data was unrelated."
+  />
+</Box>
+
+<Box>
+  <Timeline
+    left={['BEGIN TRANSACTION', 'SELECT V WHERE ID = 1', null, null, null, 'SELECT V WHERE ID = 1', 'COMMIT']}
+    right={[null, null, "BEGIN TRANSACTION", "UPDATE V = 'b' WHERE ID = 1", "COMMIT"]}
+  />
+
+  <Question
+    client:load
+    q="What V did we get back in Step 5 in Transaction 1?"
+    answers={['a', 'b', 'error: could not serialize access due to concurrent update']}
+    rightAnswer={0}
+    answerDescription="This showcases the core of REPEATABLE READ. As soon as we've established our transaction snapshot, all queries in the transaction will return data as it was at the time of the snapshot. Since we didn't update any data in T1, no error was thrown."
+  />
+</Box>
+
+### What happens if we update data concurrently?
+
+We've now learned that Postgres doesn't establish a transaction's snapshot when the transaction is started - instead, it marks it when the first non-transaction-control statement has executed. Let's see how that affects concurrent updates.
+
+<Box>
+  <Timeline
+    left={['BEGIN TRANSACTION', null, "UPDATE V = 'b' WHERE ID = 1", 'COMMIT']}
+    right={[null, "BEGIN TRANSACTION", null, null, "UPDATE V = 'c' WHERE ID = 1", "COMMIT"]}
+  />
+
+  <Question
+    client:load
+    q="Did Transaction 2 update V to 'c'?"
+    answers={['Yes', 'No - a concurrent modification error happened']}
+    rightAnswer={0}
+    answerDescription="Transaction 2's snapshot was established in step 4. At this point, T1 had already committed, and V's value was 'b'. T2 then updated the value to 'c'"
+  />
+</Box>
+
+What happens if we wait to commit T1 until the update in T2 has happened?
+
+<Box>
+  <Timeline
+    left={['BEGIN TRANSACTION', null, "UPDATE V = 'b' WHERE ID = 1", null, 'COMMIT', null]}
+    right={[null, "BEGIN TRANSACTION", null, "UPDATE V = 'c' WHERE ID = 1", null, "COMMIT"]}
+  />
+
+  <Question
+    client:load
+    q="What happened?"
+    answers={["V = 'b', no error", "V = 'c', no error", "V = 'b', T2 error", "V = 'c', T1 error"]}
+    rightAnswer={2}
+    answerDescription="Step 3 in T2 will block until T1 commits in step 4. As soon as T1's commit happens, T2 fails with ERROR: could not serialize access due to concurrent update, and T2's commit then rolls back the transaction."
+  />
+</Box>
+
+Does the same hold true if we update different rows?
+
+<Box>
+  <Timeline
+    left={['BEGIN TRANSACTION', null, "UPDATE V = 'b' WHERE ID = 1", null, 'COMMIT', null]}
+    right={[null, "BEGIN TRANSACTION", null, "UPDATE V = 'y' WHERE ID = 2", null, "COMMIT"]}
+  />
+
+  <Question
+    client:load
+    q="What happened?"
+    answers={["Both updates go through successfully", "T2 error"]}
+    rightAnswer={0}
+    answerDescription="Both updates will successfully go through. Postgres is smart enough to only enforce concurrent access per row."
+  />
+</Box>
+
+### SELECT FOR UPDATE
+
+Sometimes, you might want to query for data, do some computation on that data, and then write a different row. As we've just seen, Postgres only locks rows that you modify.
+There's a [special modifier](https://www.postgresql.org/docs/current/sql-select.html#SQL-FOR-UPDATE-SHARE) you can add to `SELECT` queries to trigger blocks on rows that aren't
+being updated in a given transaction. Let's compare the difference:
+
+<Box>
+  <Timeline
+    left={['BEGIN TRANSACTION', null, "SELECT V WHERE ID = 2", null, "UPDATE V = 'b' WHERE ID = 1", null, "COMMIT"]}
+    right={[null, "BEGIN TRANSACTION", null, "SELECT V WHERE ID = 1", null, "UPDATE V = 'y' WHERE ID = 2", null, "COMMIT"]}
+  />
+
+  <Question
+    client:load
+    q="What happened?"
+    answers={["ID 1 V = 'b', ID 2 V = 'y'", "T1 error", "T2 error"]}
+    rightAnswer={0}
+    answerDescription="Although the transaction snapshots intermingle and data that was changed was selected, since each transaction updates different rows, neither transaction ever blocks and both updates are successful."
+  />
+</Box>
+
+<Box>
+  <Timeline
+    left={['BEGIN TRANSACTION', null, "SELECT V WHERE ID = 2 FOR UPDATE", null, "UPDATE V = 'b' WHERE ID = 1", null, "COMMIT"]}
+    right={[null, "BEGIN TRANSACTION", null, "SELECT V WHERE ID = 1 FOR UPDATE", null, "UPDATE V = 'y' WHERE ID = 2", null, "COMMIT"]}
+  />
+
+  <Question
+    client:load
+    q="What happened?"
+    answers={["ID 1 V = 'b', ID 2 V = 'y'", "T1 error", "T2 error"]}
+    rightAnswer={2}
+    answerDescription="We've reached a deadlock! T2 is holding a lock that T1 step 4 needs, and T1 is holding a lock that T2 step 5 needs. Postgres has built in detection for these types of scenarios, and step 5 will error with ERROR: deadlock detected after the `deadlock_timeout` time has elapsed. Once this happens, T1 will be free to proceed."
+  />
+</Box>
+
+### Are inserts special?
+
+As we just saw, Postgres locks per row. Sometimes however, we may want to lock a batch of rows meeting a condition. Let's add a new column to our testbed for a "group id" and call it `GID`. Let's also set our current two rows to have `GID = 1` and allow `ID` to be autogenerated on inserts if not provided.
+
+We're wanting to implement a feature such that any GID can only have a maximum of three rows, so we'll leverage the `FOR UPDATE` we just learned about:
+
+<Box>
+  <Timeline
+    left={['BEGIN TRANSACTION', null, null, 'SELECT * WHERE GID = 1 FOR UPDATE', "Verify count < 3", "INSERT (GID,V) VALUES (1,'g')", 'COMMIT']}
+    right={[null, 'BEGIN TRANSACTION', 'SELECT current_timestamp', null, null, null, null, 'SELECT * WHERE GID = 1 FOR UPDATE', "Verify count < 3", "INSERT (GID,V) VALUES (1,'h')", 'COMMIT']}
+  />
+
+  <Question
+    client:load
+    q="What happened?"
+    answers={["T1 succeeds, T2 fails", "T2 count in step 8 was 3", "Both succeed"]}
+    rightAnswer={2}
+    answerDescription="Perhaps surprisingly, both transactions do indeed succeed and we end up with 4 rows associated with GID 1. How can this be since we selected for all rows matching GID 1 for update? Unfortunately, since the row that was inserted in T1 didn't exist in T2's snapshot, T2 couldn't lock it. Postgres is only able to lock rows that exist, not rows that might exist based on a condition."
+  />
+</Box>
+
+The above problem is actually a bit tricky to solve. You might reach for doing it in a single query, e.g.
+
+```sql
+INSERT INTO x (gid, v)
+SELECT 1, 'g'
+WHERE (SELECT COUNT(*) FROM X WHERE gid = 1) < 3;
+```
+
+but this still won't enforce the count limit under `REPEATABLE READ` (it would work under `SERIALIZABLE` as that would protect the entire table). The only safe way I'm aware of to achieve this under `REPEATABLE READ` is to use advisory locks, but that's a topic for another time.
