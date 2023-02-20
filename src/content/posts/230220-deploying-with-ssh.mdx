@@ -1,0 +1,79 @@
+---
+title: Deploying with SSH
+date: 2023-02-20
+published: true
+---
+
+I've deployed my personal applications in a lot of different ways over the years. This is my favorite. It's simple, reliable, and easy to automate.
+
+### Triggering
+
+I want to deploy with a simple `git push`. On pushes to the master branch, a [GitHub Action](https://github.com/apazzolini/azzolini.io/blob/master/.github/workflows/deploy.yml) SSHes
+to my VPS with a restricted command key (sometimes called a single command or single purpose key) for the associated site.
+
+```yaml
+name: Deploy
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        run: |
+          eval `ssh-agent -s`
+          ssh-add - <<< "$SSH_KEY"
+          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST
+        env:
+          SSH_USER: ${{ secrets.DEPLOY_SSH_USER }}
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          SSH_HOST: ${{ secrets.DEPLOY_SSH_HOST }}
+```
+
+On my VPS, `~/.ssh/authorized_keys` holds the following:
+
+```
+command="/apps/deploy/azzolini.io.sh",no-port-forwarding,no-x11-forwarding,no-agent-forwarding <the public key>
+```
+
+Whenever the deployment SSH key is used to connect to my VPS, it will automatically trigger the Bash script at `/apps/deploy/azzolini.io.sh`. This key
+is unable to do anything else, so I'm comfortable giving it to GitHub.
+
+### Building
+
+This blog is a static site served by nginx. However, it is an Astro app, and as such needs to be generated. I do this with Docker
+to avoid having to install Node on my VPS. You can see the Dockerfile [here](https://github.com/apazzolini/azzolini.io/blob/master/Dockerfile),
+but the only interesting part is the very last line: `RUN tar -cf build.tar dist`. This creates a tarball containing the generated site, which we can
+then easily copy to the VPS's filesystem.
+
+The first half of the above mentioned Bash script does exactly that and is the following:
+
+```bash
+#!/bin/bash
+
+set -e
+
+cd /apps/repos/azzolini.io
+git pull
+docker build . -t azzolini.io:latest
+
+docker run --rm azzolini.io:latest cat build.tar > build.tar
+```
+
+### Deploying
+
+Lastly, we need to publish the new static site. All that's required is putting
+the files in the right spot. The second half of the Bash script does this.
+
+```bash
+tar -xf build.tar
+rm -f build.tar
+
+rm -rf /apps/nginx-sites/azzolini.io
+mv dist /apps/nginx-sites/azzolini.io
+```
+
+That's it!
