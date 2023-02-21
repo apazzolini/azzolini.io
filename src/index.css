@@ -30,25 +30,25 @@ a:hover {
 }
 
 .blog-content h3 {
-  @apply mb-4 uppercase font-mono font-medium tracking-wider border-b-zinc-700 border-b inline-block text-sm;
+  @apply mb-4 uppercase font-mono font-medium tracking-wider decoration-zinc-700 text-sm underline underline-offset-8;
 }
 
 .blog-content p {
   @apply mb-4;
 }
 
-/* .blog-content p ~ h2 { */
-/*   @apply mt-8; */
-/* } */
+.blog-content :not(pre) {
+  @apply max-w-2xl;
+}
 
 .blog-content p + h3,
 .blog-content div.remark-highlight + h3 {
-  @apply mt-4;
+  @apply mt-8;
 }
 
 .blog-content pre {
-  width: calc(100vw - 196px);
-  @apply !mb-4 p-3 font-light !bg-zinc-850 rounded-sm text-xs;
+  max-width: calc(100vw - 120px);
+  @apply !mb-4 p-3 font-light !bg-zinc-850 rounded-sm text-xs inline-block min-w-[40.5rem];
 }
 
 .blog-content pre > code {
@@ -59,9 +59,10 @@ a:hover {
   @apply !py-0.5 !px-1 font-light bg-zinc-700 rounded-sm text-xs;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .blog-content pre {
-    width: 100vw;
+    width: calc(100% + 32px);
+    min-width: calc(100% + 32px);
     @apply !-ml-4 text-xs;
   }
 }

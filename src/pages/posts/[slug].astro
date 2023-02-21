@@ -26,7 +26,7 @@ const { Content } = await post.render();
 
 <Layout title={post.data.title} metaDesc={post.data.description}>
   <div class="mb-10">
-    <h1 class="text-2xl mb-2 font-black md:text-3xl">{post.data.title}</h1>
+    <h1 class="text-2xl mb-2 font-black md:text-3xl max-w-2xl">{post.data.title}</h1>
     <h2 class="mb-8 md:mb-16 font-mono font-light text-xs">{formatDateLong(post.data.date)}</h2>
     <div class="blog-content"><Content /></div>
   </div>
