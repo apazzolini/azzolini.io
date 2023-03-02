@@ -31,7 +31,7 @@ const postsByYear = toRender.reduce((acc: Record<string, CollectionEntry<'posts'
                 {posts.map((p) => {
                   return (
                     <li class="mb-4">
-                      <a href={`/posts/${slug(p.data.title)}`} class="no-underline">
+                      <a href={`/posts/${slug(p.data.title)}/`} class="no-underline">
                         {p.data.title}
                       </a>
                     </li>
