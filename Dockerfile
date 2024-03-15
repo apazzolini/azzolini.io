@@ -1,4 +1,4 @@
-FROM node:18.14-alpine3.17
+FROM node:20-alpine
 
 RUN apk add --no-cache git make gcc g++ bash curl
 
@@ -13,4 +13,4 @@ WORKDIR /app
 ADD . ./
 RUN npm run build
 
-RUN tar -cf build.tar dist
+CMD [ "node", "./dist/server/entry.mjs" ]

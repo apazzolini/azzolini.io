@@ -1,5 +1,6 @@
 import { useEffect, useReducer } from 'preact/compat';
-import GameReducer, { createInitialState, calculateNextMove, canAct, Dispatch, GameState } from './reducer';
+import type { Dispatch, GameState } from './reducer';
+import GameReducer, { createInitialState, calculateNextMove, canAct } from './reducer';
 
 const PIECES = {
   FACING_RIGHT: '>',

@@ -1,6 +1,5 @@
 import { defineConfig } from 'astro/config';
 
-// https://astro.build/config
 import tailwind from '@astrojs/tailwind';
 
 // https://astro.build/config
@@ -13,17 +12,30 @@ import mdx from '@astrojs/mdx';
 import robotsTxt from 'astro-robots-txt';
 
 // https://astro.build/config
-import sitemap from "@astrojs/sitemap";
+import sitemap from '@astrojs/sitemap';
+
+// https://astro.build/config
+import node from '@astrojs/node';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://azzolini.io',
-  integrations: [tailwind(), preact({
-    compat: true
-  }), mdx(), robotsTxt(), sitemap()],
+  integrations: [
+    tailwind(),
+    preact({
+      compat: true,
+    }),
+    mdx(),
+    robotsTxt(),
+    sitemap(),
+  ],
   markdown: {
     shikiConfig: {
-      theme: 'nord'
-    }
-  }
+      theme: 'nord',
+    },
+  },
+  output: 'server',
+  adapter: node({
+    mode: 'standalone',
+  }),
 });

@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { CollectionEntry, getCollection } from 'astro:content';
+import { type CollectionEntry, getCollection } from 'astro:content';
 import { formatDateLong } from '../../util/dates';
 import slug from '../../util/slug';
 
@@ -8,19 +8,18 @@ export interface Props {
   post: CollectionEntry<'posts'>;
 }
 
-export async function getStaticPaths() {
-  const posts = await getCollection('posts');
-  return posts.map((p) => ({
-    params: {
-      slug: slug(p.data.title),
-    },
-    props: {
-      post: p,
-    },
-  }));
+let post = null;
+for (const p of await getCollection('posts')) {
+  if (slug(p.data.title) === Astro.params.slug) {
+    post = p;
+    break;
+  }
 }
 
-const { post } = Astro.props;
+if (!post) {
+  return Astro.redirect('/404');
+}
+
 const { Content } = await post.render();
 ---
 

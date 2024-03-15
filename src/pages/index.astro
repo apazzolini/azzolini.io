@@ -1,10 +1,11 @@
 ---
-import { CollectionEntry, getCollection, getEntryBySlug } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 
 import Layout from '../layouts/Layout.astro';
 import slug from '../util/slug';
 
-const { Content: AboutContent } = await (await getEntryBySlug('snippets', 'about')).render();
+const { Content: AboutContent } = await (await getEntry('snippets', 'about')).render();
 
 const toRender = (await getCollection('posts'))
   .filter((p) => p.data.published)

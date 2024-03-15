@@ -1,4 +1,4 @@
-import React, { useState } from 'preact/compat';
+import { useState } from 'preact/compat';
 
 export type QuestionProps = {
   q: string;

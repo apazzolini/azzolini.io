@@ -27,7 +27,7 @@ module.exports = {
     'import/no-unresolved': [
       'error',
       {
-        ignore: ['react', 'astro:content'],
+        ignore: ['react', 'astro:content', 'astro:transitions', 'astro:middleware'],
       },
     ],
     'no-constant-condition': 'off',
