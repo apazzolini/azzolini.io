@@ -12,9 +12,6 @@ import mdx from '@astrojs/mdx';
 import robotsTxt from 'astro-robots-txt';
 
 // https://astro.build/config
-import sitemap from '@astrojs/sitemap';
-
-// https://astro.build/config
 import node from '@astrojs/node';
 
 // https://astro.build/config
@@ -28,7 +25,6 @@ export default defineConfig({
     }),
     mdx(),
     robotsTxt(),
-    sitemap(),
   ],
   markdown: {
     shikiConfig: {
